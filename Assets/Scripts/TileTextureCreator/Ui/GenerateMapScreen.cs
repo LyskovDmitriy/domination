@@ -69,12 +69,11 @@ public class GenerateMapScreen : UiUnit<object>
         tiles.Clear();
 
         List<TileData> inputTiles = GenerateInputTileset();
-        //TileType[,] outputMap = GenerateOutputMap(inputTiles);
 
         gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-        gridLayout.constraintCount = outputMapResolution.x;
+        gridLayout.constraintCount = outputMapResolution.x + 2 * N - 2;
 
-        for (int i = 0; i < outputMapResolution.x * outputMapResolution.y; i++)
+        for (int i = 0; i < (outputMapResolution.x + 2 * N - 2) * (outputMapResolution.y + 2 * N - 2); i++)
         {
             Image tile = Instantiate(tileViewPrefab, gridLayout.transform);
             tile.gameObject.SetActive(true);
@@ -87,13 +86,23 @@ public class GenerateMapScreen : UiUnit<object>
 
     private List<TileData> GenerateInputTileset()
     {
-        Vector2Int resolution = tileTexture.Resolution;
+        TileType[,] tileset = new TileType[tileTexture.Resolution.x, tileTexture.Resolution.y];
+
+        for (int x = 0; x < tileTexture.Resolution.x; x++)
+        {
+            for (int y = 0; y < tileTexture.Resolution.y; y++)
+            {
+                tileset[x, y] = tileTexture.GetTileType(x + y * tileTexture.Resolution.x);
+            }
+        }
+
+        tileset = ConvertToMapWithBorders(tileset);
+
 
         List<TileData> inputTileset = new List<TileData>();
-
-        for (int startingTileX = 0; startingTileX < resolution.x - N + 1; startingTileX++)
+        for (int startingTileX = 0; startingTileX < tileset.GetLength(0) - N + 1; startingTileX++)
         {
-            for (int startingTileY = 0; startingTileY < resolution.y - N + 1; startingTileY++)
+            for (int startingTileY = 0; startingTileY < tileset.GetLength(1) - N + 1; startingTileY++)
             {
                 TileData tileData = new TileData();
 
@@ -101,7 +110,7 @@ public class GenerateMapScreen : UiUnit<object>
                 {
                     for (int offsetY = 0; offsetY < N; offsetY++)
                     {
-                        tileData.tiles[offsetX, offsetY] = tileTexture.GetTileType(GetIndex(startingTileX + offsetX, startingTileY + offsetY));
+                        tileData.tiles[offsetX, offsetY] = tileset[startingTileX + offsetX, startingTileY + offsetY];
                     }
                 }
 
@@ -116,35 +125,17 @@ public class GenerateMapScreen : UiUnit<object>
                     matchingData.weight++;
                 }
             }
-
-        }
-
-        foreach (var data in inputTileset)
-        {
-            Debug.Log($"({data.weight}  {data.tiles[0, 0]}:{data.tiles[1, 0]}:{data.tiles[2, 0]}|{data.tiles[0, 1]}:{data.tiles[1, 1]}:{data.tiles[2, 1]}|{data.tiles[0, 2]}:{data.tiles[1, 2]}:{data.tiles[2, 2]})");
         }
 
         return inputTileset;
-
-        int GetIndex(int x, int y)
-        {
-            return x + y * resolution.x;
-        }
     }
 
 
     private IEnumerator GenerateOutputMap(List<TileData> inputTiles)
     {
-        List<TileData>[,] entropyMap = new List<TileData>[outputMapResolution.x, outputMapResolution.y];
         TileType[,] outputMap = new TileType[outputMapResolution.x, outputMapResolution.y];
-
-        for (int x = 0; x < entropyMap.GetLength(0); x++)
-        {
-            for (int y = 0; y < entropyMap.GetLength(1); y++)
-            {
-                entropyMap[x, y] = new List<TileData>(inputTiles);
-            }
-        }
+        outputMap = ConvertToMapWithBorders(outputMap);
+        List<TileData>[,] entropyMap = GetEntropyMap(inputTiles, outputMap);
 
         while (true)
         {
@@ -158,11 +149,12 @@ public class GenerateMapScreen : UiUnit<object>
             ApplyTileData(outputMap, lowestEntropyElementIndex, tile);
 
             //Recalculate entropy map and remove completed tiles
-            RecalculateEntropyMap(entropyMap, outputMap, lowestEntropyElementIndex);
+            //We recalculate only the the tiles that could've been affected by tile applying
+            Vector2Int offset = Vector2Int.one * (N - 1);
+            RecalculateEntropyMap(entropyMap, outputMap, lowestEntropyElementIndex - offset, lowestEntropyElementIndex + offset);
             DrawMap(outputMap);
 
             bool isFilled = true;
-
             foreach (var outputTile in outputMap)
             {
                 if (outputTile == TileType.None)
@@ -174,7 +166,7 @@ public class GenerateMapScreen : UiUnit<object>
 
             if (isFilled)
             {
-                break;
+                yield break;
             }
 
             bool hasElements = false;
@@ -186,13 +178,32 @@ public class GenerateMapScreen : UiUnit<object>
                 }
             }
 
-            if (!isFilled && !hasElements)
+            if (!hasElements)
             {
                 throw new Exception();
             }
 
             yield return null;
         }
+    }
+
+
+    private List<TileData>[,] GetEntropyMap(List<TileData> inputTiles, TileType[,] outputMap)
+    {
+        Vector2Int entropyMapResolution = outputMapResolution + Vector2Int.one * (N - 1);
+        List<TileData>[,] entropyMap = new List<TileData>[entropyMapResolution.x, entropyMapResolution.y];
+
+        for (int x = 0; x < entropyMapResolution.x; x++)
+        {
+            for (int y = 0; y < entropyMapResolution.y; y++)
+            {
+                entropyMap[x, y] = new List<TileData>(inputTiles);
+            }
+        }
+
+        RecalculateEntropyMap(entropyMap, outputMap, Vector2Int.zero, entropyMapResolution - Vector2Int.one);
+
+        return entropyMap;
     }
 
 
@@ -269,17 +280,15 @@ public class GenerateMapScreen : UiUnit<object>
     }
 
 
-    private void RecalculateEntropyMap(List<TileData>[,] entropyMap, TileType[,] outputMap, Vector2Int filledTilePosition)
+    private void RecalculateEntropyMap(List<TileData>[,] entropyMap, TileType[,] outputMap, Vector2Int topLeftCorner, Vector2Int topRightCorner)
     {
-        //We recalculate only the the tiles that could've been affected by tile applying
-        Vector2Int topLeftCorner = filledTilePosition - Vector2Int.one * (N - 1);
         topLeftCorner.x = Mathf.Max(0, topLeftCorner.x);
         topLeftCorner.y = Mathf.Max(0, topLeftCorner.y);
 
         //Iterate over all possibly changed elements
-        for (int x = topLeftCorner.x; (x < outputMap.GetLength(0)) && (x < filledTilePosition.x + N); x++)
+        for (int x = Mathf.Max(0, topLeftCorner.x); (x < entropyMap.GetLength(0)) && (x <= topRightCorner.x); x++)
         {
-            for (int y = topLeftCorner.y; (y < outputMap.GetLength(1)) && (y < filledTilePosition.y + N); y++)
+            for (int y = Mathf.Max(0, topLeftCorner.y); (y < entropyMap.GetLength(1)) && (y <= topRightCorner.y); y++)
             {
                 List<TileData> tileElements = entropyMap[x, y];
 
@@ -321,7 +330,8 @@ public class GenerateMapScreen : UiUnit<object>
                             {
                                 TileType tileType = outputMap[x + offsetX, y + offsetY];
 
-                                if ((tileType != TileType.None) && (tileType != tileElements[i].tiles[offsetX, offsetY]))
+                                if ((tileType != TileType.None) && (tileType != tileElements[i].tiles[offsetX, offsetY]) || 
+                                    ((tileType == TileType.None) && (tileElements[i].tiles[offsetX, offsetY] == TileType.Border))) //You can't place new border tiles
                                 {
                                     isPossible = false;
                                     break;
@@ -358,5 +368,30 @@ public class GenerateMapScreen : UiUnit<object>
                 tiles[x + y * map.GetLength(0)].color = TilesContainer.GetTileColor(map[x, y]);
             }
         }
+    }
+
+
+    private TileType[,] ConvertToMapWithBorders(TileType[,] map)
+    {
+        Vector2Int resultSize = new Vector2Int(map.GetLength(0) + N * 2 - 2, map.GetLength(1) + N * 2 - 2);
+        TileType[,] output = new TileType[resultSize.x, resultSize.y];
+
+        for (int x = 0; x < resultSize.x; x++)
+        {
+            for (int y = 0; y < resultSize.y; y++)
+            {
+                if ((x < N - 1) || (x > resultSize.x - N) ||
+                    (y < N - 1) || (y > resultSize.y - N))
+                {
+                    output[x, y] = TileType.Border;
+                }
+                else
+                {
+                    output[x, y] = map[x - N + 1, y - N + 1]; 
+                }
+            }
+        }
+
+        return output;
     }
 }

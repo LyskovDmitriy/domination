@@ -8,5 +8,5 @@
     Sea = 4,
     River = 5,
 
-    Border = int.MaxValue;
+    Border = int.MaxValue
 }
