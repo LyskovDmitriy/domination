@@ -1427,7 +1427,7 @@ MonoBehaviour:
   saveButton: {fileID: 1265899533}
   deleteButton: {fileID: 1193547536}
   createButton: {fileID: 1448307254}
-  tileVariationButton: {fileID: 355600835}
+  tileVariationButton: {fileID: 355600832}
   tileVariationsRoot: {fileID: 1474086793}
 --- !u!1 &337490956
 GameObject:
@@ -1474,7 +1474,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 355600831}
-  - component: {fileID: 355600835}
   - component: {fileID: 355600834}
   - component: {fileID: 355600833}
   - component: {fileID: 355600832}
@@ -1583,20 +1582,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355600830}
   m_CullTransparentMesh: 0
---- !u!114 &355600835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 355600830}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a4973960392e3a4d859f895d8cd58dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  image: {fileID: 355600833}
-  button: {fileID: 355600832}
 --- !u!1 &407320809
 GameObject:
   m_ObjectHideFlags: 0
@@ -2697,8 +2682,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 1513392887}
-  m_Horizontal: 1
-  m_Vertical: 1
+  m_Horizontal: 0
+  m_Vertical: 0
   m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 1
@@ -3649,7 +3634,6 @@ GameObject:
   - component: {fileID: 950077022}
   - component: {fileID: 950077025}
   - component: {fileID: 950077024}
-  - component: {fileID: 950077023}
   m_Layer: 5
   m_Name: TileView
   m_TagString: Untagged
@@ -3689,50 +3673,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 950077024}
-  button: {fileID: 950077023}
---- !u!114 &950077023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 950077020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &950077024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5044,10 +4984,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbe68ddd6240e9248bb7a2a9e0be7200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileTexture: {fileID: 11400000, guid: 2d121869025da4e4eada67f23b77d5a9, type: 2}
+  tileTexture: {fileID: 11400000, guid: e48bdcccb4251ab47af3a007fd02cd1c, type: 2}
   tileViewPrefab: {fileID: 433857167}
   gridLayout: {fileID: 1456529839}
-  outputMapResolution: {x: 20, y: 20}
+  outputMapResolution: {x: 30, y: 30}
   closeButton: {fileID: 1358174657}
 --- !u!1 &1265899531
 GameObject:
@@ -6462,8 +6402,8 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 80, y: 80}
-  m_Spacing: {x: 5, y: 5}
+  m_CellSize: {x: 40, y: 40}
+  m_Spacing: {x: 2, y: 2}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!114 &1513392886

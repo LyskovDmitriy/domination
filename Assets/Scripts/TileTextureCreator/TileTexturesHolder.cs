@@ -22,6 +22,7 @@ public class TileTexturesHolder : ScriptableObject
         texture.SetResolution(resolution);
         AssetDatabase.CreateAsset(texture, TexturesFolderPath + "/" + name + ".asset");
         asset.Instance.tileTextures.Add(texture);
+        EditorUtility.SetDirty(asset.Instance);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -31,7 +32,7 @@ public class TileTexturesHolder : ScriptableObject
     public static void Delete(TileTextureData texture)
     {
         Textures.Remove(texture);
-        DestroyImmediate(texture, true);
+        AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(texture));
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();

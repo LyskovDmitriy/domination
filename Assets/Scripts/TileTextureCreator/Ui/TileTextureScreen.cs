@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
 
@@ -18,13 +19,15 @@ public class TileTextureScreen : UiUnit<object>
     [SerializeField] private Button deleteButton = default;
     [SerializeField] private Button createButton = default;
 
-    [SerializeField] private TileView tileVariationButton = default;
+    [SerializeField] private Button tileVariationButton = default;
     [SerializeField] private RectTransform tileVariationsRoot = default;
 
     private List<TileView> tiles = new List<TileView>();
     private TileTextureData textureData;
 
     private TileType selectedTileType;
+
+    private GraphicRaycaster raycaster;
 
 
     private void Awake()
@@ -53,10 +56,34 @@ public class TileTextureScreen : UiUnit<object>
 
         foreach (var type in Enum.GetValues(typeof(TileType)))
         {
-            TileView tileVariation = Instantiate(tileVariationButton, tileVariationsRoot);
+            Button tileVariation = Instantiate(tileVariationButton, tileVariationsRoot);
             tileVariation.gameObject.SetActive(true);
-            tileVariation.TileType = (TileType)type;
-            tileVariation.OnClick += (tileView) => selectedTileType = tileView.TileType;
+            tileVariation.image.color = TilesContainer.GetTileColor((TileType)type);
+            tileVariation.onClick.AddListener(() => selectedTileType = (TileType)type);
+        }
+
+        raycaster = GetComponentInParent<GraphicRaycaster>();
+    }
+
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
+            var eventData = new PointerEventData(EventSystem.current);
+            eventData.position = Input.mousePosition;
+            List<RaycastResult> raycastResults = new List<RaycastResult>();
+            raycaster.Raycast(eventData, raycastResults);
+
+            foreach (var raycastResult in raycastResults)
+            {
+                TileView tileView = raycastResult.gameObject.GetComponent<TileView>();
+
+                if (tileView != null)
+                {
+                    tileView.TileType = selectedTileType;
+                }
+            }
         }
     }
 
@@ -100,7 +127,6 @@ public class TileTextureScreen : UiUnit<object>
             TileView tile = Instantiate(tileViewPrefab, gridLayout.transform);
             tile.gameObject.SetActive(true);
             tile.TileType = textureData.GetTileType(i);
-            tile.OnClick += (tileView) => tileView.TileType = selectedTileType;
             tiles.Add(tile);
         }
     }

@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: TileTexturesHolder
   m_EditorClassIdentifier: 
   tileTextures:
-  - {fileID: 11400000, guid: 8cfebe35ec753a148b6d9ed840d4a711, type: 2}
-  - {fileID: 11400000, guid: 2f716208fc6a01a439e8546d6001d76b, type: 2}
   - {fileID: 11400000, guid: 2d121869025da4e4eada67f23b77d5a9, type: 2}
+  - {fileID: 11400000, guid: e48bdcccb4251ab47af3a007fd02cd1c, type: 2}

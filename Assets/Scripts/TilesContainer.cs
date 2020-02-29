@@ -11,6 +11,7 @@ public class TilesContainer : ScriptableObject
     [SerializeField] private Color seaColor = default;
     [SerializeField] private Color forestColor = default;
     [SerializeField] private Color borderColor = default;
+    [SerializeField] private Color riverColor = default;
 
 
     public static Color GetTileColor(TileType tileType)
@@ -27,6 +28,8 @@ public class TilesContainer : ScriptableObject
                 return asset.Instance.seaColor;
             case TileType.Border:
                 return asset.Instance.borderColor;
+            case TileType.River:
+                return asset.Instance.riverColor;
         }
 
         return Color.white;
