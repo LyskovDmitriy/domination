@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9b162270689ba442b18d136d1ff78a3, type: 3}
+  m_Name: MapGenerationSettings
+  m_EditorClassIdentifier: 
+  mapResolution: {x: 20, y: 20}
+  tileTexture: {fileID: 11400000, guid: e48bdcccb4251ab47af3a007fd02cd1c, type: 2}
+  minCastleDistanceFromBorder: 3
+  maxCastleDistanceFromBorder: 6
+  minDistanceBetweenCastles: 10
+  distanceBetweenCastlesPower: 2
+  spawnedVillagesCount: 10
+  distanceToVillagePower: 1.5
+  minVillageDistanceFromBorder: 2
+  minDistanceBetweenSettlments: 4
+  possibleCastleSpawnTiles: 01000000
+  possibleVillageSpawnTiles: 010000000200000003000000

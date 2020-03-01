@@ -1650,10 +1650,10 @@ RectTransform:
   m_Father: {fileID: 1456529837}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -50}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 40, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &433857166
 CanvasRenderer:
@@ -4984,11 +4984,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbe68ddd6240e9248bb7a2a9e0be7200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileTexture: {fileID: 11400000, guid: e48bdcccb4251ab47af3a007fd02cd1c, type: 2}
   tileViewPrefab: {fileID: 433857167}
   gridLayout: {fileID: 1456529839}
-  outputMapResolution: {x: 30, y: 30}
   closeButton: {fileID: 1358174657}
+  castleSprite: {fileID: 21300000, guid: cc1893e01fd73e04c90ccccd2d533cde, type: 3}
+  villageSprite: {fileID: 21300000, guid: f8e30294d4a4c944581afe03668426be, type: 3}
 --- !u!1 &1265899531
 GameObject:
   m_ObjectHideFlags: 0

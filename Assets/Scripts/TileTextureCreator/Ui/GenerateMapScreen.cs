@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class GenerateMapScreen : UiUnit<object>
 {
-    [SerializeField] private TileTextureData tileTexture = default;
     [SerializeField] private Image tileViewPrefab = default;
     [SerializeField] private GridLayoutGroup gridLayout = default;
-    [SerializeField] private Vector2Int outputMapResolution = default;
     [SerializeField] private Button closeButton = default;
+    [SerializeField] private Sprite castleSprite = default;
+    [SerializeField] private Sprite villageSprite = default;
 
     private List<Image> tiles = new List<Image>();
 
@@ -28,7 +28,7 @@ public class GenerateMapScreen : UiUnit<object>
         tiles.ForEach((tile) => Destroy(tile.gameObject));
         tiles.Clear();
 
-        TileType[,] outputMap = WafeFunctionCollapse.GenerateMap(outputMapResolution, tileTexture);
+        TileType[,] outputMap = WafeFunctionCollapse.GenerateMap(MapGenerationSettings.MapResolution, MapGenerationSettings.TileTexture);
 
         gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         gridLayout.constraintCount = outputMap.GetLength(0);
@@ -40,11 +40,13 @@ public class GenerateMapScreen : UiUnit<object>
             tiles.Add(tile);
         }
 
-        DrawMap(outputMap);
+        var buildings = SettlmentsGenerator.Generate(outputMap);
+
+        DrawMap(outputMap, buildings.Item1, buildings.Item2);
     }
 
 
-    private void DrawMap(TileType[,] map)
+    private void DrawMap(TileType[,] map, Vector2Int[] castles, List<Vector2Int> villages)
     {
         for (int x = 0; x < map.GetLength(0); x++)
         {
@@ -52,6 +54,22 @@ public class GenerateMapScreen : UiUnit<object>
             {
                 tiles[x + y * map.GetLength(0)].color = TilesContainer.GetTileColor(map[x, y]);
             }
+        }
+
+        foreach (var catlePosition in castles)
+        {
+            Image castle = Instantiate(tileViewPrefab, tiles[catlePosition.x + catlePosition.y * map.GetLength(0)].transform);
+            castle.rectTransform.anchoredPosition = Vector2.zero;
+            castle.sprite = castleSprite;
+            castle.gameObject.SetActive(true);
+        }
+
+        foreach (var villagePosition in villages)
+        {
+            Image village = Instantiate(tileViewPrefab, tiles[villagePosition.x + villagePosition.y * map.GetLength(0)].transform);
+            village.rectTransform.anchoredPosition = Vector2.zero;
+            village.sprite = villageSprite;
+            village.gameObject.SetActive(true);
         }
     }
 }
