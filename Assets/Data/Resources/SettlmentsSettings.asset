@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fce7ce2e306be234e9d1dd82b7e75b8a, type: 3}
+  m_Name: SettlmentsSettings
+  m_EditorClassIdentifier: 
+  castleMaxBuildingsCount: 8
+  availableBuildingsInCity:
+  - type: 1
+    defaultLevel: 2
+    maxLevel: 5
+  - type: 3
+    defaultLevel: 2
+    maxLevel: 5
+  - type: 2
+    defaultLevel: 1
+    maxLevel: 3
+  villageMaxBuildingsCount: 2
+  availableBuildingsInVillage:
+  - type: 1
+    defaultLevel: -1
+    maxLevel: 3
+  - type: 3
+    defaultLevel: -1
+    maxLevel: 3
+  - type: 2
+    defaultLevel: -1
+    maxLevel: 2
+  buildings:
+  - {fileID: 11400000, guid: 4d5a8c7b59b15d643935bfb74e4e1dc7, type: 2}
+  - {fileID: 11400000, guid: 183355b75ab2d5c46be479818e488295, type: 2}
+  - {fileID: 11400000, guid: a68f9e45ff6c2ae4eab9cc4a7a8c9cb5, type: 2}

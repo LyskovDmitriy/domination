@@ -12,6 +12,9 @@ public class CameraController : MonoBehaviour
     private Vector2 lastFrameTouchPosition;
 
 
+    public Camera Camera => camera;
+
+
     private void Awake()
     {
         camera = GetComponent<Camera>();
@@ -40,5 +43,16 @@ public class CameraController : MonoBehaviour
         Vector3 cameraOffsetFromCorner = new Vector3(camera.orthographicSize * camera.aspect, camera.orthographicSize);
         minPosition = bottomLeftCorner + cameraOffsetFromCorner;
         maxPosition = topRightCorner - cameraOffsetFromCorner;
+
+        if (minPosition.x > maxPosition.x)
+        {
+            minPosition.x = 0.0f;
+            maxPosition.x = 0.0f;
+        }
+        if (minPosition.y > maxPosition.y)
+        {
+            minPosition.y = 0.0f;
+            maxPosition.y = 0.0f;
+        }
     }
 }

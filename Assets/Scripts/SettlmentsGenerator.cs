@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 public static class SettlmentsGenerator
 {
-    public static (Vector2Int[], List<Vector2Int>) Generate(TileType[,] map)
+    public static (Vector2Int[] castles, List<Vector2Int> villages) Generate(TileType[,] map)
     {
         Vector2Int[] castles = GetCastlesPositions(map);
         List<Vector2Int> villages = GetVillagesPositions(map, castles);

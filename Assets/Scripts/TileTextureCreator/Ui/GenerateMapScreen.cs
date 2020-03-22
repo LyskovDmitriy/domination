@@ -40,9 +40,9 @@ public class GenerateMapScreen : UiUnit<object>
             tiles.Add(tile);
         }
 
-        var buildings = SettlmentsGenerator.Generate(outputMap);
+        var settlments = SettlmentsGenerator.Generate(outputMap);
 
-        DrawMap(outputMap, buildings.Item1, buildings.Item2);
+        DrawMap(outputMap, settlments.castles, settlments.villages);
     }
 
 
