@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Domination.Ui;
 
 
 public class Game : MonoBehaviour
@@ -23,10 +24,7 @@ public class Game : MonoBehaviour
     {
         if (selectedTile.Settlment == null)
         {
-            if (SettlmentViewScreen.Prefab.Instance.IsShown)
-            {
-                SettlmentViewScreen.Prefab.Instance.Hide(null);
-            }
+            SettlmentViewScreen.Prefab.Instance.Hide(null);
         }
         else
         {
@@ -37,9 +35,6 @@ public class Game : MonoBehaviour
 
     private void OnTileDeselected()
     {
-        if (SettlmentViewScreen.Prefab.Instance.IsShown)
-        {
-            SettlmentViewScreen.Prefab.Instance.Hide(null);
-        }
+        SettlmentViewScreen.Prefab.Instance.Hide(null);
     }
 }

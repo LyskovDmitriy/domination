@@ -4,40 +4,46 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class SettlmentViewScreen : UiUnit<object>
+namespace Domination.Ui
 {
-    public static readonly ResourceBehavior<SettlmentViewScreen> Prefab = new ResourceBehavior<SettlmentViewScreen>("Ui/SettlmentViewScreen");
-
-    [SerializeField] private SettlmentScreenBuildingInfo buildingInfoPrefab = default;
-    [SerializeField] private RectTransform buildingsInfoRoot = default;
-
-    private List<SettlmentScreenBuildingInfo> buildingsInfo = new List<SettlmentScreenBuildingInfo>();
-
-
-    public void Show(Settlment settlment, Action<object> onHidden = null)
+    public class SettlmentViewScreen : UiUnit<object>
     {
-        Show(onHidden);
+        public static readonly ResourceBehavior<SettlmentViewScreen> Prefab = new ResourceBehavior<SettlmentViewScreen>("Ui/SettlmentViewScreen");
 
-        buildingsInfo.ForEach((building) => building.gameObject.SetActive(false));
+        [SerializeField] private BuiltSlotUI builtSlotPrefab = default;
+        [SerializeField] private EmptySlotUi emptySlotUi = default;
+        [SerializeField] private RectTransform slotsRoot = default;
 
-        List<Settlment.Building> buildings = settlment.Buildings;
+        private List<GameObject> createdSlots = new List<GameObject>();
 
-        for (int i = 0; i < settlment.MaxBuildingsCount; i++)
+
+        public void Show(Settlment settlment, Action<object> onHidden = null)
         {
-            SettlmentScreenBuildingInfo buildingInfo = null;
+            Show(onHidden);
 
-            if (i < buildingsInfo.Count)
+            foreach (GameObject slot in createdSlots)
             {
-                buildingInfo = buildingsInfo[i];
-            }
-            else
-            {
-                buildingInfo = Instantiate(buildingInfoPrefab, buildingsInfoRoot);
-                buildingsInfo.Add(buildingInfo);
+                Destroy(slot);
             }
 
-            buildingInfo.SetInfo((i < buildings.Count) ? buildings[i] : null);
-            buildingInfo.gameObject.SetActive(true);
+            createdSlots.Clear();
+
+            List<Settlment.Building> buildings = settlment.Buildings;
+
+            for (int i = 0; i < SettlmentsSettings.GetMaxBuildingsCount(settlment.Type); i++)
+            {
+                if (i < buildings.Count)
+                {
+                    BuiltSlotUI buildingInfo = Instantiate(builtSlotPrefab, slotsRoot);
+                    buildingInfo.SetInfo(settlment.Type, buildings[i]);
+                    createdSlots.Add(buildingInfo.gameObject);
+                }
+                else
+                {
+                    EmptySlotUi emptySlot = Instantiate(emptySlotUi, slotsRoot);
+                    createdSlots.Add(emptySlot.gameObject);
+                }
+            }
         }
     }
 }

@@ -5,5 +5,5 @@ using UnityEngine;
 
 public class Village : Settlment
 {
-    public override int MaxBuildingsCount => SettlmentsSettings.VillageMaxBuildingsCount;
+    public override SettlmentType Type => SettlmentType.Village;
 }

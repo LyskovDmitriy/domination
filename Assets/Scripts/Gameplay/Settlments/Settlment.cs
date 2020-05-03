@@ -11,6 +11,8 @@ public abstract class Settlment : MonoBehaviour
         public int level;
     }
 
+    private static int NextIndex = 0;
+
 
     public int Income
     {
@@ -31,7 +33,16 @@ public abstract class Settlment : MonoBehaviour
 
     public List<Building> Buildings { get; private set; } = new List<Building>();
 
-    public abstract int MaxBuildingsCount { get; }
+    public abstract SettlmentType Type { get; }
+
+    public int Index { get; private set; }
+
+
+    protected virtual void Awake()
+    {
+        Index = NextIndex;
+        NextIndex++;
+    }
 
 
     protected void Build(BuildingType buildingType)

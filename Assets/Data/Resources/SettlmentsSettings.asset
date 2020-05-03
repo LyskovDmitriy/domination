@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SettlmentsSettings
   m_EditorClassIdentifier: 
   castleMaxBuildingsCount: 8
-  availableBuildingsInCity:
+  availableBuildingsInCastle:
   - type: 1
     defaultLevel: 2
     maxLevel: 5

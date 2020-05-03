@@ -5,39 +5,42 @@ using UnityEngine.UI;
 using TMPro;
 
 
-public class LevelUi : UiUnit<object>
+namespace Domination.Ui
 {
-    public static readonly ResourceBehavior<LevelUi> Prefab = new ResourceBehavior<LevelUi>("Ui/LevelUi");
-
-    public static event Action OnEndTurnButtonClick;
-
-    [SerializeField] private Button endTurnButton = default;
-    [SerializeField] private TextMeshProUGUI playerMoneyLabel = default;
-
-
-    private void Awake()
+    public class LevelUi : UiUnit<object>
     {
-        endTurnButton.onClick.AddListener(() => OnEndTurnButtonClick?.Invoke());
-        Player.OnCoinsCountChange += OnPlayerCoinsCountChange;
-    }
+        public static readonly ResourceBehavior<LevelUi> Prefab = new ResourceBehavior<LevelUi>("Ui/LevelUi");
+
+        public static event Action OnEndTurnButtonClick;
+
+        [SerializeField] private Button endTurnButton = default;
+        [SerializeField] private TextMeshProUGUI playerMoneyLabel = default;
 
 
-    private void OnDestroy()
-    {
-        Player.OnCoinsCountChange -= OnPlayerCoinsCountChange;
-    }
+        private void Awake()
+        {
+            endTurnButton.onClick.AddListener(() => OnEndTurnButtonClick?.Invoke());
+            Player.OnCoinsCountChange += OnPlayerCoinsCountChange;
+        }
 
 
-    public void Show(Level level, Action<object> onHidden = null)
-    {
-        Show(onHidden);
-
-        OnPlayerCoinsCountChange(level.Player.Coins);
-    }
+        private void OnDestroy()
+        {
+            Player.OnCoinsCountChange -= OnPlayerCoinsCountChange;
+        }
 
 
-    private void OnPlayerCoinsCountChange(int moneyCount)
-    {
-        playerMoneyLabel.text = moneyCount.ToString();
+        public void Show(Level level, Action<object> onHidden = null)
+        {
+            Show(onHidden);
+
+            OnPlayerCoinsCountChange(level.Player.Coins);
+        }
+
+
+        private void OnPlayerCoinsCountChange(int moneyCount)
+        {
+            playerMoneyLabel.text = moneyCount.ToString();
+        }
     }
 }
