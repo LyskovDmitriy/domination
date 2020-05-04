@@ -8,6 +8,8 @@ public class Game : MonoBehaviour
     [SerializeField] private Level level = default;
     [SerializeField] private Selector selector = default;
 
+    private bool isSettlmentViewShown;
+
 
     private void Awake()
     {
@@ -22,19 +24,29 @@ public class Game : MonoBehaviour
 
     private void OnTileSelected(Tile selectedTile)
     {
-        if (selectedTile.Settlment == null)
+        Settlment connectedSettlment = selectedTile.Settlment;
+
+        if (connectedSettlment == null)
         {
-            SettlmentViewScreen.Prefab.Instance.Hide(null);
+            HideSettlmentViewScreen();
         }
-        else
+        else if ((connectedSettlment != null) && level.Player.HasSettlment(selectedTile.Settlment.Id))
         {
-            SettlmentViewScreen.Prefab.Instance.Show(selectedTile.Settlment);
+            SettlmentViewScreen.Prefab.Instance.Show(connectedSettlment);
+            isSettlmentViewShown = true;
         }
     }
 
 
-    private void OnTileDeselected()
+    private void OnTileDeselected() => HideSettlmentViewScreen();
+
+
+    private void HideSettlmentViewScreen()
     {
-        SettlmentViewScreen.Prefab.Instance.Hide(null);
+        if (isSettlmentViewShown)
+        {
+            SettlmentViewScreen.Prefab.Instance.Hide(null);
+            isSettlmentViewShown = false;
+        }
     }
 }

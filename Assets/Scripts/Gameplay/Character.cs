@@ -10,7 +10,7 @@ public class Character
 
     private const int DefaultCoinsCount = 50;
 
-    private List<Settlment> settlments = new List<Settlment>();
+    protected List<Settlment> settlments = new List<Settlment>();
     private int coins = DefaultCoinsCount;
 
 
@@ -42,6 +42,9 @@ public class Character
             Coins += Income;
         }
     }
+
+
+    public bool HasSettlment(int settlmentId) => settlments.Exists((settlment) => settlment.Id == settlmentId);
 
 
     protected void FinishTurn()

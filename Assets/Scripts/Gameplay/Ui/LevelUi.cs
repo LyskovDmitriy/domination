@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Domination.EventsSystem;
 
 
 namespace Domination.Ui
@@ -11,15 +12,13 @@ namespace Domination.Ui
     {
         public static readonly ResourceBehavior<LevelUi> Prefab = new ResourceBehavior<LevelUi>("Ui/LevelUi");
 
-        public static event Action OnEndTurnButtonClick;
-
         [SerializeField] private Button endTurnButton = default;
         [SerializeField] private TextMeshProUGUI playerMoneyLabel = default;
 
 
         private void Awake()
         {
-            endTurnButton.onClick.AddListener(() => OnEndTurnButtonClick?.Invoke());
+            endTurnButton.onClick.AddListener(() => EventsAggregator.TriggerEvent(new RequestPlayerTurnEndMessage()));
             Player.OnCoinsCountChange += OnPlayerCoinsCountChange;
         }
 

@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 
 
-namespace Domination.Events
+namespace Domination.EventsSystem
 {
     public static class EventsAggregator
     {
-        private static readonly Dictionary<EventType, HashSet<Action<IEventMessage>>> Subscriptions = new Dictionary<EventType, HashSet<Action<IEventMessage>>>();
+        private static readonly Dictionary<MessageType, HashSet<Action<IMessage>>> Subscriptions = new Dictionary<MessageType, HashSet<Action<IMessage>>>();
 
-        public static void Subscribe(EventType eventType, Action<IEventMessage> handler)
+        public static void Subscribe(MessageType eventType, Action<IMessage> handler)
         {
             if (!Subscriptions.ContainsKey(eventType))
             {
-                Subscriptions.Add(eventType, new HashSet<Action<IEventMessage>>());
+                Subscriptions.Add(eventType, new HashSet<Action<IMessage>>());
             }
 
             Subscriptions[eventType].Add(handler);
         }
 
 
-        public static void Unsubscribe(EventType eventType, Action<IEventMessage> handler) //Keep it simple for now until I come across removal problems
+        public static void Unsubscribe(MessageType eventType, Action<IMessage> handler) //Keep it simple for now until I come across removal problems
         {
             if (Subscriptions.ContainsKey(eventType))
             {
@@ -28,9 +28,9 @@ namespace Domination.Events
         }
 
 
-        public static void TriggerEvent(EventType eventType, IEventMessage message)
+        public static void TriggerEvent(IMessage message)
         {
-            if (Subscriptions.TryGetValue(eventType, out var actions))
+            if (Subscriptions.TryGetValue(message.Type, out var actions))
             {
                 foreach (var action in actions)
                 {

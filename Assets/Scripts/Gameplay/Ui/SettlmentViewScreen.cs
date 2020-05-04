@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Domination.EventsSystem;
 
 
 namespace Domination.Ui
@@ -16,11 +17,33 @@ namespace Domination.Ui
 
         private List<GameObject> createdSlots = new List<GameObject>();
 
+        private Settlment selectedSettlment;
+
 
         public void Show(Settlment settlment, Action<object> onHidden = null)
         {
             Show(onHidden);
 
+            EventsAggregator.Subscribe(MessageType.PlayerSettlmentChanged, HandlePlayerSettlmentsUpdate);
+
+            selectedSettlment = settlment;
+            RefreshUi();
+        }
+
+
+        public override void Hide(object result)
+        {
+            base.Hide(result);
+
+            EventsAggregator.Unsubscribe(MessageType.PlayerSettlmentChanged, HandlePlayerSettlmentsUpdate);
+        }
+
+
+        private void HandlePlayerSettlmentsUpdate(IMessage _) => RefreshUi();
+
+
+        private void RefreshUi()
+        {
             foreach (GameObject slot in createdSlots)
             {
                 Destroy(slot);
@@ -28,14 +51,14 @@ namespace Domination.Ui
 
             createdSlots.Clear();
 
-            List<Settlment.Building> buildings = settlment.Buildings;
+            List<Settlment.Building> buildings = selectedSettlment.Buildings;
 
-            for (int i = 0; i < SettlmentsSettings.GetMaxBuildingsCount(settlment.Type); i++)
+            for (int i = 0; i < SettlmentsSettings.GetMaxBuildingsCount(selectedSettlment.Type); i++)
             {
                 if (i < buildings.Count)
                 {
                     BuiltSlotUI buildingInfo = Instantiate(builtSlotPrefab, slotsRoot);
-                    buildingInfo.SetInfo(settlment.Type, buildings[i]);
+                    buildingInfo.SetInfo(selectedSettlment.Id, selectedSettlment.Type, buildings[i]);
                     createdSlots.Add(buildingInfo.gameObject);
                 }
                 else

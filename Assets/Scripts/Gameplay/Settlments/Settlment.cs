@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -11,7 +10,7 @@ public abstract class Settlment : MonoBehaviour
         public int level;
     }
 
-    private static int NextIndex = 0;
+    private static int NextId = 0;
 
 
     public int Income
@@ -35,13 +34,20 @@ public abstract class Settlment : MonoBehaviour
 
     public abstract SettlmentType Type { get; }
 
-    public int Index { get; private set; }
+    public int Id { get; private set; }
 
 
     protected virtual void Awake()
     {
-        Index = NextIndex;
-        NextIndex++;
+        Id = NextId;
+        NextId++;
+    }
+
+
+    public void DestroyBuilding(BuildingType buildingType)
+    {
+        Building destroyedBuilding = Buildings.Find((building) => building.type == buildingType);
+        Buildings.Remove(destroyedBuilding);
     }
 
 

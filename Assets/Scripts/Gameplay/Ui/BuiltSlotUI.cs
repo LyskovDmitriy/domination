@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Domination.EventsSystem;
 
 
 namespace Domination.Ui
@@ -13,29 +14,26 @@ namespace Domination.Ui
         [SerializeField] private Button destroyButton = default;
 
 
-        private void Awake()
-        {
-            upgradeButton.onClick.AddListener(UpgradeBuilding);
-            destroyButton.onClick.AddListener(DestroyBuilding);
-        }
-
-
-        public void SetInfo(SettlmentType settlmentType, Settlment.Building buildingInfo)
+        public void SetInfo(int settlmentId, SettlmentType settlmentType, Settlment.Building buildingInfo)
         {
             nameLabel.text = $"{buildingInfo.type} {buildingInfo.level}";
 
             int maxBuildingLevel = SettlmentsSettings.GetMaxBuildingLevel(settlmentType, buildingInfo.type);
             upgradeButton.interactable = (buildingInfo.level < maxBuildingLevel);
+
+            destroyButton.onClick.RemoveAllListeners();
+            destroyButton.onClick.AddListener(() => DestroyBuilding(settlmentId, buildingInfo.type));
         }
 
 
-        private void UpgradeBuilding()
+        private void UpgradeBuilding(int settlementId, BuildingType building)
         {
         }
 
 
-        private void DestroyBuilding()
+        private void DestroyBuilding(int settlementId, BuildingType building)
         {
+            EventsAggregator.TriggerEvent(new DestroyBuildingMessage(settlementId, building));
         }
     }
 }
