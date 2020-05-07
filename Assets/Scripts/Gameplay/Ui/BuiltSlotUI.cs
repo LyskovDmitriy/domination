@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Domination.EventsSystem;
+using UnityEditor;
 
 
 namespace Domination.Ui
@@ -16,24 +17,33 @@ namespace Domination.Ui
 
         public void SetInfo(int settlmentId, SettlmentType settlmentType, Settlment.Building buildingInfo)
         {
-            nameLabel.text = $"{buildingInfo.type} {buildingInfo.level}";
-
             int maxBuildingLevel = SettlmentsSettings.GetMaxBuildingLevel(settlmentType, buildingInfo.type);
-            upgradeButton.interactable = (buildingInfo.level < maxBuildingLevel);
+
+            upgradeButton.gameObject.SetActive(false);
+            upgradeButton.onClick.RemoveAllListeners();
+            upgradeButton.onClick.AddListener(() => BuildingSystem.UpgradeBuilding(settlmentId, buildingInfo.type));
+
+            switch (BuildingSystem.CanUpdateBuilding(Character.PlayerId, settlmentType, buildingInfo.type, buildingInfo.level))
+            {
+                case UpdatePossibility.AlreadyHighestLevel:
+                    nameLabel.text = $"{buildingInfo.type} {buildingInfo.level}";
+                    break;
+
+                case UpdatePossibility.NotEnoughMoney:
+                    upgradeButton.gameObject.SetActive(true);
+                    upgradeButton.interactable = false;
+                    nameLabel.text = $"{ buildingInfo.type } { buildingInfo.level }\nUp { BuildingSystem.GetUpgradePrice(buildingInfo.type, buildingInfo.level) }";
+                    break;
+
+                case UpdatePossibility.Possible:
+                    upgradeButton.gameObject.SetActive(true);
+                    upgradeButton.interactable = true;
+                    nameLabel.text = $"{ buildingInfo.type } { buildingInfo.level }\nUp { BuildingSystem.GetUpgradePrice(buildingInfo.type, buildingInfo.level) }";
+                    break;
+            }
 
             destroyButton.onClick.RemoveAllListeners();
-            destroyButton.onClick.AddListener(() => DestroyBuilding(settlmentId, buildingInfo.type));
-        }
-
-
-        private void UpgradeBuilding(int settlementId, BuildingType building)
-        {
-        }
-
-
-        private void DestroyBuilding(int settlementId, BuildingType building)
-        {
-            EventsAggregator.TriggerEvent(new DestroyBuildingMessage(settlementId, building));
+            destroyButton.onClick.AddListener(() => BuildingSystem.DestroyBuilding(settlmentId, buildingInfo.type));
         }
     }
 }

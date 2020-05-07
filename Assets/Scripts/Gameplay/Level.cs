@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -13,12 +14,12 @@ public class Level : MonoBehaviour
 
     private Tile[,] tiles;
 
-    private Character[] characters;
     private int characterIndex;
 
     bool isFirstTurn;
 
-    public Character Player => characters[0];
+    public Character Player => Characters[0];
+    public Character[] Characters { get; private set; }
 
 
     private void Awake()
@@ -72,31 +73,38 @@ public class Level : MonoBehaviour
 
         isFirstTurn = true;
 
-        characters = new Character[2];
+        Characters = new Character[2];
 
-        characters[0] = new Player();
-        characters[0].Init(castles[0]);
+        Characters[0] = new Player();
+        Characters[0].Init(castles[0]);
 
-        characters[1] = new AiCharacter();
-        characters[1].Init(castles[1]);
+        Characters[1] = new AiCharacter();
+        Characters[1].Init(castles[1]);
 
-        characters[0].OnTurnFinish += OnCharacterTurnFinish;
-        characters[0].StartTurn(true);
+        BuildingSystem.Init(this);
+
+        Characters[0].OnTurnFinish += OnCharacterTurnFinish;
+        Characters[0].StartTurn(true);
     }
 
 
+    public Character GetCharacterById(int id)
+    {
+        return Array.Find(Characters, character => character.Id == id);
+    }
+
     private void OnCharacterTurnFinish()
     {
-        characters[characterIndex].OnTurnFinish -= OnCharacterTurnFinish;
+        Characters[characterIndex].OnTurnFinish -= OnCharacterTurnFinish;
         characterIndex++;
 
-        if (characterIndex >= characters.Length)
+        if (characterIndex >= Characters.Length)
         {
             isFirstTurn = false;
-            characterIndex %= characters.Length;
+            characterIndex %= Characters.Length;
         }
 
-        characters[characterIndex].OnTurnFinish += OnCharacterTurnFinish;
-        characters[characterIndex].StartTurn(isFirstTurn);
+        Characters[characterIndex].OnTurnFinish += OnCharacterTurnFinish;
+        Characters[characterIndex].StartTurn(isFirstTurn);
     }
 }

@@ -40,9 +40,12 @@ public class SettlmentsSettings : ScriptableObject
         return 0;
     }
 
+    public static BuildingInfo[] GetAvailableBuildingsForSettlment(SettlmentType settlmentType) => (settlmentType == SettlmentType.Castle) ? 
+                                                                                asset.Instance.availableBuildingsInCastle : asset.Instance.availableBuildingsInVillage;
+
     public static int GetMaxBuildingLevel(SettlmentType settlment, BuildingType building)
     {
-        BuildingInfo[] buildingsInSettlment = settlment == SettlmentType.Castle ? asset.Instance.availableBuildingsInCastle : asset.Instance.availableBuildingsInVillage;
+        BuildingInfo[] buildingsInSettlment = GetAvailableBuildingsForSettlment(settlment);
         return Array.Find(buildingsInSettlment, (buildingInfo) => buildingInfo.type == building).maxLevel;
     }
 }

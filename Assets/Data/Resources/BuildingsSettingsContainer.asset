@@ -9,31 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fce7ce2e306be234e9d1dd82b7e75b8a, type: 3}
-  m_Name: SettlmentsSettings
+  m_Script: {fileID: 11500000, guid: bcdbdf5a157cffe4a90f7b16fae61a8e, type: 3}
+  m_Name: BuildingsSettingsContainer
   m_EditorClassIdentifier: 
-  castleMaxBuildingsCount: 8
-  availableBuildingsInCastle:
-  - type: 1
-    defaultLevel: 2
-    maxLevel: 4
-  - type: 3
-    defaultLevel: 2
-    maxLevel: 4
-  - type: 2
-    defaultLevel: 1
-    maxLevel: 2
-  villageMaxBuildingsCount: 2
-  availableBuildingsInVillage:
-  - type: 1
-    defaultLevel: -1
-    maxLevel: 2
-  - type: 3
-    defaultLevel: -1
-    maxLevel: 2
-  - type: 2
-    defaultLevel: -1
-    maxLevel: 1
   buildings:
   - {fileID: 11400000, guid: 4d5a8c7b59b15d643935bfb74e4e1dc7, type: 2}
   - {fileID: 11400000, guid: 183355b75ab2d5c46be479818e488295, type: 2}

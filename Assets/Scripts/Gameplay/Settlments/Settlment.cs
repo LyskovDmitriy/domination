@@ -12,12 +12,13 @@ public abstract class Settlment : MonoBehaviour
 
     private static int NextId = 0;
 
+    private List<Building> buildings = new List<Building>();
 
     public int Income
     {
         get
         {
-            Building market = Buildings.Find((building) => building.type == BuildingType.Market);
+            Building market = buildings.Find((building) => building.type == BuildingType.Market);
 
             if (market == null)
             {
@@ -28,9 +29,6 @@ public abstract class Settlment : MonoBehaviour
             return settings.Levels[market.level].TurnIncome;
         }
     }
-
-
-    public List<Building> Buildings { get; private set; } = new List<Building>();
 
     public abstract SettlmentType Type { get; }
 
@@ -46,25 +44,30 @@ public abstract class Settlment : MonoBehaviour
 
     public void DestroyBuilding(BuildingType buildingType)
     {
-        Building destroyedBuilding = Buildings.Find((building) => building.type == buildingType);
-        Buildings.Remove(destroyedBuilding);
+        Building destroyedBuilding = GetBuilding(buildingType);
+        buildings.Remove(destroyedBuilding);
     }
 
 
-    protected void Build(BuildingType buildingType)
+    public void UpgradeBuilding(BuildingType buildingType)
     {
-        if (Buildings.Exists((building) => building.type == buildingType))
+        GetBuilding(buildingType).level++;
+    }
+
+
+    public List<Building> GetBuildings() => new List<Building>(buildings);
+
+
+    public Building GetBuilding(BuildingType type) => buildings.Find((b) => b.type == type);
+
+
+    public void Build(BuildingType buildingType)
+    {
+        if (buildings.Exists((building) => building.type == buildingType))
         {
             Debug.LogError($"Trying to build already build {buildingType}");
             return;
         }
-        Buildings.Add(new Building { type = buildingType });
-    }
-
-
-    protected void UpgradeBuilding(BuildingType buildingType)
-    {
-        Building building = Buildings.Find((b) => b.type == buildingType);
-        building.level++;
+        buildings.Add(new Building { type = buildingType });
     }
 }

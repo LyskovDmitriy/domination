@@ -8,17 +8,14 @@ public class Player : Character
 {
     public static event Action<int> OnCoinsCountChange;
 
-    
-    public Player()
-    {
-        EventsAggregator.Subscribe(MessageType.PlayerEndTurnRequest, (_) => FinishTurn());
-        EventsAggregator.Subscribe(MessageType.DestroyBuilding, DestroyBuilding);
-    }
-
 
     public override void Init(Castle castle)
     {
         base.Init(castle);
+
+        PlayerId = Id;
+
+        EventsAggregator.Subscribe(MessageType.PlayerEndTurnRequest, (_) => FinishTurn());
     }
 
 
@@ -30,12 +27,25 @@ public class Player : Character
     }
 
 
-    private void DestroyBuilding(IMessage message)
+    public override void UpgradeBuilding(int settlmentId, BuildingType buildingType)
     {
-        DestroyBuildingMessage destroyBuildingMessage = (DestroyBuildingMessage)message;
+        base.UpgradeBuilding(settlmentId, buildingType);
 
-        Settlment settlment = settlments.Find((s) => s.Id == destroyBuildingMessage.SettlmentId);
-        settlment.DestroyBuilding(destroyBuildingMessage.BuildingType);
+        EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
+    }
+
+
+    public override void DestroyBuilding(int settlmentId, BuildingType buildingType)
+    {
+        base.DestroyBuilding(settlmentId, buildingType);
+
+        EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
+    }
+
+
+    public override void Build(int settlmentId, BuildingType buildingType)
+    {
+        base.Build(settlmentId, buildingType);
 
         EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
     }

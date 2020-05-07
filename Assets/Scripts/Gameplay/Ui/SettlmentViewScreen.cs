@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Domination.EventsSystem;
 
 
@@ -24,9 +23,10 @@ namespace Domination.Ui
         {
             Show(onHidden);
 
-            EventsAggregator.Subscribe(MessageType.PlayerSettlmentChanged, HandlePlayerSettlmentsUpdate);
+            EventsAggregator.Subscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
 
             selectedSettlment = settlment;
+
             RefreshUi();
         }
 
@@ -35,7 +35,7 @@ namespace Domination.Ui
         {
             base.Hide(result);
 
-            EventsAggregator.Unsubscribe(MessageType.PlayerSettlmentChanged, HandlePlayerSettlmentsUpdate);
+            EventsAggregator.Unsubscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
         }
 
 
@@ -51,7 +51,7 @@ namespace Domination.Ui
 
             createdSlots.Clear();
 
-            List<Settlment.Building> buildings = selectedSettlment.Buildings;
+            List<Settlment.Building> buildings = selectedSettlment.GetBuildings();
 
             for (int i = 0; i < SettlmentsSettings.GetMaxBuildingsCount(selectedSettlment.Type); i++)
             {
@@ -65,6 +65,16 @@ namespace Domination.Ui
                 {
                     EmptySlotUi emptySlot = Instantiate(emptySlotUi, slotsRoot);
                     createdSlots.Add(emptySlot.gameObject);
+                    emptySlot.Init(() =>
+                    {
+                        ChooseBuildingScreen.Prefab.Instance.Show(selectedSettlment.Id, (chosenBuilding) =>
+                        {
+                            if (chosenBuilding != BuildingType.None)
+                            {
+                                BuildingSystem.Build(selectedSettlment.Id, chosenBuilding);
+                            }
+                        });
+                    });
                 }
             }
         }

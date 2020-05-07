@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
+using Domination.EventsSystem;
 
 
 public class Character
@@ -10,9 +10,14 @@ public class Character
 
     private const int DefaultCoinsCount = 50;
 
+    private static int NextId = 0;
+
     protected List<Settlment> settlments = new List<Settlment>();
     private int coins = DefaultCoinsCount;
 
+    public static int PlayerId { get; protected set; }
+
+    public int Id { get; private set; }
 
     public int Income => settlments.Sum((settlment) => settlment.Income);
 
@@ -31,6 +36,9 @@ public class Character
 
     public virtual void Init(Castle castle)
     {
+        Id = NextId;
+        NextId++;
+
         settlments.Add(castle);
     }
 
@@ -44,7 +52,7 @@ public class Character
     }
 
 
-    public bool HasSettlment(int settlmentId) => settlments.Exists((settlment) => settlment.Id == settlmentId);
+    public bool HasSettlment(int settlmentId) => GetSettlmentById(settlmentId) != null;
 
 
     protected void FinishTurn()
@@ -53,8 +61,33 @@ public class Character
     }
 
 
-    protected virtual void SetNewCoinsCount(int money)
+    protected virtual void SetNewCoinsCount(int coins)
     {
-        this.coins = money;
+        this.coins = coins;
     }
+
+
+    public virtual void DestroyBuilding(int settlmentId, BuildingType buildingType)
+    {
+        GetSettlmentById(settlmentId).DestroyBuilding(buildingType);
+    }
+
+
+    public virtual void UpgradeBuilding(int settlmentId, BuildingType buildingType)
+    {
+        Settlment settlment = GetSettlmentById(settlmentId);
+        Coins -= BuildingSystem.GetUpgradePrice(buildingType, settlment.GetBuilding(buildingType).level);
+        settlment.UpgradeBuilding(buildingType);
+    }
+
+
+    public virtual void Build(int settlmentId, BuildingType buildingType)
+    {
+        Settlment settlment = GetSettlmentById(settlmentId);
+        Coins -= BuildingSystem.GetConstructionPrice(buildingType);
+        settlment.Build(buildingType);
+    }
+
+
+    public Settlment GetSettlmentById(int settlmentId) => settlments.Find((settlment) => settlment.Id == settlmentId);
 }
