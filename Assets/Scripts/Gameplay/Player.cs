@@ -1,52 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using Domination.EventsSystem;
+﻿using Domination.EventsSystem;
 
 
-public class Player : Character
+namespace Domination
 {
-    public static event Action<int> OnCoinsCountChange;
-
-
-    public override void Init(Castle castle)
+    public class Player : Character
     {
-        base.Init(castle);
+        public Player(Castle castle) : base(castle)
+        {
+            PlayerId = Id;
 
-        PlayerId = Id;
+            EventsAggregator.Subscribe(MessageType.PlayerEndTurnRequest, HandleTurnEndRequest);
+            EventsAggregator.Subscribe(MessageType.RequestPlayerCoinsUpdate, HandleCoinsUpdateRequest);
+        }
 
-        EventsAggregator.Subscribe(MessageType.PlayerEndTurnRequest, (_) => FinishTurn());
-    }
-
-
-    protected override void SetNewCoinsCount(int money)
-    {
-        base.SetNewCoinsCount(money);
-
-        OnCoinsCountChange?.Invoke(money);
-    }
-
-
-    public override void UpgradeBuilding(int settlmentId, BuildingType buildingType)
-    {
-        base.UpgradeBuilding(settlmentId, buildingType);
-
-        EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
-    }
+        ~Player()
+        {
+            EventsAggregator.Unsubscribe(MessageType.PlayerEndTurnRequest, HandleTurnEndRequest);
+            EventsAggregator.Unsubscribe(MessageType.RequestPlayerCoinsUpdate, HandleCoinsUpdateRequest);
+        }
 
 
-    public override void DestroyBuilding(int settlmentId, BuildingType buildingType)
-    {
-        base.DestroyBuilding(settlmentId, buildingType);
+        protected override void SetNewCoinsCount(int coins)
+        {
+            base.SetNewCoinsCount(coins);
 
-        EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
-    }
+            SendCoinsUpdateMessage();
+        }
 
 
-    public override void Build(int settlmentId, BuildingType buildingType)
-    {
-        base.Build(settlmentId, buildingType);
+        public override void UpgradeBuilding(int settlmentId, BuildingType buildingType)
+        {
+            base.UpgradeBuilding(settlmentId, buildingType);
 
-        EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
+            EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
+        }
+
+
+        public override void DestroyBuilding(int settlmentId, BuildingType buildingType)
+        {
+            base.DestroyBuilding(settlmentId, buildingType);
+
+            EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
+        }
+
+
+        public override void Build(int settlmentId, BuildingType buildingType)
+        {
+            base.Build(settlmentId, buildingType);
+
+            EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
+        }
+
+
+        private void SendCoinsUpdateMessage() => EventsAggregator.TriggerEvent(new PlayerCoinsCountUpdateMessage(Coins));
+
+
+        private void HandleTurnEndRequest(IMessage _) => FinishTurn();
+
+
+        private void HandleCoinsUpdateRequest(IMessage _) => SendCoinsUpdateMessage();
     }
 }

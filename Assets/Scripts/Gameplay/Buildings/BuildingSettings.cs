@@ -3,7 +3,7 @@
 
 public class DefaultLevelInfo
 {
-    [SerializeField] private int price;
+    [SerializeField] private int price = default;
 
 
     public int Price => price;

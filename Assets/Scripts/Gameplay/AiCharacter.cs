@@ -1,14 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
-public class AiCharacter : Character
+﻿namespace Domination
 {
-    public override void StartTurn(bool isFirstTurn)
+    public class AiCharacter : Character
     {
-        base.StartTurn(isFirstTurn);
+        public AiCharacter(Castle castle) : base(castle) { }
 
-        FinishTurn();
+        public override void StartTurn(bool isFirstTurn)
+        {
+            base.StartTurn(isFirstTurn);
+
+            FinishTurn();
+        }
     }
 }

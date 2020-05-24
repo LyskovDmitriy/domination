@@ -1,28 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
-public class Castle : Settlment
+﻿namespace Domination
 {
-    public override SettlmentType Type => SettlmentType.Castle;
-
-
-    protected override void Awake()
+    public class Castle : Settlment
     {
-        base.Awake();
+        public override SettlmentType Type => SettlmentType.Castle;
 
-        foreach (var buildingInfo in SettlmentsSettings.AvailableBuildingsInCity)
+
+        protected override void Awake()
         {
-            for (int i = 0; i < buildingInfo.defaultLevel; i++)
+            base.Awake();
+
+            foreach (var buildingInfo in SettlmentsSettings.AvailableBuildingsInCity)
             {
-                if (i == 0)
+                for (int i = 0; i < buildingInfo.defaultLevel; i++)
                 {
-                    Build(buildingInfo.type);
-                }
-                else
-                {
-                    UpgradeBuilding(buildingInfo.type);
+                    if (i == 0)
+                    {
+                        Build(buildingInfo.type);
+                    }
+                    else
+                    {
+                        UpgradeBuilding(buildingInfo.type);
+                    }
                 }
             }
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -19,27 +18,31 @@ namespace Domination.Ui
         private void Awake()
         {
             endTurnButton.onClick.AddListener(() => EventsAggregator.TriggerEvent(new RequestPlayerTurnEndMessage()));
-            Player.OnCoinsCountChange += OnPlayerCoinsCountChange;
         }
 
 
-        private void OnDestroy()
+        public override void Show(Action<object> onHidden = null)
         {
-            Player.OnCoinsCountChange -= OnPlayerCoinsCountChange;
+            base.Show(onHidden);
+
+            EventsAggregator.Subscribe(MessageType.PlayerCoinsCountUpdate, OnPlayerCoinsCountChange);
+
+            EventsAggregator.TriggerEvent(new RequestPlayerCoinsUpdateMessage());
         }
 
 
-        public void Show(Level level, Action<object> onHidden = null)
+        public override void Hide(object result)
         {
-            Show(onHidden);
+            base.Hide(result);
 
-            OnPlayerCoinsCountChange(level.Player.Coins);
+            EventsAggregator.Unsubscribe(MessageType.PlayerCoinsCountUpdate, OnPlayerCoinsCountChange);
         }
 
 
-        private void OnPlayerCoinsCountChange(int moneyCount)
+        private void OnPlayerCoinsCountChange(IMessage message)
         {
-            playerMoneyLabel.text = moneyCount.ToString();
+            PlayerCoinsCountUpdateMessage coinsChangeMessage = (PlayerCoinsCountUpdateMessage)message;
+            playerMoneyLabel.text = coinsChangeMessage.Coins.ToString();
         }
     }
 }

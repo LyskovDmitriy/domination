@@ -8,7 +8,8 @@ namespace Domination.Ui
     {
         private static readonly MessageType[] MessagesToUpdateUi = new MessageType[]
             {
-                MessageType.PlayerSettlmentChanged
+                MessageType.PlayerSettlmentChanged,
+                MessageType.PlayerCoinsCountUpdate
             };
 
         [RuntimeInitializeOnLoadMethod]

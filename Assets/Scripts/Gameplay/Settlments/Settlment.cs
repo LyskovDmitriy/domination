@@ -1,73 +1,94 @@
-﻿using System.Collections.Generic;
+﻿using Domination.Warfare;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
-public abstract class Settlment : MonoBehaviour
+namespace Domination
 {
-    public class Building
+    public abstract class Settlment : MonoBehaviour
     {
-        public BuildingType type;
-        public int level;
-    }
-
-    private static int NextId = 0;
-
-    private List<Building> buildings = new List<Building>();
-
-    public int Income
-    {
-        get
+        public class Building
         {
-            Building market = buildings.Find((building) => building.type == BuildingType.Market);
+            public BuildingType type;
+            public int level;
+        }
 
-            if (market == null)
+        private static int NextId = 0;
+
+        public event Action OnUnitsChange;
+
+        private List<Building> buildings = new List<Building>();
+        private List<Unit> units = new List<Unit>();
+
+        public int Income
+        {
+            get
             {
-                return 0;
+                Building market = buildings.Find((building) => building.type == BuildingType.Market);
+
+                if (market == null)
+                {
+                    return 0;
+                }
+
+                MarketSettings settings = SettlmentsSettings.GetBuildingInfo(BuildingType.Market) as MarketSettings;
+                return settings.Levels[market.level].TurnIncome;
             }
-
-            MarketSettings settings = SettlmentsSettings.GetBuildingInfo(BuildingType.Market) as MarketSettings;
-            return settings.Levels[market.level].TurnIncome;
         }
-    }
 
-    public abstract SettlmentType Type { get; }
+        public abstract SettlmentType Type { get; }
 
-    public int Id { get; private set; }
+        public int Id { get; private set; }
 
-
-    protected virtual void Awake()
-    {
-        Id = NextId;
-        NextId++;
-    }
+        public Character Lord { get; set; }
 
 
-    public void DestroyBuilding(BuildingType buildingType)
-    {
-        Building destroyedBuilding = GetBuilding(buildingType);
-        buildings.Remove(destroyedBuilding);
-    }
-
-
-    public void UpgradeBuilding(BuildingType buildingType)
-    {
-        GetBuilding(buildingType).level++;
-    }
-
-
-    public List<Building> GetBuildings() => new List<Building>(buildings);
-
-
-    public Building GetBuilding(BuildingType type) => buildings.Find((b) => b.type == type);
-
-
-    public void Build(BuildingType buildingType)
-    {
-        if (buildings.Exists((building) => building.type == buildingType))
+        protected virtual void Awake()
         {
-            Debug.LogError($"Trying to build already build {buildingType}");
-            return;
+            Id = NextId;
+            NextId++;
         }
-        buildings.Add(new Building { type = buildingType });
+
+
+        public void DestroyBuilding(BuildingType buildingType)
+        {
+            Building destroyedBuilding = GetBuilding(buildingType);
+            buildings.Remove(destroyedBuilding);
+        }
+
+
+        public void UpgradeBuilding(BuildingType buildingType)
+        {
+            GetBuilding(buildingType).level++;
+        }
+
+
+        public List<Building> GetBuildings() => new List<Building>(buildings);
+
+        public bool HasBuilding(BuildingType type) => (GetBuilding(type) != null);
+
+        public Building GetBuilding(BuildingType type) => buildings.Find((b) => b.type == type);
+
+        public int GetUnitsCount(WeaponType weaponType) => units.Count((unit) => unit.WeaponType == weaponType);
+
+
+        public void Build(BuildingType buildingType)
+        {
+            if (buildings.Exists((building) => building.type == buildingType))
+            {
+                Debug.LogError($"Trying to build already build {buildingType}");
+                return;
+            }
+            buildings.Add(new Building { type = buildingType });
+        }
+
+
+        public void Recruit(Unit unit)
+        {
+            units.Add(unit);
+            OnUnitsChange?.Invoke();
+        }
     }
 }

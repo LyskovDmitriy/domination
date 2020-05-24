@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-
-
-namespace Domination.EventsSystem
+﻿namespace Domination.EventsSystem
 {
     public enum MessageType
     {
         PlayerEndTurnRequest,
         PlayerSettlmentChanged,
+        PlayerCoinsCountUpdate,
+        RequestPlayerCoinsUpdate,
         UpdateUi,
     }
 
@@ -29,5 +28,21 @@ namespace Domination.EventsSystem
     public struct UpdateUiMessage : IMessage
     {
         public MessageType Type => MessageType.UpdateUi;
+    }
+
+    public struct PlayerCoinsCountUpdateMessage : IMessage
+    {
+        public MessageType Type => MessageType.PlayerCoinsCountUpdate;
+        public readonly int Coins;
+
+        public PlayerCoinsCountUpdateMessage(int coins)
+        {
+            Coins = coins;
+        }
+    }
+
+    public struct RequestPlayerCoinsUpdateMessage : IMessage
+    {
+        public MessageType Type => MessageType.RequestPlayerCoinsUpdate;
     }
 }

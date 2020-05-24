@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
-public class Village : Settlment
+﻿namespace Domination
 {
-    public override SettlmentType Type => SettlmentType.Village;
+    public class Village : Settlment
+    {
+        public override SettlmentType Type => SettlmentType.Village;
+    }
 }

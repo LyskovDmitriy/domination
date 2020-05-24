@@ -3,50 +3,53 @@ using UnityEngine;
 using Domination.Ui;
 
 
-public class Game : MonoBehaviour
+namespace Domination
 {
-    [SerializeField] private Level level = default;
-    [SerializeField] private Selector selector = default;
-
-    private bool isSettlmentViewShown;
-
-
-    private void Awake()
+    public class Game : MonoBehaviour
     {
-        selector.OnTileSelected += OnTileSelected;
-        selector.OnTileDeselected += OnTileDeselected;
+        [SerializeField] private Level level = default;
+        [SerializeField] private Selector selector = default;
 
-        level.Create();
-
-        LevelUi.Prefab.Instance.Show(level);
-    }
+        private bool isSettlmentViewShown;
 
 
-    private void OnTileSelected(Tile selectedTile)
-    {
-        Settlment connectedSettlment = selectedTile.Settlment;
-
-        if (connectedSettlment == null)
+        private void Awake()
         {
-            HideSettlmentViewScreen();
+            selector.OnTileSelected += OnTileSelected;
+            selector.OnTileDeselected += OnTileDeselected;
+
+            level.Create();
+
+            LevelUi.Prefab.Instance.Show();
         }
-        else if ((connectedSettlment != null) && level.Player.HasSettlment(selectedTile.Settlment.Id))
+
+
+        private void OnTileSelected(Tile selectedTile)
         {
-            SettlmentViewScreen.Prefab.Instance.Show(connectedSettlment);
-            isSettlmentViewShown = true;
+            Settlment connectedSettlment = selectedTile.Settlment;
+
+            if (connectedSettlment == null)
+            {
+                HideSettlmentViewScreen();
+            }
+            else if ((connectedSettlment != null) && level.Player.HasSettlment(selectedTile.Settlment.Id))
+            {
+                SettlmentViewScreen.Prefab.Instance.Show(connectedSettlment);
+                isSettlmentViewShown = true;
+            }
         }
-    }
 
 
-    private void OnTileDeselected() => HideSettlmentViewScreen();
+        private void OnTileDeselected() => HideSettlmentViewScreen();
 
 
-    private void HideSettlmentViewScreen()
-    {
-        if (isSettlmentViewShown)
+        private void HideSettlmentViewScreen()
         {
-            SettlmentViewScreen.Prefab.Instance.Hide(null);
-            isSettlmentViewShown = false;
+            if (isSettlmentViewShown)
+            {
+                SettlmentViewScreen.Prefab.Instance.Hide(null);
+                isSettlmentViewShown = false;
+            }
         }
     }
 }

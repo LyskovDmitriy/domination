@@ -1,36 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Tile : MonoBehaviour
+
+namespace Domination
 {
-    [SerializeField] private SpriteRenderer spriteRenderer = default;
-    [SerializeField] private GameObject border = default;
-
-
-    public Settlment Settlment { get; private set; }
-
-
-    private void Awake()
+    public class Tile : MonoBehaviour
     {
-        border.SetActive(false);
-    }
+        [SerializeField] private SpriteRenderer spriteRenderer = default;
+        [SerializeField] private GameObject border = default;
 
 
-    public void SetType(TileType tileType)
-    {
-        spriteRenderer.color = TilesContainer.GetTileColor(tileType);
-    }
+        public Settlment Settlment { get; private set; }
 
 
-    public void AttachSettlment(Settlment attachedSettlment)
-    {
-        Settlment = attachedSettlment;
-    }
+        private void Awake()
+        {
+            border.SetActive(false);
+        }
 
 
-    public void SetSelection(bool isSelected)
-    {
-        border.SetActive(isSelected);
+        public void SetType(TileType tileType)
+        {
+            spriteRenderer.color = TilesContainer.GetTileColor(tileType);
+        }
+
+
+        public void AttachSettlment(Settlment attachedSettlment)
+        {
+            Settlment = attachedSettlment;
+        }
+
+
+        public void SetSelection(bool isSelected)
+        {
+            border.SetActive(isSelected);
+        }
     }
 }

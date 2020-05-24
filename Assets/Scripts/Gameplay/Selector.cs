@@ -4,65 +4,68 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class Selector : MonoBehaviour
+namespace Domination
 {
-    public event Action<Tile> OnTileSelected;
-    public event Action OnTileDeselected;
-
-
-    private new Camera camera;
-    private Vector3? touchStartPosition;
-
-    private Tile selectedTile;
-
-    public void Init(Camera camera)
+    public class Selector : MonoBehaviour
     {
-        this.camera = camera;
-    }
+        public event Action<Tile> OnTileSelected;
+        public event Action OnTileDeselected;
 
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
+        private new Camera camera;
+        private Vector3? touchStartPosition;
+
+        private Tile selectedTile;
+
+        public void Init(Camera camera)
         {
-            if (!EventSystem.current.IsPointerOverGameObject())
-            {
-                touchStartPosition = Input.mousePosition;
-            }
+            this.camera = camera;
         }
-        else if (Input.GetMouseButtonUp(0))
+
+
+        private void Update()
         {
-            if (touchStartPosition.HasValue)
+            if (Input.GetMouseButtonDown(0))
             {
-                if (touchStartPosition == Input.mousePosition)
+                if (!EventSystem.current.IsPointerOverGameObject())
                 {
-                    RaycastHit2D hit = Physics2D.Raycast(camera.ScreenToWorldPoint(touchStartPosition.Value), Vector3.forward);
-
-                    Tile tile = hit.transform?.GetComponentInParent<Tile>();
-
-                    if (tile != null)
-                    {
-                        DeselectTile();
-                        selectedTile = tile;
-                        selectedTile.SetSelection(true);
-                        OnTileSelected?.Invoke(selectedTile);
-                    }
+                    touchStartPosition = Input.mousePosition;
                 }
             }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                if (touchStartPosition.HasValue)
+                {
+                    if (touchStartPosition == Input.mousePosition)
+                    {
+                        RaycastHit2D hit = Physics2D.Raycast(camera.ScreenToWorldPoint(touchStartPosition.Value), Vector3.forward);
 
-            touchStartPosition = null;
+                        Tile tile = hit.transform?.GetComponentInParent<Tile>();
+
+                        if (tile != null)
+                        {
+                            DeselectTile();
+                            selectedTile = tile;
+                            selectedTile.SetSelection(true);
+                            OnTileSelected?.Invoke(selectedTile);
+                        }
+                    }
+                }
+
+                touchStartPosition = null;
+            }
         }
-    }
 
 
-    private void DeselectTile()
-    {
-        if (selectedTile != null)
+        private void DeselectTile()
         {
-            selectedTile.SetSelection(false);
-            selectedTile = null;
-            touchStartPosition = -Vector3.one;
-            OnTileDeselected?.Invoke();
+            if (selectedTile != null)
+            {
+                selectedTile.SetSelection(false);
+                selectedTile = null;
+                touchStartPosition = -Vector3.one;
+                OnTileDeselected?.Invoke();
+            }
         }
     }
 }
