@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Domination.Warfare;
 
+
 namespace Domination
 {
     public class Character
@@ -23,6 +24,8 @@ namespace Domination
         public int RangedWeaponLevel { get; private set; } = 0;
 
         public int Income => settlments.Sum((settlment) => settlment.Income);
+
+        public Settlment Castle => settlments[0];
 
         public int Coins
         {
@@ -56,18 +59,6 @@ namespace Domination
 
 
         public bool HasSettlment(int settlmentId) => GetSettlmentById(settlmentId) != null;
-
-
-        protected void FinishTurn()
-        {
-            OnTurnFinish?.Invoke();
-        }
-
-
-        protected virtual void SetNewCoinsCount(int coins)
-        {
-            this.coins = coins;
-        }
 
 
         public virtual void DestroyBuilding(int settlmentId, BuildingType buildingType)
@@ -104,5 +95,17 @@ namespace Domination
 
 
         public bool HasCoins(int recuiredAmount) => Coins >= recuiredAmount;
+
+
+        protected void FinishTurn()
+        {
+            OnTurnFinish?.Invoke();
+        }
+
+
+        protected virtual void SetNewCoinsCount(int coins)
+        {
+            this.coins = coins;
+        }
     }
 }

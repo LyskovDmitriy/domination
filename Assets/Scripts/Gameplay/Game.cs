@@ -28,7 +28,7 @@ namespace Domination
         {
             Settlment connectedSettlment = selectedTile.Settlment;
 
-            if (connectedSettlment == null)
+            if ((connectedSettlment == null) || selectedTile.IsInFog)
             {
                 HideSettlmentViewScreen();
             }

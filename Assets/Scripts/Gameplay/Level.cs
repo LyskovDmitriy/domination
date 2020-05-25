@@ -1,6 +1,4 @@
-﻿using Domination;
-using Domination.Utils;
-using System;
+﻿using Domination.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,10 +13,12 @@ namespace Domination
         [SerializeField] private Vector2 distanceBetweenTiles = default;
         [SerializeField] private CameraController cameraController = default;
         [SerializeField] private Selector selector = default;
+        [SerializeField] private FogSystem fogSystem = default;
 
         private Tile[,] tiles;
 
         private int characterIndex;
+        private int currentTurnIndex;
 
         bool isFirstTurn;
 
@@ -49,7 +49,7 @@ namespace Domination
                         Quaternion.identity,
                         transform);
 
-                    tile.SetType(tilesTypes[x, y]);
+                    tile.Init(new Vector2Int(x, y), tilesTypes[x, y]);
                     tiles[x, y] = tile;
                 }
             }
@@ -89,6 +89,8 @@ namespace Domination
 
             BuildingSystem.Init(wrapper);
             RecruitmentSystem.Init(wrapper);
+            fogSystem.Init(tiles, Characters);
+            fogSystem.ApplyFog(currentTurnIndex, Player);
 
             Characters[0].OnTurnFinish += OnCharacterTurnFinish;
             Characters[0].StartTurn(true);
@@ -103,6 +105,16 @@ namespace Domination
             {
                 isFirstTurn = false;
                 characterIndex %= Characters.Length;
+            }
+
+            if (characterIndex == 0)
+            {
+                currentTurnIndex++;
+            }
+
+            if (Characters[characterIndex] == Player)
+            {
+                fogSystem.ApplyFog(currentTurnIndex, Player);
             }
 
             Characters[characterIndex].OnTurnFinish += OnCharacterTurnFinish;

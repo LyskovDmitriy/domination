@@ -44,6 +44,8 @@ namespace Domination
 
         public Character Lord { get; set; }
 
+        public Tile Tile { get; set; }
+
 
         protected virtual void Awake()
         {
