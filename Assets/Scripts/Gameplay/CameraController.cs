@@ -29,16 +29,14 @@ public class CameraController : MonoBehaviour
             Vector3 lastFrameTouchWorldPosition = camera.ScreenToWorldPoint(lastFrameTouchPosition);
 
             Vector3 position = transform.position - (touchWorldPosition - lastFrameTouchWorldPosition);
-            position.x = Mathf.Clamp(position.x, minPosition.x, maxPosition.x);
-            position.y = Mathf.Clamp(position.y, minPosition.y, maxPosition.y);
-            transform.position = position;
+            transform.position = ApplyRestrictionsToPosition(position);
         }
 
         lastFrameTouchPosition = Input.mousePosition;
     }
 
 
-    public void SetRestrictions(Vector3 bottomLeftCorner, Vector3 topRightCorner)
+    public void Init(Vector2 playerCastlePosition, Vector3 bottomLeftCorner, Vector3 topRightCorner)
     {
         Vector3 cameraOffsetFromCorner = new Vector3(camera.orthographicSize * camera.aspect, camera.orthographicSize);
         minPosition = bottomLeftCorner + cameraOffsetFromCorner;
@@ -54,5 +52,17 @@ public class CameraController : MonoBehaviour
             minPosition.y = 0.0f;
             maxPosition.y = 0.0f;
         }
+
+        Vector3 newPosition = new Vector3(playerCastlePosition.x, playerCastlePosition.y, transform.position.z);
+        transform.position = ApplyRestrictionsToPosition(newPosition);
+    }
+
+
+    private Vector3 ApplyRestrictionsToPosition(Vector3 position)
+    {
+        Vector3 newPosition = position;
+        newPosition.x = Mathf.Clamp(newPosition.x, minPosition.x, maxPosition.x);
+        newPosition.y = Mathf.Clamp(newPosition.y, minPosition.y, maxPosition.y);
+        return newPosition;
     }
 }

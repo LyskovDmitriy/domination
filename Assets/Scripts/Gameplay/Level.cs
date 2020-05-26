@@ -73,8 +73,6 @@ namespace Domination
                 correspondingTile.AttachSettlment(village);
             }
 
-            cameraController.SetRestrictions(-halfMapSize, halfMapSize);
-
             isFirstTurn = true;
 
             Characters = new Character[2];
@@ -84,6 +82,8 @@ namespace Domination
 
             Characters[1] = new AiCharacter(castles[1]);
             castles[1].Lord = Characters[1];
+
+            cameraController.Init(Player.Castle.transform.position, -halfMapSize, halfMapSize);
 
             LevelWrapper wrapper = new LevelWrapper(this);
 
