@@ -1,7 +1,6 @@
 ﻿using Domination.Warfare;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 
@@ -20,7 +19,7 @@ namespace Domination
         public event Action OnUnitsChange;
 
         private List<Building> buildings = new List<Building>();
-        private List<Unit> units = new List<Unit>();
+        private Army army = new Army();
 
         public int Income
         {
@@ -73,7 +72,7 @@ namespace Domination
 
         public Building GetBuilding(BuildingType type) => buildings.Find((b) => b.type == type);
 
-        public int GetUnitsCount(WeaponType weaponType) => units.Count((unit) => unit.WeaponType == weaponType);
+        public int GetUnitsCount(WeaponType weaponType) => army.GetUnitsCount(weaponType);
 
 
         public void Build(BuildingType buildingType)
@@ -89,7 +88,7 @@ namespace Domination
 
         public void Recruit(Unit unit)
         {
-            units.Add(unit);
+            army.AddUnit(unit);
             OnUnitsChange?.Invoke();
         }
     }

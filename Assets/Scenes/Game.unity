@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96f44cf193b4972439c370dbbcfae223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  additionalCameraOffsetFromCorner: {x: 2, y: 2}
 --- !u!1 &173673219
 GameObject:
   m_ObjectHideFlags: 0

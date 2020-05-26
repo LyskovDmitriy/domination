@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+
 
 public class CameraController : MonoBehaviour
 {
-    private new Camera camera;
+    [SerializeField] private Vector2 additionalCameraOffsetFromCorner = default;
 
     private Vector3 minPosition;
     private Vector3 maxPosition;
@@ -12,12 +11,12 @@ public class CameraController : MonoBehaviour
     private Vector2 lastFrameTouchPosition;
 
 
-    public Camera Camera => camera;
+    public Camera Camera { get; private set; }
 
 
     private void Awake()
     {
-        camera = GetComponent<Camera>();
+        Camera = GetComponent<Camera>();
     }
 
 
@@ -25,8 +24,8 @@ public class CameraController : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            Vector3 touchWorldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 lastFrameTouchWorldPosition = camera.ScreenToWorldPoint(lastFrameTouchPosition);
+            Vector3 touchWorldPosition = Camera.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 lastFrameTouchWorldPosition = Camera.ScreenToWorldPoint(lastFrameTouchPosition);
 
             Vector3 position = transform.position - (touchWorldPosition - lastFrameTouchWorldPosition);
             transform.position = ApplyRestrictionsToPosition(position);
@@ -38,9 +37,9 @@ public class CameraController : MonoBehaviour
 
     public void Init(Vector2 playerCastlePosition, Vector3 bottomLeftCorner, Vector3 topRightCorner)
     {
-        Vector3 cameraOffsetFromCorner = new Vector3(camera.orthographicSize * camera.aspect, camera.orthographicSize);
-        minPosition = bottomLeftCorner + cameraOffsetFromCorner;
-        maxPosition = topRightCorner - cameraOffsetFromCorner;
+        Vector3 cameraOffsetFromCorner = new Vector3(Camera.orthographicSize * Camera.aspect, Camera.orthographicSize);
+        minPosition = bottomLeftCorner + cameraOffsetFromCorner - additionalCameraOffsetFromCorner.ToVector3();
+        maxPosition = topRightCorner - cameraOffsetFromCorner + additionalCameraOffsetFromCorner.ToVector3();
 
         if (minPosition.x > maxPosition.x)
         {

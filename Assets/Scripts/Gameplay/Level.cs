@@ -66,11 +66,14 @@ namespace Domination
                 castles.Add(castle);
             }
 
+            List<Village> villages = new List<Village>();
+
             foreach (var villagePosition in settlments.villages)
             {
                 Tile correspondingTile = tiles[villagePosition.x, villagePosition.y];
                 Village village = Instantiate(villagePrefab, correspondingTile.transform, false);
                 correspondingTile.AttachSettlment(village);
+                villages.Add(village);
             }
 
             isFirstTurn = true;
@@ -89,6 +92,12 @@ namespace Domination
 
             BuildingSystem.Init(wrapper);
             RecruitmentSystem.Init(wrapper);
+
+            foreach (var village in villages)
+            {
+                RecruitmentSystem.SetupNeutralVillageArmy(village);
+            }
+
             fogSystem.Init(tiles, Characters);
             fogSystem.ApplyFog(currentTurnIndex, Player);
 

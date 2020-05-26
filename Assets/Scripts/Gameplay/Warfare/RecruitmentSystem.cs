@@ -18,9 +18,9 @@ namespace Domination
         }
 
 
-        public static WeaponInfo GetWeaponInfo(WeaponType type, int level)
+        public static WeaponInfo GetWeaponInfo(WeaponType type, int weaponLevel)
         {
-            return UnitRecruitmentSettings.GetWeapons(type)[level];
+            return UnitRecruitmentSettings.GetWeapons(type)[weaponLevel];
         }
 
         public static int GetHealth(WeaponType type) => UnitRecruitmentSettings.GetHealth(type);
@@ -32,12 +32,31 @@ namespace Domination
         }
 
 
-        public static void Recruit(int settlmentId, WeaponType weaponType, int level)
+        public static void Recruit(int settlmentId, WeaponType weaponType, int weaponLevel)
         {
-            WeaponInfo weapon = GetWeaponInfo(weaponType, level);
-            Unit unit = new Unit(weapon.Weapon, weaponType);
+            WeaponInfo weapon = GetWeaponInfo(weaponType, weaponLevel);
+            Unit unit = new Unit(weapon.Weapon, weaponType, GetHealth(weaponType));
 
             levelWrapper.GetCharacterWithSettlment(settlmentId).Recruit(unit, settlmentId);
+        }
+
+
+        public static void SetupNeutralVillageArmy(Village village)
+        {
+            foreach (var group in SettlmentsSettings.NeutralVillageArmy)
+            {
+                for (int i = 0; i < group.UnitsCount; i++)
+                {
+                    village.Recruit(CreateUnit(group.WeaponType, group.WeaponLevel));
+                }
+            }
+        }
+
+
+        private static Unit CreateUnit(WeaponType weaponType, int weaponLevel)
+        {
+            WeaponInfo weapon = GetWeaponInfo(weaponType, weaponLevel);
+            return new Unit(weapon.Weapon, weaponType, GetHealth(weaponType));
         }
     }
 }

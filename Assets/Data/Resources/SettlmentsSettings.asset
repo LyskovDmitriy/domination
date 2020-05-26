@@ -38,3 +38,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4d5a8c7b59b15d643935bfb74e4e1dc7, type: 2}
   - {fileID: 11400000, guid: 183355b75ab2d5c46be479818e488295, type: 2}
   - {fileID: 11400000, guid: a68f9e45ff6c2ae4eab9cc4a7a8c9cb5, type: 2}
+  neutralVillageArmy:
+  - unitsCount: 5
+    weaponType: 0
+    weaponLevel: 1
+  - unitsCount: 5
+    weaponType: 1
+    weaponLevel: 1
