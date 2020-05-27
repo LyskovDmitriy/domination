@@ -10,10 +10,11 @@ namespace Domination.Ui
         [SerializeField] private Button button = default;
 
 
-        public void Init(UnityAction clickAction)
+        public void Init(UnityAction clickAction, bool isInteractable)
         {
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(clickAction);
+            button.interactable = isInteractable;
         }
     }
 }

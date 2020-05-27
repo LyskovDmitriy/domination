@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Domination.Ui;
 
 
@@ -32,9 +31,9 @@ namespace Domination
             {
                 HideSettlmentViewScreen();
             }
-            else if ((connectedSettlment != null) && level.Player.HasSettlment(selectedTile.Settlment.Id))
+            else if (connectedSettlment != null)
             {
-                SettlmentViewScreen.Prefab.Instance.Show(connectedSettlment);
+                SettlmentViewScreen.Prefab.Instance.Show(connectedSettlment, level.Player);
                 isSettlmentViewShown = true;
             }
         }

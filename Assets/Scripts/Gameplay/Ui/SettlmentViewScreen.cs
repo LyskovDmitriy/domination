@@ -14,7 +14,8 @@ namespace Domination.Ui
         private enum Mode
         {
             Construction,
-            Recruitment
+            Recruitment,
+            EnemySettlment
         }
 
         public static readonly ResourceBehavior<SettlmentViewScreen> Prefab = new ResourceBehavior<SettlmentViewScreen>("Ui/SettlmentViewScreen");
@@ -30,7 +31,10 @@ namespace Domination.Ui
         [SerializeField] private Transform recruitmentSlotsRoot = default;
         [SerializeField] private GameObject recruitmentLayout = default;
         [SerializeField] private Button openRecruitmentLayoutButton = default;
+        [Header("Enemy settlment")]
+        [SerializeField] private Button sendTroopsButton = default;
         [Space]
+        [SerializeField] private GameObject armyPanel = default;
         [SerializeField] private TextMeshProUGUI meleeUnitsCount = default;
         [SerializeField] private TextMeshProUGUI rangedUnitsCount = default;
 
@@ -38,6 +42,7 @@ namespace Domination.Ui
         private List<GameObject> recruitmentSlots = new List<GameObject>();
 
         private Settlment selectedSettlment;
+        private Character player;
 
 
         private void Awake()
@@ -47,16 +52,24 @@ namespace Domination.Ui
         }
 
 
-        public void Show(Settlment settlment, Action<object> onHidden = null)
+        public void Show(Settlment settlment, Character player, Action<object> onHidden = null)
         {
             Show(onHidden);
 
             selectedSettlment = settlment;
-            
+            this.player = player;
+
             EventsAggregator.Subscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
             selectedSettlment.OnUnitsChange += UpdateUnitsCount;
 
-            SetMode(Mode.Construction);
+            if (selectedSettlment.Lord == player)
+            {
+                SetMode(Mode.Construction);
+            }
+            else
+            {
+                SetMode(Mode.EnemySettlment);
+            }
 
             UpdateUnitsCount();
             RefreshUi();
@@ -76,8 +89,31 @@ namespace Domination.Ui
 
         private void SetMode(Mode mode)
         {
-            constructionLayout.SetActive(mode == Mode.Construction);
-            recruitmentLayout.SetActive(mode == Mode.Recruitment);
+            constructionLayout.SetActive(false);
+            recruitmentLayout.SetActive(false);
+            sendTroopsButton.gameObject.SetActive(false);
+            openRecruitmentLayoutButton.gameObject.SetActive(false);
+            armyPanel.SetActive(false);
+
+            switch (mode)
+            {
+                case Mode.Construction:
+                    constructionLayout.SetActive(true);
+                    openRecruitmentLayoutButton.gameObject.SetActive(true);
+                    armyPanel.SetActive(true);
+                    break;
+
+                case Mode.Recruitment:
+                    recruitmentLayout.SetActive(true);
+                    openRecruitmentLayoutButton.gameObject.SetActive(true);
+                    armyPanel.SetActive(true);
+                    break;
+
+                case Mode.EnemySettlment:
+                    constructionLayout.SetActive(true);
+                    sendTroopsButton.gameObject.SetActive(true);
+                    break;
+            }
         }
 
 
@@ -94,13 +130,14 @@ namespace Domination.Ui
             constructionSlots.Clear();
 
             List<Settlment.Building> buildings = selectedSettlment.GetBuildings();
+            bool isPlayerSettlment = (selectedSettlment.Lord == player);
 
             for (int i = 0; i < SettlmentsSettings.GetMaxBuildingsCount(selectedSettlment.Type); i++)
             {
                 if (i < buildings.Count)
                 {
                     BuiltSlotUI buildingInfo = Instantiate(builtSlotPrefab, constructionSlotsRoot);
-                    buildingInfo.SetInfo(selectedSettlment.Id, selectedSettlment.Type, buildings[i]);
+                    buildingInfo.Init(selectedSettlment.Id, selectedSettlment.Type, buildings[i], isPlayerSettlment);
                     constructionSlots.Add(buildingInfo.gameObject);
                 }
                 else
@@ -116,7 +153,7 @@ namespace Domination.Ui
                                 BuildingSystem.Build(selectedSettlment.Id, chosenBuilding);
                             }
                         });
-                    });
+                    }, isPlayerSettlment);
                 }
             }
 

@@ -2,8 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Domination.EventsSystem;
-using UnityEditor;
 
 
 namespace Domination.Ui
@@ -15,13 +13,14 @@ namespace Domination.Ui
         [SerializeField] private Button destroyButton = default;
 
 
-        public void SetInfo(int settlmentId, SettlmentType settlmentType, Settlment.Building buildingInfo)
+        public void Init(int settlmentId, SettlmentType settlmentType, Settlment.Building buildingInfo, bool isInteractable)
         {
             int maxBuildingLevel = SettlmentsSettings.GetMaxBuildingLevel(settlmentType, buildingInfo.type);
 
             upgradeButton.gameObject.SetActive(false);
             upgradeButton.onClick.RemoveAllListeners();
             upgradeButton.onClick.AddListener(() => BuildingSystem.UpgradeBuilding(settlmentId, buildingInfo.type));
+            upgradeButton.interactable = isInteractable;
 
             switch (BuildingSystem.CanUpdateBuilding(Character.PlayerId, settlmentType, buildingInfo.type, buildingInfo.level))
             {
