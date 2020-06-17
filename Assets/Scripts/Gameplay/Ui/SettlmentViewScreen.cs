@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Domination.EventsSystem;
 using UnityEngine.UI;
 using Domination.Warfare;
 using TMPro;
+using Utils.Ui;
 
 
 namespace Domination.Ui
 {
-    public class SettlmentViewScreen : UiUnit<object>
+    public class SettlmentViewScreen : UiScreen
     {
         private enum Mode
         {
@@ -17,8 +17,6 @@ namespace Domination.Ui
             Recruitment,
             EnemySettlment
         }
-
-        public static readonly ResourceBehavior<SettlmentViewScreen> Prefab = new ResourceBehavior<SettlmentViewScreen>("Ui/SettlmentViewScreen");
 
         [Header("Construction Layout")]
         [SerializeField] private BuiltSlotUI builtSlotPrefab = default;
@@ -45,6 +43,9 @@ namespace Domination.Ui
         private Character player;
 
 
+        public override ScreenType Type => ScreenType.SettlmentViewScreen;
+
+
         private void Awake()
         {
             openConstructionLayoutButton.onClick.AddListener(() => SetMode(Mode.Construction));
@@ -52,14 +53,16 @@ namespace Domination.Ui
         }
 
 
-        public void Show(Settlment settlment, Character player, Action<object> onHidden = null)
+        public void Show(Settlment settlment, Character player)
         {
-            Show(onHidden);
+            Show();
 
             selectedSettlment = settlment;
             this.player = player;
 
             EventsAggregator.Subscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
+            EventsAggregator.Subscribe(MessageType.BuildOptionChosen, HandleBuildOptionChosen);
+
             selectedSettlment.OnUnitsChange += UpdateUnitsCount;
 
             if (selectedSettlment.Lord == player)
@@ -76,11 +79,13 @@ namespace Domination.Ui
         }
 
 
-        public override void Hide(object result)
+        public override void Hide()
         {
-            base.Hide(result);
+            base.Hide();
 
             EventsAggregator.Unsubscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
+            EventsAggregator.Unsubscribe(MessageType.BuildOptionChosen, HandleBuildOptionChosen);
+
             selectedSettlment.OnUnitsChange -= UpdateUnitsCount;
 
             selectedSettlment = null;
@@ -119,6 +124,12 @@ namespace Domination.Ui
 
         private void HandlePlayerSettlmentsUpdate(IMessage _) => RefreshUi();
 
+        private void HandleBuildOptionChosen(IMessage message)
+        {
+            var buildOptionChosenMessage = (BuildOptionChosenMessage)message;
+            BuildingSystem.Build(selectedSettlment.Id, buildOptionChosenMessage.BuildingType);
+        }
+
 
         private void RefreshUi()
         {
@@ -146,13 +157,10 @@ namespace Domination.Ui
                     constructionSlots.Add(emptySlot.gameObject);
                     emptySlot.Init(() =>
                     {
-                        ChooseBuildingScreen.Prefab.Instance.Show(selectedSettlment.Id, (chosenBuilding) =>
+                        EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.ChooseBuildingScreen, (screen) =>
                         {
-                            if (chosenBuilding != BuildingType.None)
-                            {
-                                BuildingSystem.Build(selectedSettlment.Id, chosenBuilding);
-                            }
-                        });
+                            ((ChooseBuildingScreen)screen).Show(selectedSettlment.Id);
+                        }));
                     }, isPlayerSettlment);
                 }
             }

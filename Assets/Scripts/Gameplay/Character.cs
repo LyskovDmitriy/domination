@@ -13,7 +13,6 @@ namespace Domination
         private const int DefaultCoinsCount = 50;
         private static int NextId = 0;
 
-        protected List<Settlment> settlments = new List<Settlment>();
         private int coins = DefaultCoinsCount;
 
 
@@ -23,9 +22,11 @@ namespace Domination
         public int MeleeWeaponLevel { get; private set; } = 0;
         public int RangedWeaponLevel { get; private set; } = 0;
 
-        public int Income => settlments.Sum((settlment) => settlment.Income);
+        public int Income => Settlments.Sum((settlment) => settlment.Income);
 
-        public Settlment Castle => settlments[0];
+        public List<Settlment> Settlments { get; private set; } = new List<Settlment>();
+
+        public Settlment Castle => Settlments[0];
 
         public int Coins
         {
@@ -45,7 +46,7 @@ namespace Domination
             Id = NextId;
             NextId++;
 
-            settlments.Add(castle);
+            Settlments.Add(castle);
         }
 
 
@@ -91,7 +92,7 @@ namespace Domination
         }
 
 
-        public Settlment GetSettlmentById(int settlmentId) => settlments.Find((settlment) => settlment.Id == settlmentId);
+        public Settlment GetSettlmentById(int settlmentId) => Settlments.Find((settlment) => settlment.Id == settlmentId);
 
 
         public bool HasCoins(int recuiredAmount) => Coins >= recuiredAmount;

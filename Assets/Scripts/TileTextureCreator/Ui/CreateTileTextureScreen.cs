@@ -1,27 +1,52 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Utils.Ui;
 
-public class CreateTileTextureScreen : UiUnit<object>
+
+namespace Generator.Ui
 {
-    [SerializeField] private TMP_InputField nameInputField = default;    
-    [SerializeField] private TMP_InputField xInputField = default;    
-    [SerializeField] private TMP_InputField yInputField = default;
-    [SerializeField] private Button createButton = default;
-    [SerializeField] private Button cancelButton = default;
-
-
-    private void Awake()
+    public class CreateTileTextureScreen : UiUnit
     {
-        cancelButton.onClick.AddListener(() => Hide(null));
+        [SerializeField] private TMP_InputField nameInputField = default;
+        [SerializeField] private TMP_InputField xInputField = default;
+        [SerializeField] private TMP_InputField yInputField = default;
+        [SerializeField] private Button createButton = default;
+        [SerializeField] private Button cancelButton = default;
 
-        createButton.onClick.AddListener(() =>
+        private Action onHidden;
+
+
+        private void Awake()
         {
-            if (int.TryParse(xInputField.text, out int x) && int.TryParse(yInputField.text, out int y))
+            cancelButton.onClick.AddListener(Hide);
+
+            createButton.onClick.AddListener(() =>
             {
-                TileTexturesHolder.CreateTexture(nameInputField.text, new Vector2Int(x, y));
-            }
-            Hide(null);
-        });
+                if (int.TryParse(xInputField.text, out int x) && int.TryParse(yInputField.text, out int y))
+                {
+                    TileTexturesHolder.CreateTexture(nameInputField.text, new Vector2Int(x, y));
+                }
+                Hide();
+            });
+        }
+
+
+        public void Show(Action onHidden)
+        {
+            base.Show();
+
+            this.onHidden = onHidden;
+        }
+
+
+        public override void Hide()
+        {
+            base.Hide();
+
+            onHidden?.Invoke();
+            onHidden = null;
+        }
     }
 }

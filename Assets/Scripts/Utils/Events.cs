@@ -1,4 +1,8 @@
-﻿namespace Domination.EventsSystem
+﻿using System;
+using Utils.Ui;
+
+
+namespace Domination.EventsSystem
 {
     public enum MessageType
     {
@@ -7,6 +11,11 @@
         PlayerCoinsCountUpdate,
         RequestPlayerCoinsUpdate,
         UpdateUi,
+
+        BuildOptionChosen,
+
+        ShowUi,
+        HideUi,
     }
 
 
@@ -44,5 +53,41 @@
     public struct RequestPlayerCoinsUpdateMessage : IMessage
     {
         public MessageType Type => MessageType.RequestPlayerCoinsUpdate;
+    }
+
+    public struct ShowUiMessage : IMessage
+    {
+        public MessageType Type => MessageType.ShowUi;
+        public readonly ScreenType ScreenType;
+        public readonly Action<UiScreen> OnInit;
+
+        public ShowUiMessage(ScreenType screenType, Action<UiScreen> onInit = null)
+        {
+            ScreenType = screenType;
+            OnInit = onInit;
+        }
+    }
+
+    public struct HideUiMessage : IMessage
+    {
+        public MessageType Type => MessageType.HideUi;
+        public readonly ScreenType ScreenType;
+
+        public HideUiMessage(ScreenType screenType)
+        {
+            ScreenType = screenType;
+        }
+    }
+
+    public struct BuildOptionChosenMessage : IMessage
+    {
+        public MessageType Type => MessageType.BuildOptionChosen;
+        public readonly BuildingType BuildingType;
+
+
+        public BuildOptionChosenMessage(BuildingType buildingType)
+        {
+            BuildingType = buildingType;
+        }
     }
 }

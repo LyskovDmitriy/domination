@@ -19,7 +19,9 @@ namespace Domination
         public event Action OnUnitsChange;
 
         private List<Building> buildings = new List<Building>();
-        private Army army = new Army();
+
+
+        public Army Army { get; private set; } = new Army();
 
         public int Income
         {
@@ -72,7 +74,7 @@ namespace Domination
 
         public Building GetBuilding(BuildingType type) => buildings.Find((b) => b.type == type);
 
-        public int GetUnitsCount(WeaponType weaponType) => army.GetUnitsCount(weaponType);
+        public int GetUnitsCount(WeaponType weaponType) => Army.GetUnitsCount(weaponType);
 
 
         public void Build(BuildingType buildingType)
@@ -88,7 +90,7 @@ namespace Domination
 
         public void Recruit(Unit unit)
         {
-            army.AddUnit(unit);
+            Army.AddUnit(unit);
             OnUnitsChange?.Invoke();
         }
     }

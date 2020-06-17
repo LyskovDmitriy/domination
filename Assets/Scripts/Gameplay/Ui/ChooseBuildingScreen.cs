@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Domination.EventsSystem;
 using UnityEngine.UI;
+using Utils.Ui;
 
 
 namespace Domination.Ui
 {
-    public class ChooseBuildingScreen : UiUnit<BuildingType>
+    public class ChooseBuildingScreen : UiScreen
     {
-        public static readonly ResourceBehavior<ChooseBuildingScreen> Prefab = new ResourceBehavior<ChooseBuildingScreen>("Ui/ChooseBuildingScreen");
-
         [SerializeField] private BuildingChoiceButton choiceButtonPrefab = default;
         [SerializeField] private Transform buttonsRoot = default;
         [SerializeField] private Button closeButton = default;
@@ -19,14 +17,18 @@ namespace Domination.Ui
         private int settlmentId;
 
 
+        public override ScreenType Type => ScreenType.ChooseBuildingScreen;
+
+
         private void Awake()
         {
-            closeButton.onClick.AddListener(() => Hide(BuildingType.None));
+            EventsAggregator.TriggerEvent(new BuildOptionChosenMessage());
+            closeButton.onClick.AddListener(Hide);
         }
 
-        public void Show(int settlmentId,  Action<BuildingType> onHidden = null)
+        public void Show(int settlmentId)
         {
-            base.Show(onHidden);
+            base.Show();
 
             this.settlmentId = settlmentId;
             EventsAggregator.Subscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
@@ -35,9 +37,9 @@ namespace Domination.Ui
         }
 
 
-        public override void Hide(BuildingType result)
+        public override void Hide()
         {
-            base.Hide(result);
+            base.Hide();
 
             EventsAggregator.Unsubscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
         }
@@ -59,7 +61,11 @@ namespace Domination.Ui
             foreach (var building in availableBuildings)
             {
                 BuildingChoiceButton button = Instantiate(choiceButtonPrefab, buttonsRoot);
-                button.Init(BuildingSystem.CanBuild(settlmentId, building), building, () => Hide(building));
+                button.Init(BuildingSystem.CanBuild(settlmentId, building), building, () =>
+                {
+                    EventsAggregator.TriggerEvent(new BuildOptionChosenMessage(building));
+                    Hide();
+                });
                 button.gameObject.SetActive(true);
                 createdButtons.Add(button);
             }

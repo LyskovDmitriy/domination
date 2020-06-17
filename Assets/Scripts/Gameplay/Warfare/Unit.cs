@@ -3,14 +3,13 @@
     public class Unit 
     {
         public WeaponType WeaponType { get; private set; }
-
-        private Weapon weapon;
-        private int health;
+        public Weapon Weapon { get; private set; }
+        public int Health { get; set; }
 
         public Unit(Weapon weapon, WeaponType weaponType, int health)
         {
-            this.weapon = weapon;
-            this.health = health;
+            Weapon = weapon;
+            Health = health;
             WeaponType = weaponType;
         }
     }

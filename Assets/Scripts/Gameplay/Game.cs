@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Domination.Ui;
+using Domination.EventsSystem;
+using Utils.Ui;
 
 
 namespace Domination
@@ -16,10 +18,14 @@ namespace Domination
         {
             selector.OnTileSelected += OnTileSelected;
             selector.OnTileDeselected += OnTileDeselected;
+        }
 
+
+        private void Start()
+        {
             level.Create();
 
-            LevelUi.Prefab.Instance.Show();
+            EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.LevelUi));
         }
 
 
@@ -33,7 +39,11 @@ namespace Domination
             }
             else if (connectedSettlment != null)
             {
-                SettlmentViewScreen.Prefab.Instance.Show(connectedSettlment, level.Player);
+                EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.SettlmentViewScreen, (screen) =>
+                {
+                    ((SettlmentViewScreen)screen).Show(connectedSettlment, level.Player);
+                }));
+
                 isSettlmentViewShown = true;
             }
         }
@@ -46,7 +56,7 @@ namespace Domination
         {
             if (isSettlmentViewShown)
             {
-                SettlmentViewScreen.Prefab.Instance.Hide(null);
+                EventsAggregator.TriggerEvent(new HideUiMessage(ScreenType.SettlmentViewScreen));
                 isSettlmentViewShown = false;
             }
         }

@@ -18,6 +18,15 @@ namespace Domination.Warfare
         }
 
 
+        public List<Unit> GetUnits()
+        {
+            List<Unit> units = new List<Unit>(meleeGroup.Count + rangedGroup.Count);
+            units.AddRange(meleeGroup);
+            units.AddRange(rangedGroup);
+            return units;
+        }
+
+
         private List<Unit> GetGroup(WeaponType weaponType) => (weaponType == WeaponType.Melee) ? meleeGroup : rangedGroup;
     }
 }

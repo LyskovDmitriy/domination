@@ -1,18 +1,18 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Domination.EventsSystem;
+using Utils.Ui;
 
 
 namespace Domination.Ui
 {
-    public class LevelUi : UiUnit<object>
+    public class LevelUi : UiScreen
     {
-        public static readonly ResourceBehavior<LevelUi> Prefab = new ResourceBehavior<LevelUi>("Ui/LevelUi");
-
         [SerializeField] private Button endTurnButton = default;
         [SerializeField] private TextMeshProUGUI playerMoneyLabel = default;
+
+        public override ScreenType Type => ScreenType.LevelUi;
 
 
         private void Awake()
@@ -21,9 +21,9 @@ namespace Domination.Ui
         }
 
 
-        public override void Show(Action<object> onHidden = null)
+        public override void Show()
         {
-            base.Show(onHidden);
+            base.Show();
 
             EventsAggregator.Subscribe(MessageType.PlayerCoinsCountUpdate, OnPlayerCoinsCountChange);
 
@@ -31,9 +31,9 @@ namespace Domination.Ui
         }
 
 
-        public override void Hide(object result)
+        public override void Hide()
         {
-            base.Hide(result);
+            base.Hide();
 
             EventsAggregator.Unsubscribe(MessageType.PlayerCoinsCountUpdate, OnPlayerCoinsCountChange);
         }

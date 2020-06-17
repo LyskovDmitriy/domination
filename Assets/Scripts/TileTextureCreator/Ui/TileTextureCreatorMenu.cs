@@ -3,27 +3,30 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class TileTextureCreatorMenu : MonoBehaviour
+namespace Generator.Ui
 {
-    [SerializeField] private TileTextureScreen textureViewScreen = default;
-    [SerializeField] private GameObject menuRoot = default;
-    [SerializeField] private Button showTextureViewScreenButton = default;
-    [SerializeField] private Button showGenerationScreenButton = default;
-    [SerializeField] private GenerateMapScreen mapGenerationScreen = default;
-
-
-    private void Awake()
+    public class TileTextureCreatorMenu : MonoBehaviour
     {
-        showTextureViewScreenButton.onClick.AddListener(() =>
-        {
-            menuRoot.SetActive(false);
-            textureViewScreen.Show((_) => menuRoot.SetActive(true));
-        });
+        [SerializeField] private TileTextureScreen textureViewScreen = default;
+        [SerializeField] private GameObject menuRoot = default;
+        [SerializeField] private Button showTextureViewScreenButton = default;
+        [SerializeField] private Button showGenerationScreenButton = default;
+        [SerializeField] private GenerateMapScreen mapGenerationScreen = default;
 
-        showGenerationScreenButton.onClick.AddListener(() =>
+
+        private void Awake()
         {
-            menuRoot.SetActive(false);
-            mapGenerationScreen.Show((_) => menuRoot.SetActive(true));
-        });
+            showTextureViewScreenButton.onClick.AddListener(() =>
+            {
+                menuRoot.SetActive(false);
+                textureViewScreen.Show(() => menuRoot.SetActive(true));
+            });
+
+            showGenerationScreenButton.onClick.AddListener(() =>
+            {
+                menuRoot.SetActive(false);
+                mapGenerationScreen.Show(() => menuRoot.SetActive(true));
+            });
+        }
     }
 }

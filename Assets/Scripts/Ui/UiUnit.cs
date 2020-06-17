@@ -1,28 +1,28 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using System;
 
-public class UiUnit<HideResult> : MonoBehaviour
+
+namespace Utils.Ui
 {
-    private Action<HideResult> onHidden;
-
-
-    public bool IsShown { get; private set; }
-
-
-    public virtual void Show(Action<HideResult> onHidden = null)
+    public class UiUnit : MonoBehaviour
     {
-        this.onHidden = onHidden;
+        public Action<UiUnit> OnHidden;
 
-        IsShown = true;
-        gameObject.SetActive(true);
-    }
+        public bool IsShown { get; private set; }
 
 
-    public virtual void Hide(HideResult result)
-    {
-        gameObject.SetActive(false);
-        IsShown = false;
+        public virtual void Show()
+        {
+            IsShown = true;
+            gameObject.SetActive(true);
+        }
 
-        onHidden?.Invoke(result);
+
+        public virtual void Hide()
+        {
+            gameObject.SetActive(false);
+            IsShown = false;
+            OnHidden?.Invoke(this);
+        }
     }
 }
