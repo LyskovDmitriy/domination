@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Domination.Warfare;
 using TMPro;
 using Utils.Ui;
-
+using System.Data;
 
 namespace Domination.Ui
 {
@@ -50,6 +50,7 @@ namespace Domination.Ui
         {
             openConstructionLayoutButton.onClick.AddListener(() => SetMode(Mode.Construction));
             openRecruitmentLayoutButton.onClick.AddListener(() => SetMode(Mode.Recruitment));
+            sendTroopsButton.onClick.AddListener(OpenMarchScreen);
         }
 
 
@@ -62,8 +63,7 @@ namespace Domination.Ui
 
             EventsAggregator.Subscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
             EventsAggregator.Subscribe(MessageType.BuildOptionChosen, HandleBuildOptionChosen);
-
-            selectedSettlment.OnUnitsChange += UpdateUnitsCount;
+            EventsAggregator.Subscribe(MessageType.UnitRecruited, UpdateUnitsCount);
 
             if (selectedSettlment.Lord == player)
             {
@@ -85,8 +85,7 @@ namespace Domination.Ui
 
             EventsAggregator.Unsubscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
             EventsAggregator.Unsubscribe(MessageType.BuildOptionChosen, HandleBuildOptionChosen);
-
-            selectedSettlment.OnUnitsChange -= UpdateUnitsCount;
+            EventsAggregator.Unsubscribe(MessageType.UnitRecruited, UpdateUnitsCount);
 
             selectedSettlment = null;
         }
@@ -188,10 +187,24 @@ namespace Domination.Ui
         }
 
 
+        private void UpdateUnitsCount(IMessage _) => UpdateUnitsCount();
+
+
         private void UpdateUnitsCount()
         {
-            meleeUnitsCount.text = selectedSettlment.GetUnitsCount(WeaponType.Melee).ToString();
-            rangedUnitsCount.text = selectedSettlment.GetUnitsCount(WeaponType.Ranged).ToString();
+            Army army = selectedSettlment.GetArmy();
+            meleeUnitsCount.text = army.GetUnitsCount(WeaponType.Melee).ToString();
+            rangedUnitsCount.text = army.GetUnitsCount(WeaponType.Ranged).ToString();
+        }
+
+
+        private void OpenMarchScreen()
+        {
+            EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.MarchScreen, (screen) =>
+            {
+                var marchScreen = (MarchScreen)screen;
+                marchScreen.Show(player, selectedSettlment);
+            }));
         }
     }
 }

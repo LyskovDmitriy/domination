@@ -2,7 +2,7 @@
 {
     public class AiCharacter : Character
     {
-        public AiCharacter(Castle castle) : base(castle) { }
+        public AiCharacter() : base() { }
 
         public override void StartTurn(bool isFirstTurn)
         {

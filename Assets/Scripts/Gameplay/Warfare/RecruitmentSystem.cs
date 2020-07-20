@@ -26,13 +26,13 @@ namespace Domination
         public static int GetHealth(WeaponType type) => UnitRecruitmentSettings.GetHealth(type);
 
 
-        public static bool CanRecruit(int settlmentId)
+        public static bool CanRecruit(uint settlmentId)
         {
             return levelWrapper.GetCharacterWithSettlment(settlmentId).HasCoins(UnitPrice);
         }
 
 
-        public static void Recruit(int settlmentId, WeaponType weaponType, int weaponLevel)
+        public static void Recruit(uint settlmentId, WeaponType weaponType, int weaponLevel)
         {
             WeaponInfo weapon = GetWeaponInfo(weaponType, weaponLevel);
             Unit unit = new Unit(weapon.Weapon, weaponType, GetHealth(weaponType));

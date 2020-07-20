@@ -14,7 +14,7 @@ namespace Domination.Ui
         [SerializeField] private Button closeButton = default;
 
         private List<BuildingChoiceButton> createdButtons = new List<BuildingChoiceButton>();
-        private int settlmentId;
+        private uint settlmentId;
 
 
         public override ScreenType Type => ScreenType.ChooseBuildingScreen;
@@ -22,11 +22,10 @@ namespace Domination.Ui
 
         private void Awake()
         {
-            EventsAggregator.TriggerEvent(new BuildOptionChosenMessage());
             closeButton.onClick.AddListener(Hide);
         }
 
-        public void Show(int settlmentId)
+        public void Show(uint settlmentId)
         {
             base.Show();
 

@@ -5,7 +5,7 @@ namespace Domination
 {
     public class Player : Character
     {
-        public Player(Castle castle) : base(castle)
+        public Player() : base()
         {
             PlayerId = Id;
 
@@ -28,7 +28,7 @@ namespace Domination
         }
 
 
-        public override void UpgradeBuilding(int settlmentId, BuildingType buildingType)
+        public override void UpgradeBuilding(uint settlmentId, BuildingType buildingType)
         {
             base.UpgradeBuilding(settlmentId, buildingType);
 
@@ -36,7 +36,7 @@ namespace Domination
         }
 
 
-        public override void DestroyBuilding(int settlmentId, BuildingType buildingType)
+        public override void DestroyBuilding(uint settlmentId, BuildingType buildingType)
         {
             base.DestroyBuilding(settlmentId, buildingType);
 
@@ -44,7 +44,7 @@ namespace Domination
         }
 
 
-        public override void Build(int settlmentId, BuildingType buildingType)
+        public override void Build(uint settlmentId, BuildingType buildingType)
         {
             base.Build(settlmentId, buildingType);
 

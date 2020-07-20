@@ -1,7 +1,7 @@
 ﻿using Domination.Utils;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UIElements;
 
 namespace Domination
 {
@@ -20,7 +20,10 @@ namespace Domination
         private int characterIndex;
         private int currentTurnIndex;
 
-        bool isFirstTurn;
+        private bool isFirstTurn;
+
+        private Character neutralCharacter;
+
 
         public Character Player => Characters[0];
         public Character[] Characters { get; private set; }
@@ -80,11 +83,11 @@ namespace Domination
 
             Characters = new Character[2];
 
-            Characters[0] = new Player(castles[0]);
-            castles[0].Lord = Characters[0];
+            Characters[0] = new Player();
+            Characters[0].AddSettlment(castles[0]);
 
-            Characters[1] = new AiCharacter(castles[1]);
-            castles[1].Lord = Characters[1];
+            Characters[1] = new AiCharacter();
+            Characters[1].AddSettlment(castles[1]);
 
             cameraController.Init(Player.Castle.transform.position, -halfMapSize, halfMapSize);
 
@@ -93,8 +96,11 @@ namespace Domination
             BuildingSystem.Init(wrapper);
             RecruitmentSystem.Init(wrapper);
 
+            neutralCharacter = new Character();
+
             foreach (var village in villages)
             {
+                neutralCharacter.AddSettlment(village);
                 RecruitmentSystem.SetupNeutralVillageArmy(village);
             }
 

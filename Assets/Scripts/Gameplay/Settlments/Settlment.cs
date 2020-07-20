@@ -1,5 +1,4 @@
 ﻿using Domination.Warfare;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,14 +13,9 @@ namespace Domination
             public int level;
         }
 
-        private static int NextId = 0;
-
-        public event Action OnUnitsChange;
+        private static uint NextId = 1;
 
         private List<Building> buildings = new List<Building>();
-
-
-        public Army Army { get; private set; } = new Army();
 
         public int Income
         {
@@ -41,7 +35,9 @@ namespace Domination
 
         public abstract SettlmentType Type { get; }
 
-        public int Id { get; private set; }
+        public string Title => $"{Type}_{Id}";
+
+        public uint Id { get; private set; }
 
         public Character Lord { get; set; }
 
@@ -74,7 +70,9 @@ namespace Domination
 
         public Building GetBuilding(BuildingType type) => buildings.Find((b) => b.type == type);
 
-        public int GetUnitsCount(WeaponType weaponType) => Army.GetUnitsCount(weaponType);
+        public void Recruit(Unit unit) => Lord.Recruit(unit, Id);
+
+        public Army GetArmy() => Lord.GetSettlmentArmy(this);
 
 
         public void Build(BuildingType buildingType)
@@ -85,13 +83,6 @@ namespace Domination
                 return;
             }
             buildings.Add(new Building { type = buildingType });
-        }
-
-
-        public void Recruit(Unit unit)
-        {
-            Army.AddUnit(unit);
-            OnUnitsChange?.Invoke();
         }
     }
 }

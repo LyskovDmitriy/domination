@@ -13,7 +13,7 @@ namespace Domination.Ui
         [SerializeField] private Button destroyButton = default;
 
 
-        public void Init(int settlmentId, SettlmentType settlmentType, Settlment.Building buildingInfo, bool isInteractable)
+        public void Init(uint settlmentId, SettlmentType settlmentType, Settlment.Building buildingInfo, bool isInteractable)
         {
             int maxBuildingLevel = SettlmentsSettings.GetMaxBuildingLevel(settlmentType, buildingInfo.type);
 

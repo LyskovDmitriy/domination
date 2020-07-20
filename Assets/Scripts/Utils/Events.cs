@@ -16,6 +16,8 @@ namespace Domination.EventsSystem
 
         ShowUi,
         HideUi,
+
+        UnitRecruited,
     }
 
 
@@ -24,19 +26,32 @@ namespace Domination.EventsSystem
         MessageType Type { get; }
     }
 
+    public struct BuildOptionChosenMessage : IMessage
+    {
+        public MessageType Type => MessageType.BuildOptionChosen;
+        public readonly BuildingType BuildingType;
+
+
+        public BuildOptionChosenMessage(BuildingType buildingType)
+        {
+            BuildingType = buildingType;
+        }
+    }
+
+    public struct HideUiMessage : IMessage
+    {
+        public MessageType Type => MessageType.HideUi;
+        public readonly ScreenType ScreenType;
+
+        public HideUiMessage(ScreenType screenType)
+        {
+            ScreenType = screenType;
+        }
+    }
+
     public struct PlayerSettlmentChangedMessage : IMessage
     {
         public MessageType Type => MessageType.PlayerSettlmentChanged;
-    }
-
-    public struct RequestPlayerTurnEndMessage : IMessage
-    {
-        public MessageType Type => MessageType.PlayerEndTurnRequest;
-    }
-
-    public struct UpdateUiMessage : IMessage
-    {
-        public MessageType Type => MessageType.UpdateUi;
     }
 
     public struct PlayerCoinsCountUpdateMessage : IMessage
@@ -48,6 +63,11 @@ namespace Domination.EventsSystem
         {
             Coins = coins;
         }
+    }
+
+    public struct RequestPlayerTurnEndMessage : IMessage
+    {
+        public MessageType Type => MessageType.PlayerEndTurnRequest;
     }
 
     public struct RequestPlayerCoinsUpdateMessage : IMessage
@@ -68,26 +88,21 @@ namespace Domination.EventsSystem
         }
     }
 
-    public struct HideUiMessage : IMessage
+    public struct UpdateUiMessage : IMessage
     {
-        public MessageType Type => MessageType.HideUi;
-        public readonly ScreenType ScreenType;
-
-        public HideUiMessage(ScreenType screenType)
-        {
-            ScreenType = screenType;
-        }
+        public MessageType Type => MessageType.UpdateUi;
     }
 
-    public struct BuildOptionChosenMessage : IMessage
+    public struct UnitRecruitedMessage : IMessage
     {
-        public MessageType Type => MessageType.BuildOptionChosen;
-        public readonly BuildingType BuildingType;
+        public MessageType Type => MessageType.UnitRecruited;
+        public readonly uint CharacterId;
+        public readonly uint SettlmentId;
 
-
-        public BuildOptionChosenMessage(BuildingType buildingType)
+        public UnitRecruitedMessage(uint characterId, uint settlmentId)
         {
-            BuildingType = buildingType;
+            CharacterId = characterId;
+            SettlmentId = settlmentId;
         }
     }
 }

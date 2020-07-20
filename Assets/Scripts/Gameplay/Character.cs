@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using Domination.Warfare;
+using Domination.EventsSystem;
 
 
 namespace Domination
@@ -11,13 +12,15 @@ namespace Domination
         public event Action OnTurnFinish;
 
         private const int DefaultCoinsCount = 50;
-        private static int NextId = 0;
+        private static uint NextId = 1;
 
         private int coins = DefaultCoinsCount;
 
+        private Dictionary<Settlment, Army> stationedArmies = new Dictionary<Settlment, Army>();
 
-        public static int PlayerId { get; protected set; }
-        public int Id { get; private set; }
+
+        public static uint PlayerId { get; protected set; }
+        public uint Id { get; private set; }
 
         public int MeleeWeaponLevel { get; private set; } = 0;
         public int RangedWeaponLevel { get; private set; } = 0;
@@ -25,6 +28,7 @@ namespace Domination
         public int Income => Settlments.Sum((settlment) => settlment.Income);
 
         public List<Settlment> Settlments { get; private set; } = new List<Settlment>();
+
 
         public Settlment Castle => Settlments[0];
 
@@ -41,12 +45,10 @@ namespace Domination
         }
 
 
-        public Character(Castle castle)
+        public Character()
         {
             Id = NextId;
             NextId++;
-
-            Settlments.Add(castle);
         }
 
 
@@ -56,19 +58,21 @@ namespace Domination
             {
                 Coins += Income;
             }
+
+            //Update marching units
         }
 
 
-        public bool HasSettlment(int settlmentId) => GetSettlmentById(settlmentId) != null;
+        public bool HasSettlment(uint settlmentId) => GetSettlmentById(settlmentId) != null;
 
 
-        public virtual void DestroyBuilding(int settlmentId, BuildingType buildingType)
+        public virtual void DestroyBuilding(uint settlmentId, BuildingType buildingType)
         {
             GetSettlmentById(settlmentId).DestroyBuilding(buildingType);
         }
 
 
-        public virtual void UpgradeBuilding(int settlmentId, BuildingType buildingType)
+        public virtual void UpgradeBuilding(uint settlmentId, BuildingType buildingType)
         {
             Settlment settlment = GetSettlmentById(settlmentId);
             Coins -= BuildingSystem.GetUpgradePrice(buildingType, settlment.GetBuilding(buildingType).level);
@@ -76,7 +80,7 @@ namespace Domination
         }
 
 
-        public virtual void Build(int settlmentId, BuildingType buildingType)
+        public virtual void Build(uint settlmentId, BuildingType buildingType)
         {
             Settlment settlment = GetSettlmentById(settlmentId);
             Coins -= BuildingSystem.GetConstructionPrice(buildingType);
@@ -84,18 +88,30 @@ namespace Domination
         }
 
 
-        public void Recruit(Unit unit, int settlmentId)
+        public void Recruit(Unit unit, uint settlmentId)
         {
             Settlment settlment = GetSettlmentById(settlmentId);
             Coins -= RecruitmentSystem.UnitPrice;
-            settlment.Recruit(unit);
+            GetSettlmentArmy(settlment).AddUnit(unit);
+            EventsAggregator.TriggerEvent(new UnitRecruitedMessage(Id, settlmentId));
         }
 
 
-        public Settlment GetSettlmentById(int settlmentId) => Settlments.Find((settlment) => settlment.Id == settlmentId);
+        public Settlment GetSettlmentById(uint settlmentId) => Settlments.Find((settlment) => settlment.Id == settlmentId);
 
 
         public bool HasCoins(int recuiredAmount) => Coins >= recuiredAmount;
+
+
+        public Army GetSettlmentArmy(Settlment settlment) => stationedArmies[settlment];
+
+
+        public void AddSettlment(Settlment settlment)
+        {
+            Settlments.Add(settlment);
+            stationedArmies.Add(settlment, new Army());
+            settlment.Lord = this;
+        }
 
 
         protected void FinishTurn()
