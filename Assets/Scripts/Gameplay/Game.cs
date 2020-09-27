@@ -41,7 +41,7 @@ namespace Domination
             {
                 EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.SettlmentViewScreen, (screen) =>
                 {
-                    ((SettlmentViewScreen)screen).Show(connectedSettlment, level.Player);
+                    ((SettlmentViewScreen)screen).Show(connectedSettlment, level);
                 }));
 
                 isSettlmentViewShown = true;

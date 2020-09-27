@@ -1,7 +1,7 @@
 ﻿using Domination.Utils;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 
 namespace Domination
 {
@@ -27,6 +27,7 @@ namespace Domination
 
         public Character Player => Characters[0];
         public Character[] Characters { get; private set; }
+        public TileType[,] Map { get; private set; }
 
 
         private void Awake()
@@ -39,7 +40,7 @@ namespace Domination
         {
             Vector2Int resolution = MapGenerationSettings.MapResolution;
             Vector2 halfMapSize = new Vector3(distanceBetweenTiles.x * resolution.x, distanceBetweenTiles.y * resolution.y) / 2.0f;
-            TileType[,] tilesTypes = WafeFunctionCollapse.GenerateMap(resolution, MapGenerationSettings.TileTexture);
+            Map = WaveFunctionCollapse.GenerateMap(resolution, MapGenerationSettings.TileTexture);
 
             tiles = new Tile[resolution.x, resolution.y];
 
@@ -52,12 +53,12 @@ namespace Domination
                         Quaternion.identity,
                         transform);
 
-                    tile.Init(new Vector2Int(x, y), tilesTypes[x, y]);
+                    tile.Init(new Vector2Int(x, y), Map[x, y]);
                     tiles[x, y] = tile;
                 }
             }
 
-            var settlments = SettlmentsGenerator.Generate(tilesTypes);
+            var settlments = SettlmentsGenerator.Generate(Map);
 
             List<Castle> castles = new List<Castle>();
 

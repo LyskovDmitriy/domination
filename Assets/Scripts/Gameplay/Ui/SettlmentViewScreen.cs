@@ -41,6 +41,7 @@ namespace Domination.Ui
 
         private Settlment selectedSettlment;
         private Character player;
+        private Level level;
 
 
         public override ScreenType Type => ScreenType.SettlmentViewScreen;
@@ -54,12 +55,13 @@ namespace Domination.Ui
         }
 
 
-        public void Show(Settlment settlment, Character player)
+        public void Show(Settlment settlment, Level level)
         {
             Show();
 
             selectedSettlment = settlment;
-            this.player = player;
+            this.level = level;
+            player = level.Player;
 
             EventsAggregator.Subscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
             EventsAggregator.Subscribe(MessageType.BuildOptionChosen, HandleBuildOptionChosen);
@@ -203,7 +205,7 @@ namespace Domination.Ui
             EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.MarchScreen, (screen) =>
             {
                 var marchScreen = (MarchScreen)screen;
-                marchScreen.Show(player, selectedSettlment);
+                marchScreen.Show(level, selectedSettlment);
             }));
         }
     }

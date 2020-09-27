@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public static class WafeFunctionCollapse
+public static class WaveFunctionCollapse
 {
     private class TileData
     {

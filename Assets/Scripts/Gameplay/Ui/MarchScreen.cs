@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 using Utils.Ui;
 
 
@@ -14,6 +15,7 @@ namespace Domination.Ui
             public Settlment settlment;
             public SettlmentArmyUi armyUi;
             public Army army;
+            public int movementTime;
         }
 
 
@@ -38,7 +40,7 @@ namespace Domination.Ui
         }
 
 
-        public void Show(Character player, Settlment targetSettlment)
+        public void Show(Level level, Settlment targetSettlment)
         {
             base.Show();
 
@@ -50,11 +52,22 @@ namespace Domination.Ui
 
             attackedSettlment = targetSettlment;
 
-            foreach (var settlment in player.Settlments)
+            foreach (var settlment in level.Player.Settlments)
             {
                 SettlmentArmyUi settlmentArmyUi = Instantiate(settlmentArmyPrefab, settlmentArmiesRoot);
                 settlmentArmyUi.gameObject.SetActive(true);
-                availableArmies.Add(new SettlmentArmy { settlment = settlment, armyUi = settlmentArmyUi, army = new Army(player.GetSettlmentArmy(settlment)) });
+
+                float distance = Pathfinding.GetDistance(settlment.Tile.Position, targetSettlment.Tile.Position, level.Map, TilesPassingCostContainer.GetTilePassingCost);
+                Debug.LogError(distance);
+                int daysToArrive = Mathf.CeilToInt(distance / Constants.UNIT_MOVESPEED);
+
+                availableArmies.Add(new SettlmentArmy 
+                { 
+                    settlment = settlment, 
+                    armyUi = settlmentArmyUi, 
+                    army = new Army(level.Player.GetSettlmentArmy(settlment)),
+                    movementTime = daysToArrive
+                });
             }
 
             attackingArmy = new Army();
@@ -65,7 +78,7 @@ namespace Domination.Ui
         {
             foreach (var availableArmy in availableArmies)
             {
-                availableArmy.armyUi.SetInfo(availableArmy.settlment.Title, availableArmy.army, (unit) => SendUnitInRaid(availableArmy, unit));
+                availableArmy.armyUi.SetInfo($"{availableArmy.settlment.Title} ({availableArmy.movementTime} days)", availableArmy.army, (unit) => SendUnitInRaid(availableArmy, unit));
             }
 
             marchingArmy.SetInfo(attackedSettlment.Title, attackingArmy, ReturnUnitToSettlment);

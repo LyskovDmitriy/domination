@@ -33,7 +33,7 @@ namespace Generator.Ui
             tiles.ForEach((tile) => Destroy(tile.gameObject));
             tiles.Clear();
 
-            TileType[,] outputMap = WafeFunctionCollapse.GenerateMap(MapGenerationSettings.MapResolution, MapGenerationSettings.TileTexture);
+            TileType[,] outputMap = WaveFunctionCollapse.GenerateMap(MapGenerationSettings.MapResolution, MapGenerationSettings.TileTexture);
 
             gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             gridLayout.constraintCount = outputMap.GetLength(0);
