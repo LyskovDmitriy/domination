@@ -25,7 +25,7 @@ namespace Domination.Ui
         {
             base.Show();
 
-            EventsAggregator.Subscribe(MessageType.PlayerCoinsCountUpdate, OnPlayerCoinsCountChange);
+            EventsAggregator.Subscribe(typeof(PlayerCoinsCountUpdateMessage), OnPlayerCoinsCountChange);
 
             EventsAggregator.TriggerEvent(new RequestPlayerCoinsUpdateMessage());
         }
@@ -35,7 +35,7 @@ namespace Domination.Ui
         {
             base.Hide();
 
-            EventsAggregator.Unsubscribe(MessageType.PlayerCoinsCountUpdate, OnPlayerCoinsCountChange);
+            EventsAggregator.Unsubscribe(typeof(PlayerCoinsCountUpdateMessage), OnPlayerCoinsCountChange);
         }
 
 

@@ -6,9 +6,9 @@ namespace Domination.EventsSystem
 {
     public static class EventsAggregator
     {
-        private static readonly Dictionary<MessageType, HashSet<Action<IMessage>>> Subscriptions = new Dictionary<MessageType, HashSet<Action<IMessage>>>();
+        private static readonly Dictionary<Type, HashSet<Action<IMessage>>> Subscriptions = new Dictionary<Type, HashSet<Action<IMessage>>>();
 
-        public static void Subscribe(MessageType eventType, Action<IMessage> handler)
+        public static void Subscribe(Type eventType, Action<IMessage> handler)
         {
             if (!Subscriptions.ContainsKey(eventType))
             {
@@ -19,7 +19,7 @@ namespace Domination.EventsSystem
         }
 
 
-        public static void Unsubscribe(MessageType eventType, Action<IMessage> handler) //Keep it simple for now until I come across removal problems
+        public static void Unsubscribe(Type eventType, Action<IMessage> handler) //Keep it simple for now until I come across removal problems
         {
             if (Subscriptions.ContainsKey(eventType))
             {
@@ -30,7 +30,7 @@ namespace Domination.EventsSystem
 
         public static void TriggerEvent(IMessage message)
         {
-            if (Subscriptions.TryGetValue(message.Type, out var actions))
+            if (Subscriptions.TryGetValue(message.GetType(), out var actions))
             {
                 foreach (var action in actions)
                 {

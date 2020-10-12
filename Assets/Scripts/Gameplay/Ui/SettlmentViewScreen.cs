@@ -63,9 +63,9 @@ namespace Domination.Ui
             this.level = level;
             player = level.Player;
 
-            EventsAggregator.Subscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
-            EventsAggregator.Subscribe(MessageType.BuildOptionChosen, HandleBuildOptionChosen);
-            EventsAggregator.Subscribe(MessageType.UnitRecruited, UpdateUnitsCount);
+            EventsAggregator.Subscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
+            EventsAggregator.Subscribe(typeof(BuildOptionChosenMessage), HandleBuildOptionChosen);
+            EventsAggregator.Subscribe(typeof(UnitRecruitedMessage), UpdateUnitsCount);
 
             if (selectedSettlment.Lord == player)
             {
@@ -85,9 +85,9 @@ namespace Domination.Ui
         {
             base.Hide();
 
-            EventsAggregator.Unsubscribe(MessageType.UpdateUi, HandlePlayerSettlmentsUpdate);
-            EventsAggregator.Unsubscribe(MessageType.BuildOptionChosen, HandleBuildOptionChosen);
-            EventsAggregator.Unsubscribe(MessageType.UnitRecruited, UpdateUnitsCount);
+            EventsAggregator.Unsubscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
+            EventsAggregator.Unsubscribe(typeof(BuildOptionChosenMessage), HandleBuildOptionChosen);
+            EventsAggregator.Unsubscribe(typeof(UnitRecruitedMessage), UpdateUnitsCount);
 
             selectedSettlment = null;
         }

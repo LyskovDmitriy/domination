@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Domination.EventsSystem;
 using Utils.Ui;
@@ -8,11 +9,11 @@ namespace Domination.Ui
 {
     public static class UiController
     {
-        private static readonly MessageType[] MessagesToUpdateUi = new MessageType[]
-            {
-                MessageType.PlayerSettlmentChanged,
-                MessageType.PlayerCoinsCountUpdate
-            };
+        private static readonly Type[] MessagesToUpdateUi = new Type[]
+        {
+            typeof(PlayerSettlmentChangedMessage),
+            typeof(PlayerCoinsCountUpdateMessage)
+        };
 
         private static readonly Dictionary<ScreenType, string> ScreenToPath = new Dictionary<ScreenType, string>()
         {
@@ -35,8 +36,8 @@ namespace Domination.Ui
                 EventsAggregator.Subscribe(messageType, SendUpdateUiMessage);
             }
 
-            EventsAggregator.Subscribe(MessageType.ShowUi, ShowUi);
-            EventsAggregator.Subscribe(MessageType.HideUi, HideUi);
+            EventsAggregator.Subscribe(typeof(ShowUiMessage), ShowUi);
+            EventsAggregator.Subscribe(typeof(HideUiMessage), HideUi);
         }
 
 

@@ -58,7 +58,6 @@ namespace Domination.Ui
                 settlmentArmyUi.gameObject.SetActive(true);
 
                 float distance = Pathfinding.GetDistance(settlment.Tile.Position, targetSettlment.Tile.Position, level.Map, TilesPassingCostContainer.GetTilePassingCost);
-                Debug.LogError(distance);
                 int daysToArrive = Mathf.CeilToInt(distance / Constants.UNIT_MOVESPEED);
 
                 availableArmies.Add(new SettlmentArmy 

@@ -9,14 +9,14 @@ namespace Domination
         {
             PlayerId = Id;
 
-            EventsAggregator.Subscribe(MessageType.PlayerEndTurnRequest, HandleTurnEndRequest);
-            EventsAggregator.Subscribe(MessageType.RequestPlayerCoinsUpdate, HandleCoinsUpdateRequest);
+            EventsAggregator.Subscribe(typeof(RequestPlayerTurnEndMessage), HandleTurnEndRequest);
+            EventsAggregator.Subscribe(typeof(RequestPlayerCoinsUpdateMessage), HandleCoinsUpdateRequest);
         }
 
         ~Player()
         {
-            EventsAggregator.Unsubscribe(MessageType.PlayerEndTurnRequest, HandleTurnEndRequest);
-            EventsAggregator.Unsubscribe(MessageType.RequestPlayerCoinsUpdate, HandleCoinsUpdateRequest);
+            EventsAggregator.Unsubscribe(typeof(RequestPlayerTurnEndMessage), HandleTurnEndRequest);
+            EventsAggregator.Unsubscribe(typeof(RequestPlayerCoinsUpdateMessage), HandleCoinsUpdateRequest);
         }
 
 

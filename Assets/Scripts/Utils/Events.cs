@@ -4,33 +4,11 @@ using Utils.Ui;
 
 namespace Domination.EventsSystem
 {
-    public enum MessageType
-    {
-        PlayerEndTurnRequest,
-        PlayerSettlmentChanged,
-        PlayerCoinsCountUpdate,
-        RequestPlayerCoinsUpdate,
-        UpdateUi,
-
-        BuildOptionChosen,
-
-        ShowUi,
-        HideUi,
-
-        UnitRecruited,
-    }
-
-
-    public interface IMessage
-    {
-        MessageType Type { get; }
-    }
+    public interface IMessage { }
 
     public struct BuildOptionChosenMessage : IMessage
     {
-        public MessageType Type => MessageType.BuildOptionChosen;
         public readonly BuildingType BuildingType;
-
 
         public BuildOptionChosenMessage(BuildingType buildingType)
         {
@@ -40,7 +18,6 @@ namespace Domination.EventsSystem
 
     public struct HideUiMessage : IMessage
     {
-        public MessageType Type => MessageType.HideUi;
         public readonly ScreenType ScreenType;
 
         public HideUiMessage(ScreenType screenType)
@@ -49,14 +26,10 @@ namespace Domination.EventsSystem
         }
     }
 
-    public struct PlayerSettlmentChangedMessage : IMessage
-    {
-        public MessageType Type => MessageType.PlayerSettlmentChanged;
-    }
+    public struct PlayerSettlmentChangedMessage : IMessage { }
 
     public struct PlayerCoinsCountUpdateMessage : IMessage
     {
-        public MessageType Type => MessageType.PlayerCoinsCountUpdate;
         public readonly int Coins;
 
         public PlayerCoinsCountUpdateMessage(int coins)
@@ -65,19 +38,12 @@ namespace Domination.EventsSystem
         }
     }
 
-    public struct RequestPlayerTurnEndMessage : IMessage
-    {
-        public MessageType Type => MessageType.PlayerEndTurnRequest;
-    }
+    public struct RequestPlayerTurnEndMessage : IMessage { }
 
-    public struct RequestPlayerCoinsUpdateMessage : IMessage
-    {
-        public MessageType Type => MessageType.RequestPlayerCoinsUpdate;
-    }
+    public struct RequestPlayerCoinsUpdateMessage : IMessage { }
 
     public struct ShowUiMessage : IMessage
     {
-        public MessageType Type => MessageType.ShowUi;
         public readonly ScreenType ScreenType;
         public readonly Action<UiScreen> OnInit;
 
@@ -88,14 +54,10 @@ namespace Domination.EventsSystem
         }
     }
 
-    public struct UpdateUiMessage : IMessage
-    {
-        public MessageType Type => MessageType.UpdateUi;
-    }
+    public struct UpdateUiMessage : IMessage { }
 
     public struct UnitRecruitedMessage : IMessage
     {
-        public MessageType Type => MessageType.UnitRecruited;
         public readonly uint CharacterId;
         public readonly uint SettlmentId;
 
