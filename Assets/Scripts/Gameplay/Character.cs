@@ -9,6 +9,13 @@ namespace Domination
 {
     public class Character
     {
+        private class MarchingUnit
+        {
+            public Settlment targetSettlment;
+            public Unit unit;
+            public int daysLeft;
+        }
+
         public event Action OnTurnFinish;
 
         private const int DefaultCoinsCount = 50;
@@ -17,6 +24,7 @@ namespace Domination
         private int coins = DefaultCoinsCount;
 
         private Dictionary<Settlment, Army> stationedArmies = new Dictionary<Settlment, Army>();
+        private List<MarchingUnit> marchingUnits = new List<MarchingUnit>();
 
 
         public static uint PlayerId { get; protected set; }
@@ -60,6 +68,32 @@ namespace Domination
             }
 
             //Update marching units
+            for (int i = marchingUnits.Count - 1; i >= 0; i--)
+            {
+                marchingUnits[i].daysLeft--;
+                if (marchingUnits[i].daysLeft == 0)
+                {
+                    if (!stationedArmies.TryGetValue(marchingUnits[i].targetSettlment, out var army))
+                    {
+                        army = new Army();
+                        stationedArmies.Add(marchingUnits[i].targetSettlment, army);
+                    }
+
+                    army.AddUnit(marchingUnits[i].unit);
+                    marchingUnits.RemoveAt(i);
+                }
+            }
+        }
+
+
+        public void AddMarchingUnit(Unit unit, Settlment targetSettlment, int marchDuration)
+        {
+            marchingUnits.Add(new MarchingUnit
+            {
+                unit = unit,
+                targetSettlment = targetSettlment,
+                daysLeft = marchDuration
+            });
         }
 
 

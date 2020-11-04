@@ -7,13 +7,13 @@ using TMPro;
 
 namespace Domination.Ui
 {
-    public class SettlmentArmyUi : MonoBehaviour
+    public class AttackedSettlmentUi : MonoBehaviour
     {
-        [SerializeField] private UnitUi unitUiPrefab = default;
+        [SerializeField] private AttackingUnitUi unitUiPrefab = default;
         [SerializeField] private RectTransform unitsRoot = default;
         [SerializeField] private TextMeshProUGUI settlmentTitleLabel = default;
 
-        private List<UnitUi> unitsUi = new List<UnitUi>();
+        private List<AttackingUnitUi> unitsUi = new List<AttackingUnitUi>();
 
         public void SetInfo(string settlmentTitle, Army army, Action<Unit> transferUnitAction)
         {
@@ -29,9 +29,9 @@ namespace Domination.Ui
 
             foreach (var unit in units)
             {
-                UnitUi unitUi = Instantiate(unitUiPrefab, unitsRoot);
-                unitUi.Init(unit, transferUnitAction);
-                unitUi.gameObject.SetActive(true);
+                AttackingUnitUi unitUi = Instantiate(unitUiPrefab, unitsRoot);
+                AttackingUnit attackingUnit = (AttackingUnit)unit;
+                unitUi.Init(unit, transferUnitAction, true, attackingUnit.MarchingTime);
                 unitsUi.Add(unitUi);
             }
         }

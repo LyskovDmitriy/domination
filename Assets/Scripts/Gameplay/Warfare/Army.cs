@@ -12,9 +12,6 @@ namespace Domination.Warfare
         public int TotalUnitsCount => meleeGroup.Count + rangedGroup.Count;
 
 
-        public int GetUnitsCount(WeaponType weaponType) => GetGroup(weaponType).Count;
-
-
         public Army(Army armyToCopy)
         {
             meleeGroup = new List<Unit>(armyToCopy.meleeGroup);
@@ -25,6 +22,19 @@ namespace Domination.Warfare
         {
             meleeGroup = new List<Unit>();
             rangedGroup = new List<Unit>();
+        }
+
+
+        public int GetUnitsCount(WeaponType weaponType) => GetGroup(weaponType).Count;
+
+        public void MergeWithArmy(Army army)
+        {
+            foreach (var unit in army.GetUnits())
+            {
+                AddUnit(unit);
+            }
+
+            army.Clear();
         }
 
         public void AddUnit(Unit unit)
@@ -43,6 +53,12 @@ namespace Domination.Warfare
             units.AddRange(meleeGroup);
             units.AddRange(rangedGroup);
             return units;
+        }
+
+        public void Clear()
+        {
+            meleeGroup.Clear();
+            rangedGroup.Clear();
         }
 
         private List<Unit> GetGroup(WeaponType weaponType) => (weaponType == WeaponType.Melee) ? meleeGroup : rangedGroup;

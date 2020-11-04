@@ -22,12 +22,14 @@ namespace Domination.Ui
         [SerializeField] private SettlmentArmyUi settlmentArmyPrefab = default;
         [SerializeField] private RectTransform settlmentArmiesRoot = default;
         [SerializeField] private Button closeButton = default;
-        [SerializeField] private SettlmentArmyUi marchingArmy = default;
+        [SerializeField] private AttackedSettlmentUi attackedSettlmentUi = default;
         [SerializeField] private Button sendArmyButton = default;
 
         private List<SettlmentArmy> availableArmies = new List<SettlmentArmy>();
         private Settlment attackedSettlment;
         private Army attackingArmy;
+
+        private Level level;
 
 
         public override ScreenType Type => ScreenType.MarchScreen;
@@ -43,6 +45,9 @@ namespace Domination.Ui
         public void Show(Level level, Settlment targetSettlment)
         {
             base.Show();
+            //Show all marching units
+
+            this.level = level;
 
             foreach (var army in availableArmies)
             {
@@ -55,7 +60,6 @@ namespace Domination.Ui
             foreach (var settlment in level.Player.Settlments)
             {
                 SettlmentArmyUi settlmentArmyUi = Instantiate(settlmentArmyPrefab, settlmentArmiesRoot);
-                settlmentArmyUi.gameObject.SetActive(true);
 
                 float distance = Pathfinding.GetDistance(settlment.Tile.Position, targetSettlment.Tile.Position, level.Map, TilesPassingCostContainer.GetTilePassingCost);
                 int daysToArrive = Mathf.CeilToInt(distance / Constants.UNIT_MOVESPEED);
@@ -77,31 +81,49 @@ namespace Domination.Ui
         {
             foreach (var availableArmy in availableArmies)
             {
-                availableArmy.armyUi.SetInfo($"{availableArmy.settlment.Title} ({availableArmy.movementTime} days)", availableArmy.army, (unit) => SendUnitInRaid(availableArmy, unit));
+                availableArmy.armyUi.SetInfo(
+                    $"{availableArmy.settlment.Title} ({availableArmy.movementTime} days)", 
+                    availableArmy.army, 
+                    (unit) => SendUnitInRaid(availableArmy, unit, availableArmy.movementTime));
             }
 
-            marchingArmy.SetInfo(attackedSettlment.Title, attackingArmy, ReturnUnitToSettlment);
+            attackedSettlmentUi.SetInfo(attackedSettlment.Title, attackingArmy, ReturnUnitToSettlment);
             sendArmyButton.enabled = (attackingArmy.TotalUnitsCount > 0);
         }
 
-        private void SendUnitInRaid(SettlmentArmy settlmentArmy, Unit unit)
+        private void SendUnitInRaid(SettlmentArmy settlmentArmy, Unit unit, int marchingTime)
         {
             settlmentArmy.army.RemoveUnit(unit);
-            attackingArmy.AddUnit(new AttackingUnit(unit, settlmentArmy.settlment));
+            attackingArmy.AddUnit(new AttackingUnit(unit, settlmentArmy.settlment, marchingTime));
             RefreshArmiesUi();
         }
 
         private void ReturnUnitToSettlment(Unit unit)
         {
             AttackingUnit attackingUnit = (AttackingUnit)unit;
-            SettlmentArmy settlmentArmy = availableArmies.Find((a) => a.settlment == attackingUnit.originalSettlment);
+            SettlmentArmy settlmentArmy = availableArmies.Find((a) => a.settlment == attackingUnit.OriginalSettlment);
             attackingArmy.RemoveUnit(attackingUnit);
             settlmentArmy.army.AddUnit(new Unit(attackingUnit));
             RefreshArmiesUi();
         }
 
         private void SendArmy()
-        { 
+        {
+            if (attackingArmy.TotalUnitsCount != 0)
+            {
+                foreach (var unit in attackingArmy.GetUnits())
+                {
+                    var attackingUnit = unit as AttackingUnit;
+
+                    var army = level.Player.GetSettlmentArmy(attackingUnit.OriginalSettlment);
+                    army.RemoveUnit(attackingUnit.EnclosedUnit);
+
+                    level.Player.AddMarchingUnit(attackingUnit.EnclosedUnit, attackedSettlment, attackingUnit.MarchingTime);
+                }
+
+                attackingArmy.Clear();
+                RefreshArmiesUi();
+            }
         }
     }
 }

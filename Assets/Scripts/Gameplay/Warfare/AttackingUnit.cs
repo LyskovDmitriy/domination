@@ -2,12 +2,16 @@
 {
     public class AttackingUnit : Unit
     {
-        public Settlment originalSettlment;
+        public Settlment OriginalSettlment { get; private set; }
+        public Unit EnclosedUnit { get; private set; }
+        public int MarchingTime { get; private set; }
 
 
-        public AttackingUnit(Unit unit, Settlment settlment) : base(unit)
+        public AttackingUnit(Unit unit, Settlment settlment, int marchingTime) : base(unit)
         {
-            originalSettlment = settlment;
+            EnclosedUnit = unit;
+            OriginalSettlment = settlment;
+            MarchingTime = marchingTime;
         }
     }
 }
