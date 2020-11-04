@@ -5,7 +5,7 @@ using UnityEngine;
 using TMPro;
 
 
-namespace Domination.Ui
+namespace Domination.Ui.Marching
 {
     public class SettlmentArmyUi : MonoBehaviour
     {

@@ -6,7 +6,7 @@ using Utils;
 using Utils.Ui;
 
 
-namespace Domination.Ui
+namespace Domination.Ui.Marching
 {
     public class MarchScreen : UiScreen
     {
@@ -18,7 +18,6 @@ namespace Domination.Ui
             public int movementTime;
         }
 
-
         [SerializeField] private SettlmentArmyUi settlmentArmyPrefab = default;
         [SerializeField] private RectTransform settlmentArmiesRoot = default;
         [SerializeField] private Button closeButton = default;
@@ -27,7 +26,7 @@ namespace Domination.Ui
 
         private List<SettlmentArmy> availableArmies = new List<SettlmentArmy>();
         private Settlment attackedSettlment;
-        private Army attackingArmy;
+        private AttackingArmy attackingArmy;
 
         private Level level;
 
@@ -73,7 +72,7 @@ namespace Domination.Ui
                 });
             }
 
-            attackingArmy = new Army();
+            CreateAttackingArmy();
             RefreshArmiesUi();
         }
 
@@ -88,17 +87,17 @@ namespace Domination.Ui
             }
 
             attackedSettlmentUi.SetInfo(attackedSettlment.Title, attackingArmy, ReturnUnitToSettlment);
-            sendArmyButton.enabled = (attackingArmy.TotalUnitsCount > 0);
+            sendArmyButton.enabled = (attackingArmy.UnitsCount > 0);
         }
 
         private void SendUnitInRaid(SettlmentArmy settlmentArmy, Unit unit, int marchingTime)
         {
             settlmentArmy.army.RemoveUnit(unit);
-            attackingArmy.AddUnit(new AttackingUnit(unit, settlmentArmy.settlment, marchingTime));
+            attackingArmy.AddUnit(unit, settlmentArmy.settlment, marchingTime);
             RefreshArmiesUi();
         }
 
-        private void ReturnUnitToSettlment(Unit unit)
+        private void ReturnUnitToSettlment(AttackingUnit unit)
         {
             AttackingUnit attackingUnit = (AttackingUnit)unit;
             SettlmentArmy settlmentArmy = availableArmies.Find((a) => a.settlment == attackingUnit.OriginalSettlment);
@@ -109,20 +108,40 @@ namespace Domination.Ui
 
         private void SendArmy()
         {
-            if (attackingArmy.TotalUnitsCount != 0)
+            if (attackingArmy.UnitsCount != 0)
             {
+                //Sendable
                 foreach (var unit in attackingArmy.GetUnits())
                 {
-                    var attackingUnit = unit as AttackingUnit;
+                    if (unit.OriginalSettlment != null)
+                    {
+                        var army = level.Player.GetSettlmentArmy(unit.OriginalSettlment);
+                        army.RemoveUnit(unit.EnclosedUnit);
 
-                    var army = level.Player.GetSettlmentArmy(attackingUnit.OriginalSettlment);
-                    army.RemoveUnit(attackingUnit.EnclosedUnit);
-
-                    level.Player.AddMarchingUnit(attackingUnit.EnclosedUnit, attackedSettlment, attackingUnit.MarchingTime);
+                        level.Player.AddMarchingUnit(unit.EnclosedUnit, attackedSettlment, unit.MarchingTime);
+                    }
                 }
 
-                attackingArmy.Clear();
+                CreateAttackingArmy();
                 RefreshArmiesUi();
+            }
+        }
+
+        private void CreateAttackingArmy()
+        {
+            attackingArmy = new AttackingArmy();
+            var settlmentArmy = level.Player.GetSettlmentArmy(attackedSettlment);
+            if (settlmentArmy != null)
+            {
+                foreach (var unit in settlmentArmy.GetUnits())
+                {
+                    attackingArmy.AddUnit(unit, null, 0);
+                }
+            }
+
+            foreach (var marchingUnit in level.Player.GetMarchingUnits(attackedSettlment))
+            {
+                attackingArmy.AddUnit(marchingUnit.unit, null, marchingUnit.daysLeft);
             }
         }
     }

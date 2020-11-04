@@ -9,13 +9,6 @@ namespace Domination
 {
     public class Character
     {
-        private class MarchingUnit
-        {
-            public Settlment targetSettlment;
-            public Unit unit;
-            public int daysLeft;
-        }
-
         public event Action OnTurnFinish;
 
         private const int DefaultCoinsCount = 50;
@@ -97,6 +90,9 @@ namespace Domination
         }
 
 
+        public List<MarchingUnit> GetMarchingUnits(Settlment settlment) => marchingUnits.FindAll((unit) => unit.targetSettlment == settlment);
+
+
         public bool HasSettlment(uint settlmentId) => GetSettlmentById(settlmentId) != null;
 
 
@@ -137,8 +133,11 @@ namespace Domination
         public bool HasCoins(int recuiredAmount) => Coins >= recuiredAmount;
 
 
-        public Army GetSettlmentArmy(Settlment settlment) => stationedArmies[settlment];
-
+        public Army GetSettlmentArmy(Settlment settlment)
+        {
+            stationedArmies.TryGetValue(settlment, out var army);
+            return army;
+        }
 
         public void AddSettlment(Settlment settlment)
         {
@@ -148,15 +147,9 @@ namespace Domination
         }
 
 
-        protected void FinishTurn()
-        {
-            OnTurnFinish?.Invoke();
-        }
+        protected void FinishTurn() => OnTurnFinish?.Invoke();
 
 
-        protected virtual void SetNewCoinsCount(int coins)
-        {
-            this.coins = coins;
-        }
+        protected virtual void SetNewCoinsCount(int coins) => this.coins = coins;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 using TMPro;
 
 
-namespace Domination.Ui
+namespace Domination.Ui.Marching
 {
     public class AttackedSettlmentUi : MonoBehaviour
     {
@@ -15,7 +15,7 @@ namespace Domination.Ui
 
         private List<AttackingUnitUi> unitsUi = new List<AttackingUnitUi>();
 
-        public void SetInfo(string settlmentTitle, Army army, Action<Unit> transferUnitAction)
+        public void SetInfo(string settlmentTitle, AttackingArmy army, Action<AttackingUnit> transferUnitAction)
         {
             foreach (var unitUi in unitsUi)
             {
@@ -25,13 +25,11 @@ namespace Domination.Ui
             unitsUi.Clear();
 
             settlmentTitleLabel.text = settlmentTitle;
-            List<Unit> units = army.GetUnits();
 
-            foreach (var unit in units)
+            foreach (var unit in army.GetUnits())
             {
                 AttackingUnitUi unitUi = Instantiate(unitUiPrefab, unitsRoot);
-                AttackingUnit attackingUnit = (AttackingUnit)unit;
-                unitUi.Init(unit, transferUnitAction, true, attackingUnit.MarchingTime);
+                unitUi.Init(unit, transferUnitAction);
                 unitsUi.Add(unitUi);
             }
         }

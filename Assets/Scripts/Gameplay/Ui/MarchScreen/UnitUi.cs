@@ -6,7 +6,7 @@ using Domination.Warfare;
 using Domination.Utils;
 
 
-namespace Domination.Ui
+namespace Domination.Ui.Marching
 {
     public class UnitUi : MonoBehaviour
     {

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-namespace Domination.Ui
+namespace Domination.Ui.Marching
 {
     public class AttackingUnitUi : MonoBehaviour
     {
@@ -19,16 +19,19 @@ namespace Domination.Ui
         [SerializeField] private TextMeshProUGUI daysToArriveLabel = default;
 
 
-        public void Init(Unit unit, Action<Unit> transferUnitAction, bool canBeReturned, int daysToArrive)
+        public void Init(AttackingUnit unit, Action<AttackingUnit> transferUnitAction)
         {
             nameLabel.text = UnitsNameConstructor.Build(unit.Weapon);
             damageLabel.text = unit.Weapon.Damage.ToString();
             healthLabel.text = unit.Health.ToString();
 
-            daysToArriveLabel.gameObject.SetActive(daysToArrive > 0);
-            daysToArriveLabel.text = string.Format(DAYS_TO_ARRIVE_FORMAT, daysToArrive);
+            daysToArriveLabel.gameObject.SetActive(unit.MarchingTime > 0);
+            daysToArriveLabel.text = string.Format(DAYS_TO_ARRIVE_FORMAT, unit.MarchingTime);
 
-            if (canBeReturned)
+            returnUnitButton.gameObject.SetActive(unit.OriginalSettlment != null);
+            returnUnitButton.onClick.RemoveAllListeners();
+
+            if (unit.OriginalSettlment != null)
             {
                 returnUnitButton.onClick.AddListener(() => transferUnitAction.Invoke(unit));
             }

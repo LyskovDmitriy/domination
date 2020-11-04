@@ -27,14 +27,12 @@ namespace Domination.Warfare
 
         public int GetUnitsCount(WeaponType weaponType) => GetGroup(weaponType).Count;
 
-        public void MergeWithArmy(Army army)
+        public void AddUnits(IEnumerable<Unit> units)
         {
-            foreach (var unit in army.GetUnits())
+            foreach (var unit in units)
             {
                 AddUnit(unit);
             }
-
-            army.Clear();
         }
 
         public void AddUnit(Unit unit)
