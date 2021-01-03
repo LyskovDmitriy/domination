@@ -5,18 +5,16 @@ using UnityEngine.UI;
 using Domination.Warfare;
 using TMPro;
 using Utils.Ui;
-using Domination.Ui.Marching;
 
 
 namespace Domination.Ui
 {
-    public class SettlmentViewScreen : UiScreen
+    public class PlayerSettlmentViewScreen : UiScreen
     {
         private enum Mode
         {
             Construction,
             Recruitment,
-            EnemySettlment
         }
 
         [Header("Construction Layout")]
@@ -30,8 +28,6 @@ namespace Domination.Ui
         [SerializeField] private Transform recruitmentSlotsRoot = default;
         [SerializeField] private GameObject recruitmentLayout = default;
         [SerializeField] private Button openRecruitmentLayoutButton = default;
-        [Header("Enemy settlment")]
-        [SerializeField] private Button sendTroopsButton = default;
         [Space]
         [SerializeField] private GameObject armyPanel = default;
         [SerializeField] private TextMeshProUGUI meleeUnitsCount = default;
@@ -45,14 +41,13 @@ namespace Domination.Ui
         private Level level;
 
 
-        public override ScreenType Type => ScreenType.SettlmentViewScreen;
+        public override ScreenType Type => ScreenType.PlayerSettlmentViewScreen;
 
 
         private void Awake()
         {
             openConstructionLayoutButton.onClick.AddListener(() => SetMode(Mode.Construction));
             openRecruitmentLayoutButton.onClick.AddListener(() => SetMode(Mode.Recruitment));
-            sendTroopsButton.onClick.AddListener(OpenMarchScreen);
         }
 
 
@@ -68,14 +63,7 @@ namespace Domination.Ui
             EventsAggregator.Subscribe(typeof(BuildOptionChosenMessage), HandleBuildOptionChosen);
             EventsAggregator.Subscribe(typeof(UnitRecruitedMessage), UpdateUnitsCount);
 
-            if (selectedSettlment.Lord == player)
-            {
-                SetMode(Mode.Construction);
-            }
-            else
-            {
-                SetMode(Mode.EnemySettlment);
-            }
+            SetMode(Mode.Construction);
 
             UpdateUnitsCount();
             RefreshUi();
@@ -98,7 +86,6 @@ namespace Domination.Ui
         {
             constructionLayout.SetActive(false);
             recruitmentLayout.SetActive(false);
-            sendTroopsButton.gameObject.SetActive(false);
             openRecruitmentLayoutButton.gameObject.SetActive(false);
             armyPanel.SetActive(false);
 
@@ -114,11 +101,6 @@ namespace Domination.Ui
                     recruitmentLayout.SetActive(true);
                     openRecruitmentLayoutButton.gameObject.SetActive(true);
                     armyPanel.SetActive(true);
-                    break;
-
-                case Mode.EnemySettlment:
-                    constructionLayout.SetActive(true);
-                    sendTroopsButton.gameObject.SetActive(true);
                     break;
             }
         }
@@ -198,16 +180,6 @@ namespace Domination.Ui
             Army army = selectedSettlment.GetArmy();
             meleeUnitsCount.text = army.GetUnitsCount(WeaponType.Melee).ToString();
             rangedUnitsCount.text = army.GetUnitsCount(WeaponType.Ranged).ToString();
-        }
-
-
-        private void OpenMarchScreen()
-        {
-            EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.MarchScreen, (screen) =>
-            {
-                var marchScreen = (MarchScreen)screen;
-                marchScreen.Show(level, selectedSettlment);
-            }));
         }
     }
 }

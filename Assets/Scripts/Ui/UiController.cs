@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using Domination.EventsSystem;
@@ -15,12 +16,15 @@ namespace Domination.Ui
             typeof(PlayerCoinsCountUpdateMessage)
         };
 
+        private const string UiFolderName = "Ui";
+
         private static readonly Dictionary<ScreenType, string> ScreenToPath = new Dictionary<ScreenType, string>()
         {
-            { ScreenType.SettlmentViewScreen, "Ui/SettlmentViewScreen"},
-            { ScreenType.ChooseBuildingScreen, "Ui/ChooseBuildingScreen"},
-            { ScreenType.LevelUi, "Ui/LevelUi"},
-            { ScreenType.MarchScreen, "Ui/MarchScreen"},
+            { ScreenType.PlayerSettlmentViewScreen, "PlayerSettlmentViewScreen"},
+            { ScreenType.EnemySettlmentViewScreen, "EnemySettlmentViewScreen"},
+            { ScreenType.ChooseBuildingScreen, "ChooseBuildingScreen"},
+            { ScreenType.LevelUi, "LevelUi"},
+            { ScreenType.MarchScreen, "MarchScreen"},
         };
 
 
@@ -50,7 +54,7 @@ namespace Domination.Ui
 
             if (!createdScreens.TryGetValue(type, out UiScreen screen))
             {
-                UiScreen prefab = Resources.Load<UiScreen>(ScreenToPath[type]);
+                UiScreen prefab = Resources.Load<UiScreen>(Path.Combine(UiFolderName, ScreenToPath[type]));
                 screen = GameObject.Instantiate(prefab);
 
                 createdScreens.Add(type, screen);

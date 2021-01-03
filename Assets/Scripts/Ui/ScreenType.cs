@@ -7,6 +7,7 @@
         MarchScreen = 1,
         ChooseBuildingScreen = 2,
         LevelUi = 3,
-        SettlmentViewScreen = 4,
+        PlayerSettlmentViewScreen = 4,
+        EnemySettlmentViewScreen = 5,
     }
 }

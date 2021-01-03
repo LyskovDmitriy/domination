@@ -11,6 +11,8 @@ namespace Domination.Warfare
 
         public int TotalUnitsCount => meleeGroup.Count + rangedGroup.Count;
 
+        public bool IsEmpty => (TotalUnitsCount == 0);
+
 
         public Army(Army armyToCopy)
         {

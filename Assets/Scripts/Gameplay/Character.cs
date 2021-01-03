@@ -139,6 +139,20 @@ namespace Domination
             return army;
         }
 
+
+        public bool HasUnitsInSettlment(Settlment settlment)
+        {
+            var army = GetSettlmentArmy(settlment);
+
+            if (army != null)
+            {
+                return !army.IsEmpty;
+            }
+
+            return false;
+        }
+
+
         public void AddSettlment(Settlment settlment)
         {
             Settlments.Add(settlment);

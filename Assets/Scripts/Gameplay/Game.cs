@@ -11,7 +11,7 @@ namespace Domination
         [SerializeField] private Level level = default;
         [SerializeField] private Selector selector = default;
 
-        private bool isSettlmentViewShown;
+        private ScreenType settlmentScreenType = ScreenType.None;
 
 
         private void Awake()
@@ -39,12 +39,22 @@ namespace Domination
             }
             else if (connectedSettlment != null)
             {
-                EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.SettlmentViewScreen, (screen) =>
+                if (connectedSettlment.Lord == level.Player)
                 {
-                    ((SettlmentViewScreen)screen).Show(connectedSettlment, level);
-                }));
-
-                isSettlmentViewShown = true;
+                    settlmentScreenType = ScreenType.PlayerSettlmentViewScreen;
+                    EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.PlayerSettlmentViewScreen, (screen) =>
+                    {
+                        ((PlayerSettlmentViewScreen)screen).Show(connectedSettlment, level);
+                    }));
+                }
+                else
+                {
+                    settlmentScreenType = ScreenType.EnemySettlmentViewScreen;
+                    EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.EnemySettlmentViewScreen, (screen) =>
+                    {
+                        ((EnemySettlmentViewScreen)screen).Show(connectedSettlment, level);
+                    }));
+                }
             }
         }
 
@@ -54,10 +64,10 @@ namespace Domination
 
         private void HideSettlmentViewScreen()
         {
-            if (isSettlmentViewShown)
+            if (settlmentScreenType != ScreenType.None)
             {
-                EventsAggregator.TriggerEvent(new HideUiMessage(ScreenType.SettlmentViewScreen));
-                isSettlmentViewShown = false;
+                EventsAggregator.TriggerEvent(new HideUiMessage(settlmentScreenType));
+                settlmentScreenType = ScreenType.None;
             }
         }
     }
