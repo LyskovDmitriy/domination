@@ -54,7 +54,7 @@ namespace Domination.Ui
 
             if (!createdScreens.TryGetValue(type, out UiScreen screen))
             {
-                UiScreen prefab = Resources.Load<UiScreen>(Path.Combine(UiFolderName, ScreenToPath[type]));
+                var prefab = LoadScreen(type);
                 screen = GameObject.Instantiate(prefab);
 
                 createdScreens.Add(type, screen);
@@ -72,6 +72,8 @@ namespace Domination.Ui
             screen.OnHidden += OnScreenHidden;
             shownScreens.Add(screen);
         }
+
+        public static UiScreen LoadScreen(ScreenType screenType) => Resources.Load<UiScreen>(Path.Combine(UiFolderName, ScreenToPath[screenType]));
 
         public static void HideUi(IMessage message)
         {
