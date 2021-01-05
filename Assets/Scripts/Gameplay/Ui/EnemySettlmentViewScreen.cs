@@ -69,7 +69,7 @@ namespace Domination.Ui
 
         private void AttackSettlment()
         {
-            
+            EventsAggregator.TriggerEvent(new PlayerAttackSettlment(selectedSettlment.Id));
         }
     }
 }

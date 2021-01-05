@@ -6,7 +6,7 @@ using Utils.Ui;
 
 namespace Domination
 {
-    public class Game : MonoBehaviour
+    public class GameMap : MonoBehaviour
     {
         [SerializeField] private Level level = default;
         [SerializeField] private Selector selector = default;
@@ -20,14 +20,12 @@ namespace Domination
             selector.OnTileDeselected += OnTileDeselected;
         }
 
-
-        private void Start()
+        public void Init()
         {
             level.Create();
 
             EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.LevelUi));
         }
-
 
         private void OnTileSelected(Tile selectedTile)
         {

@@ -67,4 +67,14 @@ namespace Domination.EventsSystem
             SettlmentId = settlmentId;
         }
     }
+
+    public struct PlayerAttackSettlment : IMessage
+    {
+        public readonly uint SettlmentId;
+
+        public PlayerAttackSettlment(uint settlmentId)
+        {
+            SettlmentId = settlmentId;
+        }
+    }
 }
