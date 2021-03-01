@@ -62,7 +62,7 @@ namespace Generator.Ui
         }
 
 
-        private void DrawMap(TileType[,] map, Vector2Int[] castles, List<Vector2Int> villages)
+        private void DrawMap(TileType[,] map, Vector2Int[] castles, Vector2Int[] villages)
         {
             for (int x = 0; x < map.GetLength(0); x++)
             {

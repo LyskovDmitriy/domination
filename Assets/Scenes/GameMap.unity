@@ -253,9 +253,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 4605093017315989438, guid: e0d211de9f7b2fc4cb64e4742b5101a6,
     type: 3}
-  castlePrefab: {fileID: 7128572528614448172, guid: 083a19d8bfc805643a9cdb1d224c30d6,
+  castlePrefab: {fileID: 8986850225401874347, guid: 083a19d8bfc805643a9cdb1d224c30d6,
     type: 3}
-  villagePrefab: {fileID: 3844778528452872998, guid: b4fdbb9b8445ac94b80fe6e17f2a5dbb,
+  villagePrefab: {fileID: 4288863612250963391, guid: b4fdbb9b8445ac94b80fe6e17f2a5dbb,
     type: 3}
   distanceBetweenTiles: {x: 1.05, y: 1.05}
   cameraController: {fileID: 161716050}

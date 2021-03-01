@@ -1,11 +1,12 @@
-﻿using Domination.Warfare;
+﻿using Domination.LevelView;
+using Domination.Warfare;
 using System.Collections.Generic;
 using UnityEngine;
 
 
 namespace Domination
 {
-    public abstract class Settlment : MonoBehaviour
+    public abstract class Settlment
     {
         public class Building
         {
@@ -39,13 +40,14 @@ namespace Domination
 
         public uint Id { get; private set; }
 
+        public Vector2Int Position { get; private set; }
+
         public Character Lord { get; set; }
 
-        public Tile Tile { get; set; }
 
-
-        protected virtual void Awake()
+        public Settlment(Vector2Int position)
         {
+            Position = position;
             Id = NextId;
             NextId++;
         }

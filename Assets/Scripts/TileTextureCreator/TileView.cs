@@ -3,20 +3,23 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class TileView : MonoBehaviour
+namespace Generator.Ui
 {
-    [SerializeField] private Image image = default;
-
-    private TileType tileType;
-
-
-    public TileType TileType
+    public class TileView : MonoBehaviour
     {
-        get => tileType;
-        set
+        [SerializeField] private Image image = default;
+
+        private TileType tileType;
+
+
+        public TileType TileType
         {
-            tileType = value;
-            image.color = TilesContainer.GetTileColor(TileType);
+            get => tileType;
+            set
+            {
+                tileType = value;
+                image.color = TilesContainer.GetTileColor(TileType);
+            }
         }
     }
 }

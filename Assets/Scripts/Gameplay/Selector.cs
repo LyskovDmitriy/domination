@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domination.LevelView;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,14 +9,14 @@ namespace Domination
 {
     public class Selector : MonoBehaviour
     {
-        public event Action<Tile> OnTileSelected;
+        public event Action<TileView> OnTileSelected;
         public event Action OnTileDeselected;
 
 
         private new Camera camera;
         private Vector3? touchStartPosition;
 
-        private Tile selectedTile;
+        private TileView selectedTile;
 
         public void Init(Camera camera)
         {
@@ -40,7 +41,7 @@ namespace Domination
                     {
                         RaycastHit2D hit = Physics2D.Raycast(camera.ScreenToWorldPoint(touchStartPosition.Value), Vector3.forward);
 
-                        Tile tile = hit.transform?.GetComponentInParent<Tile>();
+                        TileView tile = hit.transform?.GetComponentInParent<TileView>();
 
                         if (tile != null)
                         {

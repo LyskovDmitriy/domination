@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3789711083033784127}
-  - component: {fileID: 7128572528614448172}
+  - component: {fileID: 8986850225401874347}
   m_Layer: 0
   m_Name: Castle
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7128572528614448172
+--- !u!114 &8986850225401874347
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +41,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3289171088089471738}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e58c40b9259bcf46a81294a3d2192aa, type: 3}
+  m_Script: {fileID: 11500000, guid: acbfb4f847b8531499dc0cc7a544cb60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4921355438054562323
@@ -90,6 +90,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

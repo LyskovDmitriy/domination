@@ -103,6 +103,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -184,6 +185,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -263,7 +265,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3289171088089471738}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b8b8acc21a04b3459f99a586b2d619e, type: 3}
+  m_Script: {fileID: 11500000, guid: b078cc54c4f0c2f40b6a0fe70615f7cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   terrainSpriteRenderer: {fileID: 6354259571543374141}
@@ -315,6 +317,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

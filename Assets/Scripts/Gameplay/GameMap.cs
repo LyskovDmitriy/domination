@@ -2,6 +2,7 @@
 using Domination.Ui;
 using Domination.EventsSystem;
 using Utils.Ui;
+using Domination.LevelView;
 
 
 namespace Domination
@@ -27,9 +28,9 @@ namespace Domination
             EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.LevelUi));
         }
 
-        private void OnTileSelected(Tile selectedTile)
+        private void OnTileSelected(TileView selectedTile)
         {
-            Settlment connectedSettlment = selectedTile.Settlment;
+            Settlment connectedSettlment = level.FindSettlment(selectedTile.Position)?.Settlment;
 
             if ((connectedSettlment == null) || selectedTile.IsInFog)
             {

@@ -7,10 +7,10 @@ using Random = UnityEngine.Random;
 
 public static class SettlmentsGenerator
 {
-    public static (Vector2Int[] castles, List<Vector2Int> villages) Generate(TileType[,] map)
+    public static (Vector2Int[] castles, Vector2Int[] villages) Generate(TileType[,] map)
     {
         Vector2Int[] castles = GetCastlesPositions(map);
-        List<Vector2Int> villages = GetVillagesPositions(map, castles);
+        Vector2Int[] villages = GetVillagesPositions(map, castles);
 
         return (castles, villages);
     }
@@ -69,9 +69,9 @@ public static class SettlmentsGenerator
     }
 
 
-    private static List<Vector2Int> GetVillagesPositions(TileType[,] map, Vector2Int[] castles)
+    private static Vector2Int[] GetVillagesPositions(TileType[,] map, Vector2Int[] castles)
     {
-        List<Vector2Int> villages = new List<Vector2Int>();
+        var villages = new Vector2Int[MapGenerationSettings.SpawnedVillagesCount];
 
         for (int i = 0; i < MapGenerationSettings.SpawnedVillagesCount; i++)
         {
@@ -131,7 +131,7 @@ public static class SettlmentsGenerator
             {
                 if (randomWeight < tile.Item2)
                 {
-                    villages.Add(tile.Item1);
+                    villages[i] = tile.Item1;
                     break;
                 }
 

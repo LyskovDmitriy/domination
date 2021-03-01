@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Utils;
 using Utils.Ui;
 
 
@@ -60,7 +59,7 @@ namespace Domination.Ui.Marching
             {
                 SettlmentArmyUi settlmentArmyUi = Instantiate(settlmentArmyPrefab, settlmentArmiesRoot);
 
-                float distance = Pathfinding.GetDistance(settlment.Tile.Position, targetSettlment.Tile.Position, level.Map, TilesPassingCostContainer.GetTilePassingCost);
+                float distance = level.CalculateDistanceBetweenSettlments(settlment, targetSettlment);
                 int daysToArrive = Mathf.CeilToInt(distance / Constants.UNIT_MOVESPEED);
 
                 availableArmies.Add(new SettlmentArmy 
