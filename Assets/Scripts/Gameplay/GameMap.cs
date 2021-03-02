@@ -3,13 +3,14 @@ using Domination.Ui;
 using Domination.EventsSystem;
 using Utils.Ui;
 using Domination.LevelView;
+using Domination.LevelLogic;
 
 
 namespace Domination
 {
     public class GameMap : MonoBehaviour
     {
-        [SerializeField] private Level level = default;
+        [SerializeField] private MapView map = default;
         [SerializeField] private Selector selector = default;
 
         private ScreenType settlmentScreenType = ScreenType.None;
@@ -23,14 +24,14 @@ namespace Domination
 
         public void Init()
         {
-            level.Create();
+            map.Create();
 
             EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.LevelUi));
         }
 
         private void OnTileSelected(TileView selectedTile)
         {
-            Settlment connectedSettlment = level.FindSettlment(selectedTile.Position)?.Settlment;
+            Settlment connectedSettlment = map.FindSettlment(selectedTile.Position)?.Settlment;
 
             if ((connectedSettlment == null) || selectedTile.IsInFog)
             {
@@ -38,12 +39,12 @@ namespace Domination
             }
             else if (connectedSettlment != null)
             {
-                if (connectedSettlment.Lord == level.Player)
+                if (connectedSettlment.Lord == map.Player)
                 {
                     settlmentScreenType = ScreenType.PlayerSettlmentViewScreen;
                     EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.PlayerSettlmentViewScreen, (screen) =>
                     {
-                        ((PlayerSettlmentViewScreen)screen).Show(connectedSettlment, level);
+                        ((PlayerSettlmentViewScreen)screen).Show(connectedSettlment, map.Player);
                     }));
                 }
                 else
@@ -51,7 +52,7 @@ namespace Domination
                     settlmentScreenType = ScreenType.EnemySettlmentViewScreen;
                     EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.EnemySettlmentViewScreen, (screen) =>
                     {
-                        ((EnemySettlmentViewScreen)screen).Show(connectedSettlment, level);
+                        ((EnemySettlmentViewScreen)screen).Show(connectedSettlment, map.Level);
                     }));
                 }
             }

@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Domination.LevelLogic;
 
 
 namespace Domination.Ui

@@ -1,7 +1,8 @@
+using Domination.LevelLogic;
 using UnityEngine;
 
 
-namespace Domination
+namespace Domination.LevelView
 {
     public class SettlmentView : MonoBehaviour
     {

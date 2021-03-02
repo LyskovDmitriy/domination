@@ -230,7 +230,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 173673221}
-  - component: {fileID: 173673220}
+  - component: {fileID: 173673223}
   - component: {fileID: 173673222}
   m_Layer: 0
   m_Name: Level
@@ -239,28 +239,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &173673220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 173673219}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98e7442d44f5ec249923059d9c80df54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tilePrefab: {fileID: 4605093017315989438, guid: e0d211de9f7b2fc4cb64e4742b5101a6,
-    type: 3}
-  castlePrefab: {fileID: 8986850225401874347, guid: 083a19d8bfc805643a9cdb1d224c30d6,
-    type: 3}
-  villagePrefab: {fileID: 4288863612250963391, guid: b4fdbb9b8445ac94b80fe6e17f2a5dbb,
-    type: 3}
-  distanceBetweenTiles: {x: 1.05, y: 1.05}
-  cameraController: {fileID: 161716050}
-  selector: {fileID: 1671462859}
-  fogSystem: {fileID: 173673222}
 --- !u!4 &173673221
 Transform:
   m_ObjectHideFlags: 0
@@ -289,6 +267,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialVisibilityRange: 3
   increasedVisibilityRangePerTurn: 0.5
+--- !u!114 &173673223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 173673219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b73399e7d1d43bb40813d0622c795e0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tilePrefab: {fileID: 4605093017315989438, guid: e0d211de9f7b2fc4cb64e4742b5101a6,
+    type: 3}
+  castlePrefab: {fileID: 8986850225401874347, guid: 083a19d8bfc805643a9cdb1d224c30d6,
+    type: 3}
+  villagePrefab: {fileID: 4288863612250963391, guid: b4fdbb9b8445ac94b80fe6e17f2a5dbb,
+    type: 3}
+  distanceBetweenTiles: {x: 1.05, y: 1.05}
+  cameraController: {fileID: 161716050}
+  selector: {fileID: 1671462859}
+  fogSystem: {fileID: 173673222}
 --- !u!1 &248276301
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,7 +409,7 @@ GameObject:
   - component: {fileID: 1983233988}
   - component: {fileID: 1983233987}
   m_Layer: 0
-  m_Name: GameMap
+  m_Name: Scene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -427,7 +427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc4618cc31012524980d346d2a331d4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level: {fileID: 173673220}
+  map: {fileID: 173673223}
   selector: {fileID: 1671462859}
 --- !u!4 &1983233988
 Transform:

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-namespace Domination
+namespace Domination.LevelLogic
 {
     public class Village : Settlment
     {

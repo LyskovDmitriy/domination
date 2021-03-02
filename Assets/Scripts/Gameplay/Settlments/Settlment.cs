@@ -1,10 +1,9 @@
-﻿using Domination.LevelView;
-using Domination.Warfare;
+﻿using Domination.Warfare;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Domination
+namespace Domination.LevelLogic
 {
     public abstract class Settlment
     {

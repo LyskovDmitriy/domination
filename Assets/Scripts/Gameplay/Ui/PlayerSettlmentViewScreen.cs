@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Domination.Warfare;
 using TMPro;
 using Utils.Ui;
-
+using Domination.LevelLogic;
 
 namespace Domination.Ui
 {
@@ -38,7 +38,6 @@ namespace Domination.Ui
 
         private Settlment selectedSettlment;
         private Character player;
-        private Level level;
 
 
         public override ScreenType Type => ScreenType.PlayerSettlmentViewScreen;
@@ -51,13 +50,12 @@ namespace Domination.Ui
         }
 
 
-        public void Show(Settlment settlment, Level level)
+        public void Show(Settlment settlment, Character player)
         {
             Show();
 
             selectedSettlment = settlment;
-            this.level = level;
-            player = level.Player;
+            this.player = player;
 
             EventsAggregator.Subscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
             EventsAggregator.Subscribe(typeof(BuildOptionChosenMessage), HandleBuildOptionChosen);

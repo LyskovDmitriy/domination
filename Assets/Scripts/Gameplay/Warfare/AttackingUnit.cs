@@ -1,4 +1,7 @@
-﻿namespace Domination.Warfare
+﻿using Domination.LevelLogic;
+
+
+namespace Domination.Warfare
 {
     public class AttackingUnit : Unit
     {
