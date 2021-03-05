@@ -18,12 +18,6 @@ namespace Domination
             levelWrapper = currentLevel;
         }
 
-
-        public static WeaponInfo GetWeaponInfo(WeaponType type, int weaponLevel)
-        {
-            return UnitRecruitmentSettings.GetWeapons(type)[weaponLevel];
-        }
-
         public static int GetHealth(WeaponType type) => UnitRecruitmentSettings.GetHealth(type);
 
 
@@ -35,8 +29,7 @@ namespace Domination
 
         public static void Recruit(uint settlmentId, WeaponType weaponType, int weaponLevel)
         {
-            WeaponInfo weapon = GetWeaponInfo(weaponType, weaponLevel);
-            Unit unit = new Unit(weapon.Weapon, weaponType, GetHealth(weaponType));
+            Unit unit = new Unit(weaponLevel, weaponType, GetHealth(weaponType));
 
             levelWrapper.GetCharacterWithSettlment(settlmentId).Recruit(unit, settlmentId);
         }
@@ -56,8 +49,7 @@ namespace Domination
 
         private static Unit CreateUnit(WeaponType weaponType, int weaponLevel)
         {
-            WeaponInfo weapon = GetWeaponInfo(weaponType, weaponLevel);
-            return new Unit(weapon.Weapon, weaponType, GetHealth(weaponType));
+            return new Unit(weaponLevel, weaponType, GetHealth(weaponType));
         }
     }
 }

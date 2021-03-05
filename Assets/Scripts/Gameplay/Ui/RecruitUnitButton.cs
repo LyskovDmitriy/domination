@@ -23,7 +23,7 @@ namespace Domination.Ui
             button.onClick.AddListener(clickAction);
             button.interactable = canRecruit;
 
-            WeaponInfo weaponInfo = RecruitmentSystem.GetWeaponInfo(weaponType, level);
+            WeaponInfo weaponInfo = UnitRecruitmentSettings.GetWeapons(weaponType)[level];
             titleLabel.text = UnitsNameConstructor.Build(weaponInfo.Weapon);
             damageLabel.text = weaponInfo.Weapon.Damage.ToString();
             healthLabel.text = RecruitmentSystem.GetHealth(weaponType).ToString();

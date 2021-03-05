@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Domination.Data;
+using System.Linq;
+using System.Collections.Generic;
 
 
 namespace Domination.Warfare
@@ -60,6 +62,9 @@ namespace Domination.Warfare
             meleeGroup.Clear();
             rangedGroup.Clear();
         }
+
+        public UnitData[] GetData() => meleeGroup.Concat(rangedGroup)
+            .Select(unit => unit.GetData()).ToArray();
 
         private List<Unit> GetGroup(WeaponType weaponType) => (weaponType == WeaponType.Melee) ? meleeGroup : rangedGroup;
     }

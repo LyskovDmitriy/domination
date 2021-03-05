@@ -18,9 +18,6 @@ namespace Domination.Utils
 
         public Character GetCharacterById(uint id) => Array.Find(level.Characters, character => character.Id == id);
 
-        public Settlment GetSettlment(uint settlmentId)
-        {
-            return GetCharacterWithSettlment(settlmentId).GetSettlmentById(settlmentId);
-        }
+        public Settlment GetSettlment(uint settlmentId) => GetCharacterWithSettlment(settlmentId).GetSettlmentById(settlmentId);
     }
 }

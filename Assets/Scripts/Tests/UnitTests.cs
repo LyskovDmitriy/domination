@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using UnityEngine;
 using Domination.Warfare;
 
 
@@ -7,24 +6,22 @@ using Domination.Warfare;
 public class UnitTests
 {
     [Test]
-    public void UnitConstructorWithSetup([Values] WeaponType weaponType, [Values(1, 10, 100)] int health)
+    public void UnitConstructorWithSetup([Values] WeaponType weaponType, [Values(1, 2, 3)] int weaponLevel, [Values(1, 10, 100)] int health)
     {
-        var weapon = ScriptableObject.CreateInstance<Weapon>();
-        Unit unit = new Unit(weapon, weaponType, health);
+        Unit unit = new Unit(weaponLevel, weaponType, health);
 
-        Assert.AreEqual(unit.Weapon, weapon);
+        Assert.AreEqual(unit.WeaponLevel, weaponLevel);
         Assert.AreEqual(unit.WeaponType, weaponType);
         Assert.AreEqual(unit.Health, health);
     }
 
     [Test]
-    public void UnitCloneConstructor([Values] WeaponType weaponType, [Values(1, 10, 100)] int health)
+    public void UnitCloneConstructor([Values] WeaponType weaponType, [Values(1, 2, 3)] int weaponLevel, [Values(1, 10, 100)] int health)
     {
-        var weapon = ScriptableObject.CreateInstance<Weapon>();
-        Unit unit = new Unit(weapon, weaponType, health);
+        Unit unit = new Unit(weaponLevel, weaponType, health);
         Unit copy = new Unit(unit);
 
-        Assert.AreEqual(copy.Weapon, unit.Weapon);
+        Assert.AreEqual(copy.WeaponLevel, unit.WeaponLevel);
         Assert.AreEqual(copy.WeaponType, unit.WeaponType);
         Assert.AreEqual(copy.Health, unit.Health);
     }

@@ -25,14 +25,14 @@ public class ArmyTests
 
         for (int i = 0; i < meleeUnitsCount; i++)
         {
-            meleeUnits.Add(new Unit(null, WeaponType.Melee, Random.Range(0, 100)));
+            meleeUnits.Add(new Unit(0, WeaponType.Melee, Random.Range(0, 100)));
         }        
 
         var rangedUnits = new List<Unit>(rangedUnitsCount);
 
         for (int i = 0; i < rangedUnitsCount; i++)
         {
-            rangedUnits.Add(new Unit(null, WeaponType.Ranged, Random.Range(0, 100)));
+            rangedUnits.Add(new Unit(0, WeaponType.Ranged, Random.Range(0, 100)));
         }
 
         var army = new Army();

@@ -1,4 +1,6 @@
-﻿using Domination.Warfare;
+﻿using Domination.Data;
+using Domination.Warfare;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +13,13 @@ namespace Domination.LevelLogic
         {
             public BuildingType type;
             public int level;
+
+
+            public BuildingData GetData() => new BuildingData
+            {
+                type = type,
+                level = level
+            };
         }
 
         private static uint NextId = 1;
@@ -51,6 +60,17 @@ namespace Domination.LevelLogic
             NextId++;
         }
 
+
+        public SettlmentData GetData() => new SettlmentData
+        {
+            id = Id,
+            type = Type,
+          
+            position = Position,
+            ownerId = (Lord == null) ? 0 : Lord.Id,
+            
+            buildings = buildings.Select(b => b.GetData()).ToArray()
+        };
 
         public void DestroyBuilding(BuildingType buildingType)
         {

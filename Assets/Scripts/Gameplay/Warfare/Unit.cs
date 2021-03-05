@@ -1,24 +1,36 @@
-﻿namespace Domination.Warfare
+﻿using Domination.Data;
+
+
+namespace Domination.Warfare
 {
     public class Unit 
     {
         public WeaponType WeaponType { get; private set; }
-        public Weapon Weapon { get; private set; }
-        public int Health { get; set; }
+        public int WeaponLevel { get; private set; }
+        public Weapon Weapon => UnitRecruitmentSettings.GetWeapons(WeaponType)[WeaponLevel].Weapon;
+
+        public int Health { get; private set; }
 
         
-        public Unit(Weapon weapon, WeaponType weaponType, int health)
+        public Unit(int weaponLevel, WeaponType weaponType, int health)
         {
-            Weapon = weapon;
-            Health = health;
             WeaponType = weaponType;
+            WeaponLevel = weaponLevel;
+            Health = health;
         }
 
         public Unit(Unit unit)
         {
             WeaponType = unit.WeaponType;
-            Weapon = unit.Weapon;
+            WeaponLevel = unit.WeaponLevel;
             Health = unit.Health;
         }
+
+        public UnitData GetData() => new UnitData
+        {
+            weaponType = WeaponType,
+            weaponLevel = WeaponLevel,
+            health = Health
+        };
     }
 }

@@ -1,8 +1,10 @@
-﻿using Domination.Generator;
+﻿using Domination.Data;
+using Domination.Generator;
 using Domination.LevelLogic;
 using Domination.Utils;
 using Utils;
 using System;
+using System.Linq;
 
 
 namespace Domination
@@ -14,7 +16,6 @@ namespace Domination
         private LevelMap levelMap;
 
         private int activeCharacterIndex;
-        private bool isFirstTurn;
 
         private Character neutralCharacter; //To place garrisons in neutral villages
 
@@ -34,9 +35,6 @@ namespace Domination
         public Level()
         {
             levelMap = LevelGenerator.Generate();
-
-            isFirstTurn = true;
-
 
             Characters[0] = new Player();
             Characters[0].AddSettlment(levelMap.castles[0]);
@@ -62,6 +60,17 @@ namespace Domination
         }
 
 
+        public LevelData GetData() => new LevelData
+        {
+            activeCharacterIndex = activeCharacterIndex,
+            currentTurn = CurrentTurn,
+
+            actingCharacters = Characters.Select(c => c.GetData()).ToArray(),
+            neutralCharacter = neutralCharacter.GetData(),
+
+            mapData = levelMap.GetData()
+        };
+
         public float CalculateDistanceBetweenSettlments(Settlment startingSettlment, Settlment targetSettlment) => 
             Pathfinding.GetDistance(startingSettlment.Position, targetSettlment.Position, levelMap.simpleMap, TilesPassingCostContainer.GetTilePassingCost);
 
@@ -72,7 +81,6 @@ namespace Domination
 
             if (activeCharacterIndex >= Characters.Length)
             {
-                isFirstTurn = false;
                 activeCharacterIndex %= Characters.Length;
             }
 
@@ -82,7 +90,7 @@ namespace Domination
             }
 
             ActiveCharacter.OnTurnFinish += OnCharacterTurnFinish;
-            ActiveCharacter.StartTurn(isFirstTurn);
+            ActiveCharacter.StartTurn(CurrentTurn == 0);
 
             OnTurnFinished?.Invoke();
         }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Domination.LevelLogic;
@@ -23,7 +22,7 @@ namespace Domination.Ui
             upgradeButton.onClick.AddListener(() => BuildingSystem.UpgradeBuilding(settlmentId, buildingInfo.type));
             upgradeButton.interactable = isInteractable;
 
-            switch (BuildingSystem.CanUpdateBuilding(Character.PlayerId, settlmentType, buildingInfo.type, buildingInfo.level))
+            switch (BuildingSystem.CanUpdateBuilding(settlmentId, settlmentType, buildingInfo.type, buildingInfo.level))
             {
                 case UpdatePossibility.AlreadyHighestLevel:
                     nameLabel.text = $"{buildingInfo.type} {buildingInfo.level}";
