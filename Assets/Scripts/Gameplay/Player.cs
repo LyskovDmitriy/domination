@@ -1,5 +1,7 @@
-﻿using Domination.Data;
+﻿using System;
+using Domination.Data;
 using Domination.EventsSystem;
+using Domination.LevelLogic;
 
 
 namespace Domination
@@ -8,8 +10,13 @@ namespace Domination
     {
         public Player() : base()
         {
-            EventsAggregator.Subscribe(typeof(RequestPlayerTurnEndMessage), HandleTurnEndRequest);
-            EventsAggregator.Subscribe(typeof(RequestPlayerCoinsUpdateMessage), HandleCoinsUpdateRequest);
+            SubscribeToMessages();
+        }
+
+        public Player(Func<uint, Settlment> settlmentGetter, CharacterData data) : 
+            base(settlmentGetter, data) 
+        {
+            SubscribeToMessages();
         }
 
         ~Player()
@@ -52,5 +59,11 @@ namespace Domination
         private void HandleTurnEndRequest(IMessage _) => FinishTurn();
 
         private void HandleCoinsUpdateRequest(IMessage _) => SendCoinsUpdateMessage();
+
+        private void SubscribeToMessages()
+        {
+            EventsAggregator.Subscribe(typeof(RequestPlayerTurnEndMessage), HandleTurnEndRequest);
+            EventsAggregator.Subscribe(typeof(RequestPlayerCoinsUpdateMessage), HandleCoinsUpdateRequest);
+        }
     }
 }

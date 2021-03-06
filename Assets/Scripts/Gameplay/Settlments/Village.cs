@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Domination.Data;
+using UnityEngine;
 
 
 namespace Domination.LevelLogic
@@ -9,5 +10,7 @@ namespace Domination.LevelLogic
 
 
         public Village(Vector2Int position) : base(position) { }
+
+        public Village(SettlmentData data) : base(data) { }
     }
 }

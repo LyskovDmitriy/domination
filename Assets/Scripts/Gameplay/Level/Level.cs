@@ -1,7 +1,6 @@
 ﻿using Domination.Data;
 using Domination.Generator;
 using Domination.LevelLogic;
-using Domination.Utils;
 using Utils;
 using System;
 using System.Linq;
@@ -21,7 +20,7 @@ namespace Domination
 
 
         public Character Player => Characters[0];
-        public Character[] Characters { get; private set; } = new Character[2];
+        public Character[] Characters { get; private set; }
 
         public Tile[,] Map => levelMap.map;
 
@@ -36,16 +35,16 @@ namespace Domination
         {
             levelMap = LevelGenerator.Generate();
 
+            Characters = new Character[2];
+
             Characters[0] = new Player();
             Characters[0].AddSettlment(levelMap.castles[0]);
 
             Characters[1] = new AiCharacter();
             Characters[1].AddSettlment(levelMap.castles[1]);
 
-            LevelWrapper wrapper = new LevelWrapper(this);
-
-            BuildingSystem.Init(wrapper);
-            RecruitmentSystem.Init(wrapper);
+            BuildingSystem.Init(this);
+            RecruitmentSystem.Init(this);
 
             neutralCharacter = new Character();
 
@@ -55,8 +54,34 @@ namespace Domination
                 RecruitmentSystem.SetupNeutralVillageArmy(village);
             }
 
-            Characters[0].OnTurnFinish += OnCharacterTurnFinish;
-            Characters[0].StartTurn(true);
+            ActiveCharacter.OnTurnFinish += OnCharacterTurnFinish;
+            ActiveCharacter.StartTurn(true);
+        }
+
+        public Level(LevelData data)
+        {
+            levelMap = new LevelMap(data.mapData);
+
+            activeCharacterIndex = data.activeCharacterIndex;
+            CurrentTurn = data.currentTurn;
+
+            Characters = new Character[data.actingCharacters.Length];
+
+            for (int i = 0; i < data.actingCharacters.Length; i++)
+            {
+                var characterData = data.actingCharacters[i];
+
+                if (characterData.isPlayer)
+                {
+                    Characters[i] = new Player(GetSettlment, characterData);
+                }
+                else
+                {
+                    Characters[i] = new AiCharacter(GetSettlment, characterData);
+                }
+            }
+
+            neutralCharacter = new Character(GetSettlment, data.neutralCharacter);
         }
 
 
@@ -73,6 +98,8 @@ namespace Domination
 
         public float CalculateDistanceBetweenSettlments(Settlment startingSettlment, Settlment targetSettlment) => 
             Pathfinding.GetDistance(startingSettlment.Position, targetSettlment.Position, levelMap.simpleMap, TilesPassingCostContainer.GetTilePassingCost);
+
+        public Settlment GetSettlment(uint settlmentId) => Array.Find(GetSettlments(), s => s.Id == settlmentId);
 
         private void OnCharacterTurnFinish()
         {
@@ -94,5 +121,8 @@ namespace Domination
 
             OnTurnFinished?.Invoke();
         }
+
+        private Settlment[] GetSettlments() =>
+            Castles.Cast<Settlment>().Concat(Villages.Cast<Settlment>()).ToArray();
     }
 }

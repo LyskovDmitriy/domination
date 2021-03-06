@@ -26,14 +26,12 @@ namespace Domination
 
         public int MeleeWeaponLevel { get; private set; } = 0;
         public int RangedWeaponLevel { get; private set; } = 0;
-        //Extract general, builder with their own logic
-
-        public int Income => Settlments.Sum((settlment) => settlment.Income);
 
         public List<Settlment> Settlments { get; private set; } = new List<Settlment>();
-
-
         public Settlment Castle => Settlments.Find(s => s.Type == SettlmentType.Castle);
+        
+        public int Income => Settlments.Sum((settlment) => settlment.Income);
+
 
         public int Coins
         {
@@ -53,6 +51,33 @@ namespace Domination
             Id = NextId;
             NextId++;
             coins = DefaultCoinsCount;
+        }
+
+        public Character(Func<uint, Settlment> settlmentGetter, CharacterData data)
+        {
+            Id = data.id;
+            Coins = data.coinsCount;
+
+            MeleeWeaponLevel = data.meleeWeaponLevel;
+            RangedWeaponLevel = data.rangedWeaponLevel;
+
+            foreach (var settlmentId in data.ownedSettlments)
+            {
+                AddSettlment(settlmentGetter(settlmentId));
+            }
+
+            foreach (var armyData in data.stationedArmies)
+            {
+                stationedArmies.Add(settlmentGetter(armyData.settlmentId), new Army(armyData.units));
+            }
+
+            foreach (var marchingUnitData in data.marchingUnits)
+            {
+                AddMarchingUnit(new Unit(
+                    marchingUnitData.unitData),
+                    settlmentGetter(marchingUnitData.targetSettlment), 
+                    marchingUnitData.daysLeft);
+            }
         }
 
 
@@ -88,12 +113,7 @@ namespace Domination
                 marchingUnits[i].daysLeft--;
                 if (marchingUnits[i].daysLeft == 0)
                 {
-                    if (!stationedArmies.TryGetValue(marchingUnits[i].targetSettlment, out var army))
-                    {
-                        army = new Army();
-                        stationedArmies.Add(marchingUnits[i].targetSettlment, army);
-                    }
-
+                    var army = GetSettlmentArmy(marchingUnits[i].targetSettlment);
                     army.AddUnit(marchingUnits[i].unit);
                     marchingUnits.RemoveAt(i);
                 }
@@ -110,14 +130,13 @@ namespace Domination
             });
         }
 
-        public List<MarchingUnit> GetMarchingUnits(Settlment settlment) => marchingUnits.FindAll((unit) => unit.targetSettlment == settlment);
+        public List<MarchingUnit> GetMarchingUnits(Settlment settlment) => 
+            marchingUnits.FindAll((unit) => unit.targetSettlment == settlment);
 
         public bool HasSettlment(uint settlmentId) => GetSettlmentById(settlmentId) != null;
 
-        public virtual void DestroyBuilding(uint settlmentId, BuildingType buildingType)
-        {
+        public virtual void DestroyBuilding(uint settlmentId, BuildingType buildingType) => 
             GetSettlmentById(settlmentId).DestroyBuilding(buildingType);
-        }
 
         public virtual void UpgradeBuilding(uint settlmentId, BuildingType buildingType)
         {
@@ -141,14 +160,18 @@ namespace Domination
             EventsAggregator.TriggerEvent(new UnitRecruitedMessage(Id, settlmentId));
         }
 
-        public Settlment GetSettlmentById(uint settlmentId) => Settlments.Find((settlment) => settlment.Id == settlmentId);
+        public Settlment GetSettlmentById(uint settlmentId) => 
+            Settlments.Find((settlment) => settlment.Id == settlmentId);
 
         public bool HasCoins(int recuiredAmount) => Coins >= recuiredAmount;
 
         public Army GetSettlmentArmy(Settlment settlment)
         {
-            stationedArmies.TryGetValue(settlment, out var army);
-            return army;
+            if (!stationedArmies.ContainsKey(settlment))
+            {
+                stationedArmies.Add(settlment, new Army());
+            }
+            return stationedArmies[settlment];
         }
 
         public bool HasUnitsInSettlment(Settlment settlment)
@@ -166,7 +189,6 @@ namespace Domination
         public void AddSettlment(Settlment settlment)
         {
             Settlments.Add(settlment);
-            stationedArmies.Add(settlment, new Army());
             settlment.Lord = this;
         }
 

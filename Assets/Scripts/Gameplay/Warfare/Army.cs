@@ -28,6 +28,14 @@ namespace Domination.Warfare
             rangedGroup = new List<Unit>();
         }
 
+        public Army(UnitData[] data)
+        {
+            foreach (var unitData in data)
+            {
+                AddUnit(new Unit(unitData));
+            }
+        }
+
 
         public int GetUnitsCount(WeaponType weaponType) => GetGroup(weaponType).Count;
 
@@ -39,15 +47,9 @@ namespace Domination.Warfare
             }
         }
 
-        public void AddUnit(Unit unit)
-        {
-            GetGroup(unit.WeaponType).Add(unit);
-        }
+        public void AddUnit(Unit unit) => GetGroup(unit.WeaponType).Add(unit);
 
-        public void RemoveUnit(Unit unit)
-        {
-            GetGroup(unit.WeaponType).Remove(unit);
-        }
+        public void RemoveUnit(Unit unit) => GetGroup(unit.WeaponType).Remove(unit);
 
         public List<Unit> GetUnits()
         {
@@ -66,6 +68,7 @@ namespace Domination.Warfare
         public UnitData[] GetData() => meleeGroup.Concat(rangedGroup)
             .Select(unit => unit.GetData()).ToArray();
 
-        private List<Unit> GetGroup(WeaponType weaponType) => (weaponType == WeaponType.Melee) ? meleeGroup : rangedGroup;
+        private List<Unit> GetGroup(WeaponType weaponType) => 
+            (weaponType == WeaponType.Melee) ? meleeGroup : rangedGroup;
     }
 }

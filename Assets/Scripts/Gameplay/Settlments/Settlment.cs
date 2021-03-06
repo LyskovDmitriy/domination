@@ -60,6 +60,18 @@ namespace Domination.LevelLogic
             NextId++;
         }
 
+        public Settlment(SettlmentData data)
+        {
+            Id = data.id;
+
+            Position = Position;
+
+            foreach (var building in data.buildings)
+            {
+                Build(building.type, building.level);
+            }
+        }
+
 
         public SettlmentData GetData() => new SettlmentData
         {
@@ -78,12 +90,7 @@ namespace Domination.LevelLogic
             buildings.Remove(destroyedBuilding);
         }
 
-
-        public void UpgradeBuilding(BuildingType buildingType)
-        {
-            GetBuilding(buildingType).level++;
-        }
-
+        public void UpgradeBuilding(BuildingType buildingType) => GetBuilding(buildingType).level++;
 
         public List<Building> GetBuildings() => new List<Building>(buildings);
 
@@ -104,6 +111,16 @@ namespace Domination.LevelLogic
                 return;
             }
             buildings.Add(new Building { type = buildingType });
+        }
+
+        protected void Build(BuildingType type, int level)
+        {
+            Build(type);
+
+            for (int i = 1; i <= level; i++)
+            {
+                UpgradeBuilding(type);
+            }
         }
     }
 }

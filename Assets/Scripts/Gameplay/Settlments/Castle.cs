@@ -1,4 +1,5 @@
-﻿using Domination.LevelLogic;
+﻿using Domination.Data;
+using Domination.LevelLogic;
 using UnityEngine;
 
 
@@ -13,18 +14,10 @@ namespace Domination
         {
             foreach (var buildingInfo in SettlmentsSettings.AvailableBuildingsInCity)
             {
-                for (int i = 0; i < buildingInfo.defaultLevel; i++)
-                {
-                    if (i == 0)
-                    {
-                        Build(buildingInfo.type);
-                    }
-                    else
-                    {
-                        UpgradeBuilding(buildingInfo.type);
-                    }
-                }
+                Build(buildingInfo.type, buildingInfo.defaultLevel);
             }
         }
+
+        public Castle(SettlmentData data) : base(data) { }
     }
 }

@@ -26,6 +26,13 @@ namespace Domination.Warfare
             Health = unit.Health;
         }
 
+        public Unit(UnitData data)
+        {
+            WeaponType = data.weaponType;
+            WeaponLevel = data.weaponLevel;
+            Health = data.health;
+        }
+
         public UnitData GetData() => new UnitData
         {
             weaponType = WeaponType,
