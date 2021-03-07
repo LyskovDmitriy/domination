@@ -1,7 +1,5 @@
 ﻿public enum BuildingType
 {
-    None = 0,
-
     Wall = 1,
     Barracks = 2,
     Market = 3,

@@ -20,6 +20,16 @@ namespace Domination.LevelLogic
                 type = type,
                 level = level
             };
+
+            public override bool Equals(object obj)
+            {
+                if ((obj == null) || !(obj is Building building))
+                {
+                    return false;
+                }
+
+                return (type == building.type) && (level == building.level);
+            }
         }
 
         private static uint NextId = 1;
@@ -64,7 +74,7 @@ namespace Domination.LevelLogic
         {
             Id = data.id;
 
-            Position = Position;
+            Position = data.position;
 
             foreach (var building in data.buildings)
             {
@@ -79,29 +89,9 @@ namespace Domination.LevelLogic
             type = Type,
           
             position = Position,
-            ownerId = (Lord == null) ? 0 : Lord.Id,
             
             buildings = buildings.Select(b => b.GetData()).ToArray()
         };
-
-        public void DestroyBuilding(BuildingType buildingType)
-        {
-            Building destroyedBuilding = GetBuilding(buildingType);
-            buildings.Remove(destroyedBuilding);
-        }
-
-        public void UpgradeBuilding(BuildingType buildingType) => GetBuilding(buildingType).level++;
-
-        public List<Building> GetBuildings() => new List<Building>(buildings);
-
-        public bool HasBuilding(BuildingType type) => (GetBuilding(type) != null);
-
-        public Building GetBuilding(BuildingType type) => buildings.Find((b) => b.type == type);
-
-        public void Recruit(Unit unit) => Lord.Recruit(unit, Id);
-
-        public Army GetArmy() => Lord.GetSettlmentArmy(this);
-
 
         public void Build(BuildingType buildingType)
         {
@@ -113,7 +103,7 @@ namespace Domination.LevelLogic
             buildings.Add(new Building { type = buildingType });
         }
 
-        protected void Build(BuildingType type, int level)
+        public void Build(BuildingType type, int level)
         {
             Build(type);
 
@@ -122,5 +112,23 @@ namespace Domination.LevelLogic
                 UpgradeBuilding(type);
             }
         }
+
+        public void DestroyBuilding(BuildingType buildingType)
+        {
+            Building destroyedBuilding = GetBuilding(buildingType);
+            buildings.Remove(destroyedBuilding);
+        }
+
+        public void UpgradeBuilding(BuildingType buildingType) => GetBuilding(buildingType).level++;
+
+        public Building[] GetBuildings() => buildings.ToArray();
+
+        public bool HasBuilding(BuildingType type) => (GetBuilding(type) != null);
+
+        public Building GetBuilding(BuildingType type) => buildings.Find((b) => b.type == type);
+
+        public void Recruit(Unit unit) => Lord.Recruit(unit, Id);
+
+        public Army GetArmy() => Lord.GetSettlmentArmy(this);
     }
 }

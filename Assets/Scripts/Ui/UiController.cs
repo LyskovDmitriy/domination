@@ -56,7 +56,7 @@ namespace Domination.Ui
             {
                 var prefab = LoadScreen(type);
                 screen = GameObject.Instantiate(prefab);
-
+                GameObject.DontDestroyOnLoad(screen);
                 createdScreens.Add(type, screen);
             }
 

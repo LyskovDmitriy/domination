@@ -8,7 +8,7 @@ using Domination.Warfare;
 public class ArmyTests
 {
     [Test]
-    public void ArmyBasicCreationTest()
+    public void ArmyBasicCreation()
     {
         var army = new Army();
         Assert.IsTrue(army.IsEmpty);
@@ -19,7 +19,7 @@ public class ArmyTests
     }
 
     [Test]
-    public void ArmyUnitsAddingAndClearingTest([Values(0, 1, 10)] int meleeUnitsCount, [Values(0, 1, 10)] int rangedUnitsCount)
+    public void ArmyUnitsAddingAndClearing([Values(0, 1, 10)] int meleeUnitsCount, [Values(0, 1, 10)] int rangedUnitsCount)
     {
         var meleeUnits = new List<Unit>(meleeUnitsCount);
 

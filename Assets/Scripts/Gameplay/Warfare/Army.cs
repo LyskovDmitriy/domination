@@ -7,8 +7,8 @@ namespace Domination.Warfare
 {
     public class Army
     {
-        private List<Unit> meleeGroup;
-        private List<Unit> rangedGroup;
+        private List<Unit> meleeGroup = new List<Unit>();
+        private List<Unit> rangedGroup = new List<Unit>();
 
 
         public int TotalUnitsCount => meleeGroup.Count + rangedGroup.Count;
@@ -18,15 +18,11 @@ namespace Domination.Warfare
 
         public Army(Army armyToCopy)
         {
-            meleeGroup = new List<Unit>(armyToCopy.meleeGroup);
-            rangedGroup = new List<Unit>(armyToCopy.rangedGroup);
+            meleeGroup.AddRange(armyToCopy.meleeGroup);
+            rangedGroup.AddRange(armyToCopy.rangedGroup);
         }
 
-        public Army()
-        {
-            meleeGroup = new List<Unit>();
-            rangedGroup = new List<Unit>();
-        }
+        public Army() { }
 
         public Army(UnitData[] data)
         {

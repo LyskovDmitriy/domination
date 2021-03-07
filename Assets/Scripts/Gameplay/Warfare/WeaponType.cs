@@ -2,7 +2,7 @@
 {
     public enum WeaponType
     {
-        Melee,
-        Ranged
+        Melee = 0,
+        Ranged = 1,
     }
 }

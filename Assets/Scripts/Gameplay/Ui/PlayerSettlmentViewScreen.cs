@@ -122,12 +122,12 @@ namespace Domination.Ui
 
             constructionSlots.Clear();
 
-            List<Settlment.Building> buildings = selectedSettlment.GetBuildings();
+            var buildings = selectedSettlment.GetBuildings();
             bool isPlayerSettlment = (selectedSettlment.Lord == player);
 
             for (int i = 0; i < SettlmentsSettings.GetMaxBuildingsCount(selectedSettlment.Type); i++)
             {
-                if (i < buildings.Count)
+                if (i < buildings.Length)
                 {
                     BuiltSlotUI buildingInfo = Instantiate(builtSlotPrefab, constructionSlotsRoot);
                     buildingInfo.Init(selectedSettlment.Id, selectedSettlment.Type, buildings[i], isPlayerSettlment);

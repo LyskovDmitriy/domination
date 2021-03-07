@@ -1,3 +1,4 @@
+using Domination.Data;
 using Domination.EventsSystem;
 using System.Collections;
 using UnityEngine;
@@ -11,19 +12,14 @@ namespace Domination
         private const string GameMapSceneName = "GameMap";
         private const string BattlefieldSceneName = "Battlefield";
 
+        private GameMap gameMap;
+
 
         private void Awake()
         {
             EventsAggregator.Subscribe(typeof(PlayerAttackSettlment), OnPlayerAttackedSettlment);
-        }
 
-        private IEnumerator Start()
-        {
-            var operation = SceneManager.LoadSceneAsync(GameMapSceneName, LoadSceneMode.Additive);
-            yield return new WaitUntil(() => operation.isDone);
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(GameMapSceneName));
-            var gameMap = FindObjectOfType<GameMap>();
-            gameMap.Init();
+            StartCoroutine(LoadGameMap(null));
         }
 
         private void OnDestroy()
@@ -31,11 +27,30 @@ namespace Domination
             EventsAggregator.Unsubscribe(typeof(PlayerAttackSettlment), OnPlayerAttackedSettlment);
         }
 
+        private IEnumerator LoadGameMap(LevelData data)
+        {
+            yield return SceneManager.LoadSceneAsync(GameMapSceneName, LoadSceneMode.Additive);
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(GameMapSceneName));
+            gameMap = FindObjectOfType<GameMap>();
+            gameMap.Init(data);
+        }
+
         private void OnPlayerAttackedSettlment(IMessage message)
         {
             PlayerAttackSettlment attackMessage = (PlayerAttackSettlment)message;
-            SceneManager.UnloadSceneAsync(GameMapSceneName);
-            SceneManager.LoadSceneAsync(BattlefieldSceneName);
+            StartCoroutine(LoadBattleScene());
+        }
+
+        private IEnumerator LoadBattleScene()
+        {
+            var data = gameMap.GetData();
+            gameMap = null;
+
+            yield return SceneManager.UnloadSceneAsync(GameMapSceneName);
+            yield return SceneManager.LoadSceneAsync(BattlefieldSceneName, LoadSceneMode.Additive);
+
+            yield return SceneManager.UnloadSceneAsync(BattlefieldSceneName);
+            yield return LoadGameMap(data);
         }
     }
 }

@@ -1,4 +1,4 @@
-using Domination.LevelView;
+using Domination.Data;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,20 +20,32 @@ namespace Domination.LevelView
         private List<SettlmentView> settlments = new List<SettlmentView>();
 
 
-        public Level Level { get; set; }
+        public Level Level { get; private set; }
 
         public Character Player => Level.Player;
 
 
-        private void Awake()
+        private void Awake() => selector.Init(cameraController.Camera);
+
+        public void Create(LevelData data)
         {
-            selector.Init(cameraController.Camera);
+            if (data == null)
+            {
+                Level = new Level();
+            }
+            else
+            {
+                Level = new Level(data);
+            }
+            InitView();
         }
 
+        public SettlmentView FindSettlment(Vector2Int position) => settlments.Find(s => s.Settlment.Position == position);
 
-        public void Create()
+        public LevelData GetData() => Level.GetData();
+
+        private void InitView()
         {
-            Level = new Level();
             Level.OnTurnFinished += OnTurnFinished;
 
             int sizeX = Level.Map.GetLength(0);
@@ -81,8 +93,6 @@ namespace Domination.LevelView
             fogSystem.ApplyFog(Level.CurrentTurn, Player);
         }
 
-        public SettlmentView FindSettlment(Vector2Int position) => settlments.Find(s => s.Settlment.Position == position);
-        
         private void OnTurnFinished()
         {
             if (Level.ActiveCharacter == Player)

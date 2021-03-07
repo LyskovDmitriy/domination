@@ -11,7 +11,6 @@ namespace Domination.Data
         public SettlmentType type;
 
         public Vector2Int position;
-        public uint ownerId;
 
         public BuildingData[] buildings;
     }

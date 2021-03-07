@@ -4,6 +4,7 @@ using Domination.EventsSystem;
 using Utils.Ui;
 using Domination.LevelView;
 using Domination.LevelLogic;
+using Domination.Data;
 
 
 namespace Domination
@@ -22,12 +23,13 @@ namespace Domination
             selector.OnTileDeselected += OnTileDeselected;
         }
 
-        public void Init()
+        public void Init(LevelData data)
         {
-            map.Create();
-
+            map.Create(data);
             EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.LevelUi));
         }
+
+        public LevelData GetData() => map.GetData();
 
         private void OnTileSelected(TileView selectedTile)
         {
@@ -58,9 +60,7 @@ namespace Domination
             }
         }
 
-
         private void OnTileDeselected() => HideSettlmentViewScreen();
-
 
         private void HideSettlmentViewScreen()
         {
