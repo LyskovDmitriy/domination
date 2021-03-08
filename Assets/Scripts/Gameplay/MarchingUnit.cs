@@ -18,5 +18,17 @@ namespace Domination
             unitData = unit.GetData(),
             daysLeft = daysLeft,
         };
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !(obj is MarchingUnit marchingUnit))
+            {
+                return false;
+            }
+
+            return (targetSettlment == marchingUnit.targetSettlment) &&
+                unit.Equals(marchingUnit.unit) &&
+                (daysLeft == marchingUnit.daysLeft);
+        }
     }
 }

@@ -1,9 +1,8 @@
 ﻿using Domination.Data;
-using Domination.LevelLogic;
 using UnityEngine;
 
 
-namespace Domination
+namespace Domination.LevelLogic
 {
     public class Castle : Settlment
     {

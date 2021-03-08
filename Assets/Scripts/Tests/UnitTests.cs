@@ -6,7 +6,10 @@ using Domination.Warfare;
 public class UnitTests
 {
     [Test]
-    public void UnitConstructorWithSetup([Values] WeaponType weaponType, [Values(1, 2, 3)] int weaponLevel, [Values(1, 10, 100)] int health)
+    public void UnitConstructorWithSetup(
+        [Values] WeaponType weaponType, 
+        [Values(1, 2, 3)] int weaponLevel, 
+        [Values(1, 10, 100)] int health)
     {
         Unit unit = new Unit(weaponLevel, weaponType, health);
 
@@ -16,7 +19,10 @@ public class UnitTests
     }
 
     [Test]
-    public void UnitCloneConstructor([Values] WeaponType weaponType, [Values(1, 2, 3)] int weaponLevel, [Values(1, 10, 100)] int health)
+    public void UnitCloneConstructor(
+        [Values] WeaponType weaponType, 
+        [Values(1, 2, 3)] int weaponLevel, 
+        [Values(1, 10, 100)] int health)
     {
         Unit unit = new Unit(weaponLevel, weaponType, health);
         Unit copy = new Unit(unit);

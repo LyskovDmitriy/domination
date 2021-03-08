@@ -1,4 +1,3 @@
-using Domination;
 using Domination.LevelLogic;
 using NUnit.Framework;
 using UnityEngine;
@@ -14,27 +13,38 @@ public class SettlmentStateRestore
         [Values] BuildingType builtBuilding,
         [Random(0, 5, 2)] int builtBuildingLevel)
     {
-        var character = new AiCharacter();
+        var oldVillage = new Village(postion);
+        oldVillage.Build(builtBuilding, builtBuildingLevel);
 
-        var village = new Village(postion);
-        village.Build(builtBuilding, builtBuildingLevel);
-        village.Lord = character;
-
-        var data = village.GetData();
+        var data = oldVillage.GetData();
         Assert.AreEqual(data.type, SettlmentType.Village);
 
         var newVillage = new Village(data);
 
-        Assert.AreEqual(village.Id, newVillage.Id);
-        Assert.AreEqual(village.Position, newVillage.Position);
+        ValidateSettlmentRestore(oldVillage, newVillage);
+    }
 
-        var initialVillageBuildings = village.GetBuildings();
-        var newVillageBuildings = newVillage.GetBuildings();
-        Assert.AreEqual(initialVillageBuildings.Length, newVillageBuildings.Length);
+    [Test]
+    public void CastleStateRestore([ValueSource(nameof(POSITIONS))] Vector2Int postion)
+    {
+        var oldCastle = new Castle(postion);
 
-        for (int i = 0; i < initialVillageBuildings.Length; i++)
-        {
-            initialVillageBuildings[i].Equals(newVillageBuildings[i]);
-        }
+        var data = oldCastle.GetData();
+        Assert.AreEqual(data.type, SettlmentType.Castle);
+
+        var newCastle = new Castle(data);
+
+        ValidateSettlmentRestore(oldCastle, newCastle);
+    }
+
+    private void ValidateSettlmentRestore(Settlment oldSettlment, Settlment newSettlment)
+    {
+        Assert.AreEqual(oldSettlment.Id, newSettlment.Id);
+        Assert.AreEqual(oldSettlment.Position, newSettlment.Position);
+
+        var initialVillageBuildings = oldSettlment.GetBuildings();
+        var newVillageBuildings = newSettlment.GetBuildings();
+
+        Assert.AreEqual(initialVillageBuildings, newVillageBuildings);
     }
 }

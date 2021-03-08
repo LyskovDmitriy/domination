@@ -56,7 +56,7 @@ namespace Domination.Ui.Marching
 
             attackedSettlment = targetSettlment;
 
-            foreach (var settlment in level.Player.Settlments)
+            foreach (var settlment in level.Player.OwnedSettlments)
             {
                 SettlmentArmyUi settlmentArmyUi = Instantiate(settlmentArmyPrefab, settlmentArmiesRoot);
 

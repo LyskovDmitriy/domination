@@ -1,6 +1,6 @@
+using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
-using UnityEngine;
 using Domination.Warfare;
 
 
@@ -19,21 +19,25 @@ public class ArmyTests
     }
 
     [Test]
-    public void ArmyUnitsAddingAndClearing([Values(0, 1, 10)] int meleeUnitsCount, [Values(0, 1, 10)] int rangedUnitsCount)
+    public void ArmyUnitsAddingAndClearing(
+        [Values(0, 1, 10)] int meleeUnitsCount, 
+        [Values(0, 1, 10)] int rangedUnitsCount)
     {
         var meleeUnits = new List<Unit>(meleeUnitsCount);
 
         for (int i = 0; i < meleeUnitsCount; i++)
         {
-            meleeUnits.Add(new Unit(0, WeaponType.Melee, Random.Range(0, 100)));
+            meleeUnits.Add(TestsUtils.CreateRandomUnit(WeaponType.Melee));
         }        
 
         var rangedUnits = new List<Unit>(rangedUnitsCount);
 
         for (int i = 0; i < rangedUnitsCount; i++)
         {
-            rangedUnits.Add(new Unit(0, WeaponType.Ranged, Random.Range(0, 100)));
+            rangedUnits.Add(TestsUtils.CreateRandomUnit(WeaponType.Ranged));
         }
+
+        var allUnits = meleeUnits.Concat(rangedUnits).ToArray();
 
         var army = new Army();
         army.AddUnits(meleeUnits);
@@ -43,12 +47,7 @@ public class ArmyTests
         Assert.AreEqual(army.IsEmpty, (meleeUnitsCount == 0) && (rangedUnitsCount == 0));
         Assert.AreEqual(army.GetUnitsCount(WeaponType.Melee), meleeUnitsCount);
         Assert.AreEqual(army.GetUnitsCount(WeaponType.Ranged), rangedUnitsCount);
-
-        var allUnits = army.GetUnits();
-        foreach (var unit in allUnits)
-        {
-            Assert.IsTrue(meleeUnits.Contains(unit) || rangedUnits.Contains(unit));
-        }
+        Assert.AreEqual(army.GetUnits(), allUnits);
 
         army.Clear();
         Assert.AreEqual(army.IsEmpty, true);

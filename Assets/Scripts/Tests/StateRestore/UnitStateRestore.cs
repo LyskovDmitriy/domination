@@ -5,9 +5,9 @@ using NUnit.Framework;
 public class UnitStateRestore
 {
     [Test]
-    public void UnitStateGetRestore([Values] WeaponType weaponType, [Values(1, 2, 3)] int weaponLevel, [Values(1, 10, 100)] int health)
+    public void UnitStateGetRestore([Values] WeaponType weaponType)
     {
-        var unit = new Unit(weaponLevel, weaponType, health);
+        var unit = TestsUtils.CreateRandomUnit(weaponType);
         var unitData = unit.GetData();
         var newUnit = new Unit(unitData);
 

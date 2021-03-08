@@ -5,6 +5,7 @@ using Domination.Warfare;
 using Domination.EventsSystem;
 using Domination.LevelLogic;
 using Domination.Data;
+using UnityEngine;
 
 
 namespace Domination
@@ -27,10 +28,10 @@ namespace Domination
         public int MeleeWeaponLevel { get; private set; } = 0;
         public int RangedWeaponLevel { get; private set; } = 0;
 
-        public List<Settlment> Settlments { get; private set; } = new List<Settlment>();
-        public Settlment Castle => Settlments.Find(s => s.Type == SettlmentType.Castle);
+        public List<Settlment> OwnedSettlments { get; private set; } = new List<Settlment>();
+        public Settlment Castle => OwnedSettlments.Find(s => s.Type == SettlmentType.Castle);
         
-        public int Income => Settlments.Sum((settlment) => settlment.Income);
+        public int Income => OwnedSettlments.Sum((settlment) => settlment.Income);
 
 
         public int Coins
@@ -81,7 +82,7 @@ namespace Domination
         }
 
 
-        public virtual CharacterData GetData() => new CharacterData
+        public CharacterData GetData() => new CharacterData
         {
             id = Id,
             isPlayer = this is Player,
@@ -90,7 +91,7 @@ namespace Domination
             meleeWeaponLevel = MeleeWeaponLevel,
             rangedWeaponLevel = RangedWeaponLevel,
 
-            ownedSettlments = Settlments.Select(s => s.Id).ToArray(),
+            ownedSettlments = OwnedSettlments.Select(s => s.Id).ToArray(),
 
             stationedArmies = stationedArmies.Select(pair => new StationedArmyData
             {
@@ -133,35 +134,39 @@ namespace Domination
         public List<MarchingUnit> GetMarchingUnits(Settlment settlment) => 
             marchingUnits.FindAll((unit) => unit.targetSettlment == settlment);
 
-        public bool HasSettlment(uint settlmentId) => GetSettlmentById(settlmentId) != null;
-
         public virtual void DestroyBuilding(uint settlmentId, BuildingType buildingType) => 
             GetSettlmentById(settlmentId).DestroyBuilding(buildingType);
 
         public virtual void UpgradeBuilding(uint settlmentId, BuildingType buildingType)
         {
-            Settlment settlment = GetSettlmentById(settlmentId);
-            Coins -= BuildingSystem.GetUpgradePrice(buildingType, settlment.GetBuilding(buildingType).level);
-            settlment.UpgradeBuilding(buildingType);
+            if (TryRemoveCoins(BuildingSystem.GetConstructionPrice(buildingType), "Character doesn't have enough money to build the building"))
+            {
+                Settlment settlment = GetSettlmentById(settlmentId);
+                settlment.UpgradeBuilding(buildingType);
+            }
         }
 
         public virtual void Build(uint settlmentId, BuildingType buildingType)
         {
-            Settlment settlment = GetSettlmentById(settlmentId);
-            Coins -= BuildingSystem.GetConstructionPrice(buildingType);
-            settlment.Build(buildingType);
+            if (TryRemoveCoins(BuildingSystem.GetConstructionPrice(buildingType), "Character doesn't have enough money to build the building"))
+            {
+                Settlment settlment = GetSettlmentById(settlmentId);
+                settlment.Build(buildingType);
+            }
         }
 
         public void Recruit(Unit unit, uint settlmentId)
         {
-            Settlment settlment = GetSettlmentById(settlmentId);
-            Coins -= RecruitmentSystem.UnitPrice;
-            GetSettlmentArmy(settlment).AddUnit(unit);
-            EventsAggregator.TriggerEvent(new UnitRecruitedMessage(Id, settlmentId));
+            if (TryRemoveCoins(RecruitmentSystem.UnitPrice, "Character doesn't have enough money to recruit a unit"))
+            {
+                Settlment settlment = GetSettlmentById(settlmentId);
+                GetSettlmentArmy(settlment).AddUnit(unit);
+                EventsAggregator.TriggerEvent(new UnitRecruitedMessage(Id, settlmentId));
+            }
         }
 
         public Settlment GetSettlmentById(uint settlmentId) => 
-            Settlments.Find((settlment) => settlment.Id == settlmentId);
+            OwnedSettlments.Find((settlment) => settlment.Id == settlmentId);
 
         public bool HasCoins(int recuiredAmount) => Coins >= recuiredAmount;
 
@@ -188,12 +193,23 @@ namespace Domination
 
         public void AddSettlment(Settlment settlment)
         {
-            Settlments.Add(settlment);
+            OwnedSettlments.Add(settlment);
             settlment.Lord = this;
         }
 
         protected void FinishTurn() => OnTurnFinish?.Invoke();
 
         protected virtual void SetNewCoinsCount(int coins) => this.coins = coins;
+
+        private bool TryRemoveCoins(int coinsCount, string failureMessage)
+        {
+            if (!HasCoins(coinsCount))
+            {
+                Debug.LogError(failureMessage);
+                return false;
+            }
+            Coins -= RecruitmentSystem.UnitPrice;
+            return true;
+        }
     }
 }

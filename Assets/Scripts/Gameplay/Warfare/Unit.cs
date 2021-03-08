@@ -39,5 +39,17 @@ namespace Domination.Warfare
             weaponLevel = WeaponLevel,
             health = Health
         };
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !(obj is Unit unit))
+            {
+                return false;
+            }
+
+            return (WeaponType == unit.WeaponType) && 
+                (WeaponLevel == unit.WeaponLevel) &&
+                (Health == unit.Health);
+        }
     }
 }
