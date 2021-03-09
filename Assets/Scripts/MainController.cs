@@ -22,11 +22,6 @@ namespace Domination
             StartCoroutine(LoadGameMap(null));
         }
 
-        private void OnDestroy()
-        {
-            EventsAggregator.Unsubscribe(typeof(PlayerAttackSettlment), OnPlayerAttackedSettlment);
-        }
-
         private IEnumerator LoadGameMap(LevelData data)
         {
             yield return SceneManager.LoadSceneAsync(GameMapSceneName, LoadSceneMode.Additive);

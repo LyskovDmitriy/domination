@@ -47,6 +47,7 @@ namespace Domination
             RecruitmentSystem.Init(this);
 
             neutralCharacter = new Character();
+            neutralCharacter.Coins = int.MaxValue;
 
             foreach (var village in levelMap.villages)
             {
