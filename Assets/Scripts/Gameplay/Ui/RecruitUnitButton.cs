@@ -26,8 +26,8 @@ namespace Domination.Ui
             WeaponInfo weaponInfo = UnitRecruitmentSettings.GetWeapons(weaponType)[level];
             titleLabel.text = UnitsNameConstructor.Build(weaponInfo.Weapon);
             damageLabel.text = weaponInfo.Weapon.Damage.ToString();
-            healthLabel.text = RecruitmentSystem.GetHealth(weaponType).ToString();
-            priceLabel.text = RecruitmentSystem.UnitPrice.ToString();
+            healthLabel.text = RecruitmentUtils.GetHealth(weaponType).ToString();
+            priceLabel.text = RecruitmentUtils.UnitPrice.ToString();
         }
     }
 }

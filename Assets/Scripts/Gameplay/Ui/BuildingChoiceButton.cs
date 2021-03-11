@@ -16,7 +16,7 @@ namespace Domination.Ui
         public void Init(bool isInteractable, BuildingType buildingType, UnityAction onClick)
         {
             titleLabel.text = buildingType.ToString();
-            priceLabel.text = BuildingSystem.GetConstructionPrice(buildingType).ToString();
+            priceLabel.text = BuildingUtils.GetConstructionPrice(buildingType).ToString();
 
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(onClick);

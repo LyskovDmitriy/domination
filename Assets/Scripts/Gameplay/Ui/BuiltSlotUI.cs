@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using Domination.LevelLogic;
+using Domination.LevelView;
 
 
 namespace Domination.Ui
@@ -19,10 +20,10 @@ namespace Domination.Ui
 
             upgradeButton.gameObject.SetActive(false);
             upgradeButton.onClick.RemoveAllListeners();
-            upgradeButton.onClick.AddListener(() => BuildingSystem.UpgradeBuilding(settlmentId, buildingInfo.type));
+            upgradeButton.onClick.AddListener(() => MapView.Instance.BuildingSystem.UpgradeBuilding(settlmentId, buildingInfo.type));
             upgradeButton.interactable = isInteractable;
 
-            switch (BuildingSystem.CanUpdateBuilding(settlmentId, settlmentType, buildingInfo.type, buildingInfo.level))
+            switch (MapView.Instance.BuildingSystem.CanUpdateBuilding(settlmentId, settlmentType, buildingInfo.type, buildingInfo.level))
             {
                 case UpdatePossibility.AlreadyHighestLevel:
                     nameLabel.text = $"{buildingInfo.type} {buildingInfo.level}";
@@ -31,18 +32,18 @@ namespace Domination.Ui
                 case UpdatePossibility.NotEnoughMoney:
                     upgradeButton.gameObject.SetActive(true);
                     upgradeButton.interactable = false;
-                    nameLabel.text = $"{ buildingInfo.type } { buildingInfo.level }\nUp { BuildingSystem.GetUpgradePrice(buildingInfo.type, buildingInfo.level) }";
+                    nameLabel.text = $"{ buildingInfo.type } { buildingInfo.level }\nUp { BuildingUtils.GetUpgradePrice(buildingInfo.type, buildingInfo.level) }";
                     break;
 
                 case UpdatePossibility.Possible:
                     upgradeButton.gameObject.SetActive(true);
                     upgradeButton.interactable = true;
-                    nameLabel.text = $"{ buildingInfo.type } { buildingInfo.level }\nUp { BuildingSystem.GetUpgradePrice(buildingInfo.type, buildingInfo.level) }";
+                    nameLabel.text = $"{ buildingInfo.type } { buildingInfo.level }\nUp { BuildingUtils.GetUpgradePrice(buildingInfo.type, buildingInfo.level) }";
                     break;
             }
 
             destroyButton.onClick.RemoveAllListeners();
-            destroyButton.onClick.AddListener(() => BuildingSystem.DestroyBuilding(settlmentId, buildingInfo.type));
+            destroyButton.onClick.AddListener(() => MapView.Instance.BuildingSystem.DestroyBuilding(settlmentId, buildingInfo.type));
         }
     }
 }

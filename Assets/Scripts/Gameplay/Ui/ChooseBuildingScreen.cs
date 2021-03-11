@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Domination.EventsSystem;
+using Domination.LevelView;
 using UnityEngine.UI;
 using Utils.Ui;
 
@@ -35,7 +36,6 @@ namespace Domination.Ui
             RefreshUi();
         }
 
-
         public override void Hide()
         {
             base.Hide();
@@ -43,9 +43,7 @@ namespace Domination.Ui
             Aggregator.Unsubscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
         }
 
-
         private void HandlePlayerSettlmentsUpdate(IMessage _) => RefreshUi();
-
 
         private void RefreshUi()
         {
@@ -56,11 +54,11 @@ namespace Domination.Ui
 
             createdButtons.Clear();
 
-            var availableBuildings = BuildingSystem.GetAvailableBuildings(settlmentId);
+            var availableBuildings = MapView.Instance.BuildingSystem.GetAvailableBuildings(settlmentId);
             foreach (var building in availableBuildings)
             {
                 BuildingChoiceButton button = Instantiate(choiceButtonPrefab, buttonsRoot);
-                button.Init(BuildingSystem.CanBuild(settlmentId, building), building, () =>
+                button.Init(MapView.Instance.BuildingSystem.CanBuild(settlmentId, building), building, () =>
                 {
                     Aggregator.TriggerEvent(new BuildOptionChosenMessage(building));
                     Hide();

@@ -143,7 +143,7 @@ namespace Domination
 
         public virtual void UpgradeBuilding(uint settlmentId, BuildingType buildingType)
         {
-            if (TryRemoveCoins(BuildingSystem.GetConstructionPrice(buildingType), "Character doesn't have enough money to build the building"))
+            if (TryRemoveCoins(BuildingUtils.GetConstructionPrice(buildingType), "Character doesn't have enough money to build the building"))
             {
                 Settlment settlment = GetSettlmentById(settlmentId);
                 settlment.UpgradeBuilding(buildingType);
@@ -152,7 +152,7 @@ namespace Domination
 
         public virtual void Build(uint settlmentId, BuildingType buildingType)
         {
-            if (TryRemoveCoins(BuildingSystem.GetConstructionPrice(buildingType), "Character doesn't have enough money to build the building"))
+            if (TryRemoveCoins(BuildingUtils.GetConstructionPrice(buildingType), "Character doesn't have enough money to build the building"))
             {
                 Settlment settlment = GetSettlmentById(settlmentId);
                 settlment.Build(buildingType);
@@ -161,7 +161,7 @@ namespace Domination
 
         public void Recruit(Unit unit, uint settlmentId)
         {
-            if (TryRemoveCoins(RecruitmentSystem.UnitPrice, "Character doesn't have enough money to recruit a unit"))
+            if (TryRemoveCoins(RecruitmentUtils.UnitPrice, "Character doesn't have enough money to recruit a unit"))
             {
                 Settlment settlment = GetSettlmentById(settlmentId);
                 GetSettlmentArmy(settlment).AddUnit(unit);
@@ -212,7 +212,7 @@ namespace Domination
                 Debug.LogError(failureMessage);
                 return false;
             }
-            Coins -= RecruitmentSystem.UnitPrice;
+            Coins -= RecruitmentUtils.UnitPrice;
             return true;
         }
     }

@@ -19,7 +19,7 @@ namespace Domination
 
         private Character neutralCharacter; //To place garrisons in neutral villages
 
-        private EventsAggregator localAggregator;
+        private EventsAggregator LocalAggregator;
 
 
         public Character[] Characters { get; private set; }
@@ -39,21 +39,21 @@ namespace Domination
 
         public Level(EventsAggregator aggregator)
         {
-            localAggregator = new EventsAggregator(aggregator);
+            LocalAggregator = new EventsAggregator(aggregator);
             levelMap = LevelGenerator.Generate();
 
             Characters = new Character[2];
 
-            Characters[0] = new Player(localAggregator);
+            Characters[0] = new Player(LocalAggregator);
             Characters[0].AddSettlment(levelMap.castles[0]);
 
-            Characters[1] = new AiCharacter(localAggregator);
+            Characters[1] = new AiCharacter(LocalAggregator);
             Characters[1].AddSettlment(levelMap.castles[1]);
 
             BuildingSystem = new BuildingSystem(GetSettlment);
             RecruitmentSystem = new RecruitmentSystem(GetSettlment);
 
-            neutralCharacter = new Character(localAggregator);
+            neutralCharacter = new Character(LocalAggregator);
             neutralCharacter.Coins = int.MaxValue;
 
             foreach (var village in levelMap.villages)
@@ -68,7 +68,7 @@ namespace Domination
 
         public Level(EventsAggregator aggregator, LevelData data)
         {
-            localAggregator = new EventsAggregator(aggregator);
+            LocalAggregator = new EventsAggregator(aggregator);
             levelMap = new LevelMap(data.mapData);
 
             activeCharacterIndex = data.activeCharacterIndex;
@@ -82,15 +82,15 @@ namespace Domination
 
                 if (characterData.isPlayer)
                 {
-                    Characters[i] = new Player(localAggregator, GetSettlment, characterData);
+                    Characters[i] = new Player(LocalAggregator, GetSettlment, characterData);
                 }
                 else
                 {
-                    Characters[i] = new AiCharacter(localAggregator, GetSettlment, characterData);
+                    Characters[i] = new AiCharacter(LocalAggregator, GetSettlment, characterData);
                 }
             }
 
-            neutralCharacter = new Character(localAggregator, GetSettlment, data.neutralCharacter);
+            neutralCharacter = new Character(LocalAggregator, GetSettlment, data.neutralCharacter);
 
             BuildingSystem = new BuildingSystem(GetSettlment);
             RecruitmentSystem = new RecruitmentSystem(GetSettlment);
@@ -110,7 +110,7 @@ namespace Domination
             mapData = levelMap.GetData()
         };
 
-        public void ShutDown() => localAggregator.ShutDown();
+        public void ShutDown() => LocalAggregator.ShutDown();
 
         public float CalculateDistanceBetweenSettlments(Settlment startingSettlment, Settlment targetSettlment) => 
             Pathfinding.GetDistance(startingSettlment.Position, targetSettlment.Position, levelMap.simpleMap, TilesPassingCostContainer.GetTilePassingCost);

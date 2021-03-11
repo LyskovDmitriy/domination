@@ -6,6 +6,7 @@ using Domination.Warfare;
 using TMPro;
 using Utils.Ui;
 using Domination.LevelLogic;
+using Domination.LevelView;
 
 
 namespace Domination.Ui
@@ -110,7 +111,7 @@ namespace Domination.Ui
         private void HandleBuildOptionChosen(IMessage message)
         {
             var buildOptionChosenMessage = (BuildOptionChosenMessage)message;
-            BuildingSystem.Build(selectedSettlment.Id, buildOptionChosenMessage.BuildingType);
+            MapView.Instance.BuildingSystem.Build(selectedSettlment.Id, buildOptionChosenMessage.BuildingType);
         }
 
 
@@ -166,7 +167,9 @@ namespace Domination.Ui
         private void CreateUnitSlot(WeaponType type, int level)
         {
             RecruitUnitButton recruitUnitButton = Instantiate(recruitmentSlotPrefab, recruitmentSlotsRoot);
-            recruitUnitButton.Init(() => RecruitmentSystem.Recruit(selectedSettlment.Id, type, level), RecruitmentSystem.CanRecruit(selectedSettlment.Id), type, level);
+            recruitUnitButton.Init(
+                () => MapView.Instance.RecruitmentSystem.Recruit(selectedSettlment.Id, type, level), 
+                MapView.Instance.RecruitmentSystem.CanRecruit(selectedSettlment.Id), type, level);
             recruitmentSlots.Add(recruitUnitButton.gameObject);
         }
 

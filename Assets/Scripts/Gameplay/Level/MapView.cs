@@ -20,15 +20,26 @@ namespace Domination.LevelView
 
         private List<SettlmentView> settlments = new List<SettlmentView>();
 
+        public static MapView Instance { get; private set; }
 
         public Level Level { get; private set; }
+        public BuildingSystem BuildingSystem => Level.BuildingSystem;
+        public RecruitmentSystem RecruitmentSystem => Level.RecruitmentSystem;
 
         public Character Player => Level.Player;
 
 
-        private void Awake() => selector.Init(cameraController.Camera);
+        private void Awake()
+        {
+            Instance = this;
+            selector.Init(cameraController.Camera);
+        }
 
-        private void OnDestroy() => Level.ShutDown();
+        private void OnDestroy()
+        {
+            Instance = null;
+            Level.ShutDown();
+        }
 
         public void Create(EventsAggregator aggregator, LevelData data)
         {

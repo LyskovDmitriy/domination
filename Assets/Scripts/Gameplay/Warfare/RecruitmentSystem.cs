@@ -9,20 +9,15 @@ namespace Domination
         private readonly Func<uint, Settlment> getSettlmentAction;
 
 
-        public int UnitPrice => UnitRecruitmentSettings.UnitPrice;
-
-
         public RecruitmentSystem(Func<uint, Settlment> getSettlmentAction) => 
             this.getSettlmentAction = getSettlmentAction;
 
-        public int GetHealth(WeaponType type) => UnitRecruitmentSettings.GetHealth(type);
-
         public bool CanRecruit(uint settlmentId) => 
-            GetSettlmentLord(settlmentId).HasCoins(UnitPrice);
+            GetSettlmentLord(settlmentId).HasCoins(RecruitmentUtils.UnitPrice);
 
         public void Recruit(uint settlmentId, WeaponType weaponType, int weaponLevel)
         {
-            Unit unit = new Unit(weaponLevel, weaponType, GetHealth(weaponType));
+            Unit unit = RecruitmentUtils.CreateUnit(weaponType, weaponLevel);
             GetSettlmentLord(settlmentId).Recruit(unit, settlmentId);
         }
 
@@ -32,13 +27,10 @@ namespace Domination
             {
                 for (int i = 0; i < group.UnitsCount; i++)
                 {
-                    village.Recruit(CreateUnit(group.WeaponType, group.WeaponLevel));
+                    village.Recruit(RecruitmentUtils.CreateUnit(group.WeaponType, group.WeaponLevel));
                 }
             }
         }
-
-        private Unit CreateUnit(WeaponType weaponType, int weaponLevel) => 
-            new Unit(weaponLevel, weaponType, GetHealth(weaponType));
 
         private Character GetSettlmentLord(uint settlmentId) =>
             getSettlmentAction(settlmentId).Lord;

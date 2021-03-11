@@ -28,25 +28,19 @@ namespace Domination
                 return UpdatePossibility.AlreadyHighestLevel;
             }
 
-            int upgradePrice = GetUpgradePrice(buildingType, buildingLevel);
+            int upgradePrice = BuildingUtils.GetUpgradePrice(buildingType, buildingLevel);
             return GetSettlmentLord(settlmentId).HasCoins(upgradePrice) ? 
                 UpdatePossibility.Possible : UpdatePossibility.NotEnoughMoney;
         }
 
         public bool CanBuild(uint settlmentId, BuildingType buildingType) =>
-            GetSettlmentLord(settlmentId).HasCoins(GetConstructionPrice(buildingType));
+            GetSettlmentLord(settlmentId).HasCoins(BuildingUtils.GetConstructionPrice(buildingType));
 
         public void UpgradeBuilding(uint settlmentId, BuildingType buildingType) =>
             GetSettlmentLord(settlmentId).UpgradeBuilding(settlmentId, buildingType);
 
         public void DestroyBuilding(uint settlmentId, BuildingType buildingType) => 
             GetSettlmentLord(settlmentId).DestroyBuilding(settlmentId, buildingType);
-
-        public int GetUpgradePrice(BuildingType buildingType, int buildingCurrentLevel) => 
-            BuildingsSettingsContainer.GetBuildingSettings(buildingType).GetLevelPrice(buildingCurrentLevel + 1);
-
-        public int GetConstructionPrice(BuildingType buildingType) => 
-            BuildingsSettingsContainer.GetBuildingSettings(buildingType).GetLevelPrice(0);
 
         public BuildingType[] GetAvailableBuildings(uint settlmentId)
         {
