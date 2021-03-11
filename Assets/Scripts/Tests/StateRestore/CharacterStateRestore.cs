@@ -5,6 +5,7 @@ using Random = UnityEngine.Random;
 using System;
 using System.Linq;
 using UnityEngine;
+using Domination.EventsSystem;
 
 
 public class CharacterStateRestore
@@ -15,11 +16,12 @@ public class CharacterStateRestore
         [Random(2, 4, 1)] int settlmentsToAttackCount,
         [Random(2, 5, 1)] int ownedSettlmentsCount)
     {
+        EventsAggregator aggregator = new EventsAggregator(); 
         var settlmentsToAttack = CreateSettlments(settlmentsToAttackCount);
         var ownedSettlments = CreateSettlments(ownedSettlmentsCount);
         var allSettlments = settlmentsToAttack.Concat(ownedSettlments).ToArray();
 
-        var oldCharacter = new Character();
+        var oldCharacter = new Character(aggregator);
         oldCharacter.Coins = initialCoinsCount;
 
         foreach (var settlment in ownedSettlments)
@@ -46,7 +48,7 @@ public class CharacterStateRestore
         }
 
         var data = oldCharacter.GetData();
-        var newCharacter = new Character(id => Array.Find(allSettlments, s => s.Id == id), data);
+        var newCharacter = new Character(aggregator, id => Array.Find(allSettlments, s => s.Id == id), data);
 
         Assert.AreEqual(oldCharacter.Id, newCharacter.Id);
         Assert.AreEqual(oldCharacter.Coins, newCharacter.Coins);

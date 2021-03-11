@@ -36,8 +36,8 @@ namespace Domination.Ui
             this.level = level;
             player = level.Player;
 
-            EventsAggregator.Subscribe(typeof(UpdateUiMessage), HandleSettlmentsUpdate);
-            attackSettlmentButton.interactable = player.HasUnitsInSettlment(selectedSettlment);
+            Aggregator.Subscribe(typeof(UpdateUiMessage), HandleSettlmentsUpdate);
+            //attackSettlmentButton.interactable = player.HasUnitsInSettlment(selectedSettlment);
 
             RefreshUi();
         }
@@ -47,7 +47,7 @@ namespace Domination.Ui
         {
             base.Hide();
 
-            EventsAggregator.Unsubscribe(typeof(UpdateUiMessage), HandleSettlmentsUpdate);
+            Aggregator.Unsubscribe(typeof(UpdateUiMessage), HandleSettlmentsUpdate);
 
             selectedSettlment = null;
         }
@@ -61,7 +61,7 @@ namespace Domination.Ui
 
         private void OpenMarchScreen()
         {
-            EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.MarchScreen, (screen) =>
+            Aggregator.TriggerEvent(new ShowUiMessage(ScreenType.MarchScreen, (screen) =>
             {
                 var marchScreen = (MarchScreen)screen;
                 marchScreen.Show(level, selectedSettlment);
@@ -70,7 +70,7 @@ namespace Domination.Ui
 
         private void AttackSettlment()
         {
-            EventsAggregator.TriggerEvent(new PlayerAttackSettlment(selectedSettlment.Id));
+            Aggregator.TriggerEvent(new PlayerAttackSettlment(selectedSettlment.Id));
             Hide();
         }
     }

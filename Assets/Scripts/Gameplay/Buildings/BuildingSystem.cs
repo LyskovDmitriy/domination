@@ -1,4 +1,5 @@
 ﻿using Domination.LevelLogic;
+using System;
 using System.Linq;
 
 
@@ -12,14 +13,14 @@ public enum UpdatePossibility
 
 namespace Domination
 {
-    public static class BuildingSystem
+    public class BuildingSystem
     {
-        private static Level level;
+        private Func<uint, Settlment> getSettlmentAction;
 
 
-        public static void Init(Level currentLevel) => level = currentLevel;
+        public BuildingSystem(Func<uint, Settlment> getSettlmentAction) => this.getSettlmentAction = getSettlmentAction;
 
-        public static UpdatePossibility CanUpdateBuilding(uint settlmentId, SettlmentType settlmentType, BuildingType buildingType, int buildingLevel)
+        public UpdatePossibility CanUpdateBuilding(uint settlmentId, SettlmentType settlmentType, BuildingType buildingType, int buildingLevel)
         {
             int maxPossibleBuildingLevel = SettlmentsSettings.GetMaxBuildingLevel(settlmentType, buildingType);
             if (buildingLevel >= maxPossibleBuildingLevel)
@@ -32,34 +33,33 @@ namespace Domination
                 UpdatePossibility.Possible : UpdatePossibility.NotEnoughMoney;
         }
 
-        public static bool CanBuild(uint settlmentId, BuildingType buildingType) =>
+        public bool CanBuild(uint settlmentId, BuildingType buildingType) =>
             GetSettlmentLord(settlmentId).HasCoins(GetConstructionPrice(buildingType));
 
-        public static void UpgradeBuilding(uint settlmentId, BuildingType buildingType) =>
+        public void UpgradeBuilding(uint settlmentId, BuildingType buildingType) =>
             GetSettlmentLord(settlmentId).UpgradeBuilding(settlmentId, buildingType);
 
-        public static void DestroyBuilding(uint settlmentId, BuildingType buildingType) => 
+        public void DestroyBuilding(uint settlmentId, BuildingType buildingType) => 
             GetSettlmentLord(settlmentId).DestroyBuilding(settlmentId, buildingType);
 
-        public static int GetUpgradePrice(BuildingType buildingType, int buildingCurrentLevel) => 
+        public int GetUpgradePrice(BuildingType buildingType, int buildingCurrentLevel) => 
             BuildingsSettingsContainer.GetBuildingSettings(buildingType).GetLevelPrice(buildingCurrentLevel + 1);
 
-        public static int GetConstructionPrice(BuildingType buildingType) => 
+        public int GetConstructionPrice(BuildingType buildingType) => 
             BuildingsSettingsContainer.GetBuildingSettings(buildingType).GetLevelPrice(0);
 
-        public static BuildingType[] GetAvailableBuildings(uint settlmentId)
+        public BuildingType[] GetAvailableBuildings(uint settlmentId)
         {
-            Settlment settlment = level.GetSettlment(settlmentId);
+            Settlment settlment = getSettlmentAction(settlmentId);
             var buildings = settlment.GetBuildings().Select((building) => building.type).ToList();
             var allAvailableBuildings = SettlmentsSettings.GetAvailableBuildingsForSettlment(settlment.Type).Select((building) => building.type).ToList();
 
             return allAvailableBuildings.Except(buildings).ToArray();
         }
 
-        public static void Build(uint settlmentId, BuildingType buildingType) => 
+        public void Build(uint settlmentId, BuildingType buildingType) => 
             GetSettlmentLord(settlmentId).Build(settlmentId, buildingType);
 
-        private static Character GetSettlmentLord(uint settlmentId) => 
-            level.GetSettlment(settlmentId).Lord;
+        private Character GetSettlmentLord(uint settlmentId) => getSettlmentAction(settlmentId).Lord;
     }
 }

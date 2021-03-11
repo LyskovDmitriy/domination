@@ -1,4 +1,5 @@
 using Domination.Data;
+using Domination.Ui;
 using Domination.EventsSystem;
 using System.Collections;
 using UnityEngine;
@@ -13,11 +14,14 @@ namespace Domination
         private const string BattlefieldSceneName = "Battlefield";
 
         private GameMap gameMap;
+        private EventsAggregator aggregator;
 
 
         private void Awake()
         {
-            EventsAggregator.Subscribe(typeof(PlayerAttackSettlment), OnPlayerAttackedSettlment);
+            aggregator = new EventsAggregator();
+            aggregator.Subscribe(typeof(PlayerAttackSettlment), OnPlayerAttackedSettlment);
+            UiController.Init(aggregator);
 
             StartCoroutine(LoadGameMap(null));
         }
@@ -27,7 +31,7 @@ namespace Domination
             yield return SceneManager.LoadSceneAsync(GameMapSceneName, LoadSceneMode.Additive);
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(GameMapSceneName));
             gameMap = FindObjectOfType<GameMap>();
-            gameMap.Init(data);
+            gameMap.Init(data, aggregator);
         }
 
         private void OnPlayerAttackedSettlment(IMessage message)
@@ -46,6 +50,7 @@ namespace Domination
 
             yield return SceneManager.UnloadSceneAsync(BattlefieldSceneName);
             yield return LoadGameMap(data);
+            //Set camera position to attacked settlment position
         }
     }
 }

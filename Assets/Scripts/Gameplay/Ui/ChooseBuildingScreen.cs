@@ -30,7 +30,7 @@ namespace Domination.Ui
             base.Show();
 
             this.settlmentId = settlmentId;
-            EventsAggregator.Subscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
+            Aggregator.Subscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
 
             RefreshUi();
         }
@@ -40,7 +40,7 @@ namespace Domination.Ui
         {
             base.Hide();
 
-            EventsAggregator.Unsubscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
+            Aggregator.Unsubscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
         }
 
 
@@ -62,7 +62,7 @@ namespace Domination.Ui
                 BuildingChoiceButton button = Instantiate(choiceButtonPrefab, buttonsRoot);
                 button.Init(BuildingSystem.CanBuild(settlmentId, building), building, () =>
                 {
-                    EventsAggregator.TriggerEvent(new BuildOptionChosenMessage(building));
+                    Aggregator.TriggerEvent(new BuildOptionChosenMessage(building));
                     Hide();
                 });
                 button.gameObject.SetActive(true);

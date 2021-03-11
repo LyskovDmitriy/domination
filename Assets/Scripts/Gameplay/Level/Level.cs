@@ -4,6 +4,7 @@ using Domination.LevelLogic;
 using Utils;
 using System;
 using System.Linq;
+using Domination.EventsSystem;
 
 
 namespace Domination
@@ -18,9 +19,12 @@ namespace Domination
 
         private Character neutralCharacter; //To place garrisons in neutral villages
 
+        private EventsAggregator localAggregator;
 
-        public Character Player => Characters[0];
+
         public Character[] Characters { get; private set; }
+        public Character Player => Characters[0];
+        public Character ActiveCharacter => Characters[activeCharacterIndex];
 
         public Tile[,] Map => levelMap.map;
 
@@ -28,25 +32,28 @@ namespace Domination
         public Village[] Villages => levelMap.villages;
 
         public int CurrentTurn { get; private set; }
-        public Character ActiveCharacter => Characters[activeCharacterIndex];
+
+        public RecruitmentSystem RecruitmentSystem { get; private set; }
+        public BuildingSystem BuildingSystem { get; private set; }
 
 
-        public Level()
+        public Level(EventsAggregator aggregator)
         {
+            localAggregator = new EventsAggregator(aggregator);
             levelMap = LevelGenerator.Generate();
 
             Characters = new Character[2];
 
-            Characters[0] = new Player();
+            Characters[0] = new Player(localAggregator);
             Characters[0].AddSettlment(levelMap.castles[0]);
 
-            Characters[1] = new AiCharacter();
+            Characters[1] = new AiCharacter(localAggregator);
             Characters[1].AddSettlment(levelMap.castles[1]);
 
-            BuildingSystem.Init(this);
-            RecruitmentSystem.Init(this);
+            BuildingSystem = new BuildingSystem(GetSettlment);
+            RecruitmentSystem = new RecruitmentSystem(GetSettlment);
 
-            neutralCharacter = new Character();
+            neutralCharacter = new Character(localAggregator);
             neutralCharacter.Coins = int.MaxValue;
 
             foreach (var village in levelMap.villages)
@@ -59,8 +66,9 @@ namespace Domination
             ActiveCharacter.StartTurn(true);
         }
 
-        public Level(LevelData data)
+        public Level(EventsAggregator aggregator, LevelData data)
         {
+            localAggregator = new EventsAggregator(aggregator);
             levelMap = new LevelMap(data.mapData);
 
             activeCharacterIndex = data.activeCharacterIndex;
@@ -74,15 +82,20 @@ namespace Domination
 
                 if (characterData.isPlayer)
                 {
-                    Characters[i] = new Player(GetSettlment, characterData);
+                    Characters[i] = new Player(localAggregator, GetSettlment, characterData);
                 }
                 else
                 {
-                    Characters[i] = new AiCharacter(GetSettlment, characterData);
+                    Characters[i] = new AiCharacter(localAggregator, GetSettlment, characterData);
                 }
             }
 
-            neutralCharacter = new Character(GetSettlment, data.neutralCharacter);
+            neutralCharacter = new Character(localAggregator, GetSettlment, data.neutralCharacter);
+
+            BuildingSystem = new BuildingSystem(GetSettlment);
+            RecruitmentSystem = new RecruitmentSystem(GetSettlment);
+
+            ActiveCharacter.OnTurnFinish += OnCharacterTurnFinish;
         }
 
 
@@ -96,6 +109,8 @@ namespace Domination
 
             mapData = levelMap.GetData()
         };
+
+        public void ShutDown() => localAggregator.ShutDown();
 
         public float CalculateDistanceBetweenSettlments(Settlment startingSettlment, Settlment targetSettlment) => 
             Pathfinding.GetDistance(startingSettlment.Position, targetSettlment.Position, levelMap.simpleMap, TilesPassingCostContainer.GetTilePassingCost);

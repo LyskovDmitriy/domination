@@ -7,6 +7,7 @@ using TMPro;
 using Utils.Ui;
 using Domination.LevelLogic;
 
+
 namespace Domination.Ui
 {
     public class PlayerSettlmentViewScreen : UiScreen
@@ -57,9 +58,9 @@ namespace Domination.Ui
             selectedSettlment = settlment;
             this.player = player;
 
-            EventsAggregator.Subscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
-            EventsAggregator.Subscribe(typeof(BuildOptionChosenMessage), HandleBuildOptionChosen);
-            EventsAggregator.Subscribe(typeof(UnitRecruitedMessage), UpdateUnitsCount);
+            Aggregator.Subscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
+            Aggregator.Subscribe(typeof(BuildOptionChosenMessage), HandleBuildOptionChosen);
+            Aggregator.Subscribe(typeof(UnitRecruitedMessage), UpdateUnitsCount);
 
             SetMode(Mode.Construction);
 
@@ -72,9 +73,9 @@ namespace Domination.Ui
         {
             base.Hide();
 
-            EventsAggregator.Unsubscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
-            EventsAggregator.Unsubscribe(typeof(BuildOptionChosenMessage), HandleBuildOptionChosen);
-            EventsAggregator.Unsubscribe(typeof(UnitRecruitedMessage), UpdateUnitsCount);
+            Aggregator.Unsubscribe(typeof(UpdateUiMessage), HandlePlayerSettlmentsUpdate);
+            Aggregator.Unsubscribe(typeof(BuildOptionChosenMessage), HandleBuildOptionChosen);
+            Aggregator.Unsubscribe(typeof(UnitRecruitedMessage), UpdateUnitsCount);
 
             selectedSettlment = null;
         }
@@ -139,7 +140,7 @@ namespace Domination.Ui
                     constructionSlots.Add(emptySlot.gameObject);
                     emptySlot.Init(() =>
                     {
-                        EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.ChooseBuildingScreen, (screen) =>
+                        Aggregator.TriggerEvent(new ShowUiMessage(ScreenType.ChooseBuildingScreen, (screen) =>
                         {
                             ((ChooseBuildingScreen)screen).Show(selectedSettlment.Id);
                         }));

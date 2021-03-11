@@ -17,7 +17,7 @@ namespace Domination.Ui
 
         private void Awake()
         {
-            endTurnButton.onClick.AddListener(() => EventsAggregator.TriggerEvent(new RequestPlayerTurnEndMessage()));
+            endTurnButton.onClick.AddListener(() => Aggregator.TriggerEvent(new RequestPlayerTurnEndMessage()));
         }
 
 
@@ -25,9 +25,9 @@ namespace Domination.Ui
         {
             base.Show();
 
-            EventsAggregator.Subscribe(typeof(PlayerCoinsCountUpdateMessage), OnPlayerCoinsCountChange);
+            Aggregator.Subscribe(typeof(PlayerCoinsCountUpdateMessage), OnPlayerCoinsCountChange);
 
-            EventsAggregator.TriggerEvent(new RequestPlayerCoinsUpdateMessage());
+            Aggregator.TriggerEvent(new RequestPlayerCoinsUpdateMessage());
         }
 
 
@@ -35,7 +35,7 @@ namespace Domination.Ui
         {
             base.Hide();
 
-            EventsAggregator.Unsubscribe(typeof(PlayerCoinsCountUpdateMessage), OnPlayerCoinsCountChange);
+            Aggregator.Unsubscribe(typeof(PlayerCoinsCountUpdateMessage), OnPlayerCoinsCountChange);
         }
 
 

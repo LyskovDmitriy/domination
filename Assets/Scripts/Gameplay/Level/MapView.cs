@@ -1,4 +1,5 @@
 using Domination.Data;
+using Domination.EventsSystem;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,15 +28,17 @@ namespace Domination.LevelView
 
         private void Awake() => selector.Init(cameraController.Camera);
 
-        public void Create(LevelData data)
+        private void OnDestroy() => Level.ShutDown();
+
+        public void Create(EventsAggregator aggregator, LevelData data)
         {
             if (data == null)
             {
-                Level = new Level();
+                Level = new Level(aggregator);
             }
             else
             {
-                Level = new Level(data);
+                Level = new Level(aggregator, data);
             }
             InitView();
         }

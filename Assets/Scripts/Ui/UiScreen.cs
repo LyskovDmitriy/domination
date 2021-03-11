@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Domination.EventsSystem;
+using Domination.Ui;
+using UnityEngine;
 
 
 namespace Utils.Ui
@@ -9,5 +11,7 @@ namespace Utils.Ui
 
         public abstract ScreenType Type { get; }
         public bool IsRoot => isRoot;
+
+        protected EventsAggregator Aggregator => UiController.Aggregator;
     }
 }

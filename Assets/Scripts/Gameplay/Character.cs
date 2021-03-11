@@ -17,6 +17,8 @@ namespace Domination
         private const int DefaultCoinsCount = 50;
         private static uint NextId = 1;
 
+        protected EventsAggregator aggregator;
+
         private int coins;
 
         private Dictionary<Settlment, Army> stationedArmies = new Dictionary<Settlment, Army>();
@@ -47,15 +49,17 @@ namespace Domination
         }
 
 
-        public Character()
+        public Character(EventsAggregator aggregator)
         {
+            this.aggregator = aggregator;
             Id = NextId;
             NextId++;
             coins = DefaultCoinsCount;
         }
 
-        public Character(Func<uint, Settlment> settlmentGetter, CharacterData data)
+        public Character(EventsAggregator aggregator, Func<uint, Settlment> settlmentGetter, CharacterData data)
         {
+            this.aggregator = aggregator;
             Id = data.id;
             Coins = data.coinsCount;
 
@@ -161,7 +165,7 @@ namespace Domination
             {
                 Settlment settlment = GetSettlmentById(settlmentId);
                 GetSettlmentArmy(settlment).AddUnit(unit);
-                EventsAggregator.TriggerEvent(new UnitRecruitedMessage(Id, settlmentId));
+                aggregator.TriggerEvent(new UnitRecruitedMessage(Id, settlmentId));
             }
         }
 

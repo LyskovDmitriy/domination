@@ -31,21 +31,24 @@ namespace Domination.Ui
         private static Dictionary<ScreenType, UiScreen> createdScreens = new Dictionary<ScreenType, UiScreen>();
         private static List<UiScreen> shownScreens = new List<UiScreen>();
 
+        public static EventsAggregator Aggregator { get; private set; }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        public static void Init()
+
+        public static void Init(EventsAggregator aggregator)
         {
+            Aggregator = aggregator;
+
             foreach (var messageType in MessagesToUpdateUi)
             {
-                EventsAggregator.Subscribe(messageType, SendUpdateUiMessage);
+                Aggregator.Subscribe(messageType, SendUpdateUiMessage);
             }
 
-            EventsAggregator.Subscribe(typeof(ShowUiMessage), ShowUi);
-            EventsAggregator.Subscribe(typeof(HideUiMessage), HideUi);
+            Aggregator.Subscribe(typeof(ShowUiMessage), ShowUi);
+            Aggregator.Subscribe(typeof(HideUiMessage), HideUi);
         }
 
 
-        public static void SendUpdateUiMessage(IMessage _) => EventsAggregator.TriggerEvent(new UpdateUiMessage());
+        public static void SendUpdateUiMessage(IMessage _) => Aggregator.TriggerEvent(new UpdateUiMessage());
 
         public static void ShowUi(IMessage message)
         {

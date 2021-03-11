@@ -15,6 +15,7 @@ namespace Domination
         [SerializeField] private Selector selector = default;
 
         private ScreenType settlmentScreenType = ScreenType.None;
+        private EventsAggregator aggregator;
 
 
         private void Awake()
@@ -23,10 +24,11 @@ namespace Domination
             selector.OnTileDeselected += OnTileDeselected;
         }
 
-        public void Init(LevelData data)
+        public void Init(LevelData data, EventsAggregator aggregator)
         {
-            map.Create(data);
-            EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.LevelUi));
+            this.aggregator = aggregator;
+            aggregator.TriggerEvent(new ShowUiMessage(ScreenType.LevelUi));
+            map.Create(aggregator, data);
         }
 
         public LevelData GetData() => map.GetData();
@@ -44,7 +46,7 @@ namespace Domination
                 if (connectedSettlment.Lord == map.Player)
                 {
                     settlmentScreenType = ScreenType.PlayerSettlmentViewScreen;
-                    EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.PlayerSettlmentViewScreen, (screen) =>
+                    aggregator.TriggerEvent(new ShowUiMessage(ScreenType.PlayerSettlmentViewScreen, (screen) =>
                     {
                         ((PlayerSettlmentViewScreen)screen).Show(connectedSettlment, map.Player);
                     }));
@@ -52,7 +54,7 @@ namespace Domination
                 else
                 {
                     settlmentScreenType = ScreenType.EnemySettlmentViewScreen;
-                    EventsAggregator.TriggerEvent(new ShowUiMessage(ScreenType.EnemySettlmentViewScreen, (screen) =>
+                    aggregator.TriggerEvent(new ShowUiMessage(ScreenType.EnemySettlmentViewScreen, (screen) =>
                     {
                         ((EnemySettlmentViewScreen)screen).Show(connectedSettlment, map.Level);
                     }));
@@ -66,7 +68,7 @@ namespace Domination
         {
             if (settlmentScreenType != ScreenType.None)
             {
-                EventsAggregator.TriggerEvent(new HideUiMessage(settlmentScreenType));
+                aggregator.TriggerEvent(new HideUiMessage(settlmentScreenType));
                 settlmentScreenType = ScreenType.None;
             }
         }

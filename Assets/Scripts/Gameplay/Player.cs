@@ -8,21 +8,21 @@ namespace Domination
 {
     public class Player : Character
     {
-        public Player() : base()
+        public Player(EventsAggregator aggregator) : base(aggregator)
         {
             SubscribeToMessages();
         }
 
-        public Player(Func<uint, Settlment> settlmentGetter, CharacterData data) : 
-            base(settlmentGetter, data) 
+        public Player(EventsAggregator aggregator, Func<uint, Settlment> settlmentGetter, CharacterData data) : 
+            base(aggregator, settlmentGetter, data) 
         {
             SubscribeToMessages();
         }
 
         ~Player()
         {
-            EventsAggregator.Unsubscribe(typeof(RequestPlayerTurnEndMessage), HandleTurnEndRequest);
-            EventsAggregator.Unsubscribe(typeof(RequestPlayerCoinsUpdateMessage), HandleCoinsUpdateRequest);
+            aggregator.Unsubscribe(typeof(RequestPlayerTurnEndMessage), HandleTurnEndRequest);
+            aggregator.Unsubscribe(typeof(RequestPlayerCoinsUpdateMessage), HandleCoinsUpdateRequest);
         }
 
 
@@ -37,24 +37,24 @@ namespace Domination
         {
             base.UpgradeBuilding(settlmentId, buildingType);
 
-            EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
+            aggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
         }
 
         public override void DestroyBuilding(uint settlmentId, BuildingType buildingType)
         {
             base.DestroyBuilding(settlmentId, buildingType);
 
-            EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
+            aggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
         }
 
         public override void Build(uint settlmentId, BuildingType buildingType)
         {
             base.Build(settlmentId, buildingType);
 
-            EventsAggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
+            aggregator.TriggerEvent(new PlayerSettlmentChangedMessage());
         }
 
-        private void SendCoinsUpdateMessage() => EventsAggregator.TriggerEvent(new PlayerCoinsCountUpdateMessage(Coins));
+        private void SendCoinsUpdateMessage() => aggregator.TriggerEvent(new PlayerCoinsCountUpdateMessage(Coins));
 
         private void HandleTurnEndRequest(IMessage _) => FinishTurn();
 
@@ -62,8 +62,8 @@ namespace Domination
 
         private void SubscribeToMessages()
         {
-            EventsAggregator.Subscribe(typeof(RequestPlayerTurnEndMessage), HandleTurnEndRequest);
-            EventsAggregator.Subscribe(typeof(RequestPlayerCoinsUpdateMessage), HandleCoinsUpdateRequest);
+            aggregator.Subscribe(typeof(RequestPlayerTurnEndMessage), HandleTurnEndRequest);
+            aggregator.Subscribe(typeof(RequestPlayerCoinsUpdateMessage), HandleCoinsUpdateRequest);
         }
     }
 }
