@@ -35,22 +35,11 @@ namespace Domination.LevelView
             selector.Init(cameraController.Camera);
         }
 
-        private void OnDestroy()
-        {
-            Instance = null;
-            Level.ShutDown();
-        }
+        private void OnDestroy() => Instance = null;
 
-        public void Create(EventsAggregator aggregator, LevelData data)
+        public void Create(Level level)
         {
-            if (data == null)
-            {
-                Level = new Level(aggregator);
-            }
-            else
-            {
-                Level = new Level(aggregator, data);
-            }
+            Level = level;
             InitView();
         }
 

@@ -37,7 +37,7 @@ namespace Domination.Ui
             player = level.Player;
 
             Aggregator.Subscribe(typeof(UpdateUiMessage), HandleSettlmentsUpdate);
-            //attackSettlmentButton.interactable = player.HasUnitsInSettlment(selectedSettlment);
+            attackSettlmentButton.interactable = player.HasUnitsInSettlment(selectedSettlment);
 
             RefreshUi();
         }

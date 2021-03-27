@@ -14,12 +14,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levels:
   - price: 100
-    health: 300
+    wallUnitHealth: 80
+    gateUnitHealth: 40
+    gateWidth: 2
+    minWallHeight: 4
+    wallThickness: 1
   - price: 150
-    health: 400
+    wallUnitHealth: 140
+    gateUnitHealth: 60
+    gateWidth: 3
+    minWallHeight: 5
+    wallThickness: 2
   - price: 200
-    health: 500
+    wallUnitHealth: 200
+    gateUnitHealth: 100
+    gateWidth: 4
+    minWallHeight: 8
+    wallThickness: 3
   - price: 300
-    health: 700
+    wallUnitHealth: 300
+    gateUnitHealth: 150
+    gateWidth: 5
+    minWallHeight: 9
+    wallThickness: 4
   - price: 400
-    health: 100
+    wallUnitHealth: 450
+    gateUnitHealth: 200
+    gateWidth: 6
+    minWallHeight: 12
+    wallThickness: 4

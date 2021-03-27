@@ -61,7 +61,7 @@ namespace Domination.Ui.Marching
                 SettlmentArmyUi settlmentArmyUi = Instantiate(settlmentArmyPrefab, settlmentArmiesRoot);
 
                 float distance = level.CalculateDistanceBetweenSettlments(settlment, targetSettlment);
-                int daysToArrive = Mathf.CeilToInt(distance / Constants.UNIT_MOVESPEED);
+                int daysToArrive = Mathf.CeilToInt(distance / GameConstants.UNIT_MOVESPEED_ON_MAP);
 
                 availableArmies.Add(new SettlmentArmy 
                 { 

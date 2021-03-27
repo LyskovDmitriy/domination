@@ -3,9 +3,9 @@ namespace Domination
     public static class BuildingUtils
     {
         public static int GetUpgradePrice(BuildingType buildingType, int buildingCurrentLevel) =>
-            BuildingsSettingsContainer.GetBuildingSettings(buildingType).GetLevelPrice(buildingCurrentLevel + 1);
+            SettlmentsSettings.GetBuildingInfo(buildingType).GetLevelPrice(buildingCurrentLevel + 1);
 
         public static int GetConstructionPrice(BuildingType buildingType) =>
-            BuildingsSettingsContainer.GetBuildingSettings(buildingType).GetLevelPrice(0);
+            SettlmentsSettings.GetBuildingInfo(buildingType).GetLevelPrice(0);
     }
 }

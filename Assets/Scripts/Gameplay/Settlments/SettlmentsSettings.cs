@@ -39,7 +39,11 @@ namespace Domination
         [SerializeField] private UnitsGroup[] neutralVillageArmy = default;
 
 
-        public static BuildingSettingsBase GetBuildingInfo(BuildingType type) => Array.Find(asset.Instance.buildings, (building) => building.Type == type);
+        public static BuildingSettingsBase GetBuildingInfo(BuildingType type) => 
+            Array.Find(asset.Instance.buildings, (building) => building.Type == type);
+
+        public static T GetBuildingInfo<T>() where T : BuildingSettingsBase =>
+            Array.Find(asset.Instance.buildings, (building) => building is T) as T;
 
         public static BuildingInfo[] AvailableBuildingsInCity => asset.Instance.availableBuildingsInCastle;
 

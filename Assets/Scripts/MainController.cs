@@ -4,6 +4,8 @@ using Domination.EventsSystem;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Utils.Ui;
+using Domination.Battle.View;
 
 
 namespace Domination
@@ -13,8 +15,8 @@ namespace Domination
         private const string GameMapSceneName = "GameMap";
         private const string BattlefieldSceneName = "Battlefield";
 
-        private GameMap gameMap;
         private EventsAggregator aggregator;
+        private Level level;
 
 
         private void Awake()
@@ -23,6 +25,8 @@ namespace Domination
             aggregator.Subscribe(typeof(PlayerAttackSettlment), OnPlayerAttackedSettlment);
             UiController.Init(aggregator);
 
+            level = new Level(aggregator);
+
             StartCoroutine(LoadGameMap(null));
         }
 
@@ -30,26 +34,29 @@ namespace Domination
         {
             yield return SceneManager.LoadSceneAsync(GameMapSceneName, LoadSceneMode.Additive);
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(GameMapSceneName));
-            gameMap = FindObjectOfType<GameMap>();
-            gameMap.Init(data, aggregator);
+            var gameMap = FindObjectOfType<GameMap>();
+            gameMap.Init(level, aggregator);
         }
 
         private void OnPlayerAttackedSettlment(IMessage message)
         {
-            PlayerAttackSettlment attackMessage = (PlayerAttackSettlment)message;
-            StartCoroutine(LoadBattleScene());
+            var attackMessage = (PlayerAttackSettlment)message;
+            aggregator.TriggerEvent(new HideUiMessage(ScreenType.LevelUi));
+            StartCoroutine(LoadBattleScene(attackMessage.SettlmentId));
         }
 
-        private IEnumerator LoadBattleScene()
+        private IEnumerator LoadBattleScene(uint attackedSettlmentId)
         {
-            var data = gameMap.GetData();
-            gameMap = null;
-
             yield return SceneManager.UnloadSceneAsync(GameMapSceneName);
+            
             yield return SceneManager.LoadSceneAsync(BattlefieldSceneName, LoadSceneMode.Additive);
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(BattlefieldSceneName));
 
-            yield return SceneManager.UnloadSceneAsync(BattlefieldSceneName);
-            yield return LoadGameMap(data);
+            var battlefiled = FindObjectOfType<BattlefieldView>();
+            battlefiled.Init(level, attackedSettlmentId);
+
+            //yield return SceneManager.UnloadSceneAsync(BattlefieldSceneName);
+            //yield return LoadGameMap(data);
             //Set camera position to attacked settlment position
         }
     }

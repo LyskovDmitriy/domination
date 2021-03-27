@@ -47,7 +47,7 @@ namespace Domination.LevelLogic
                     return 0;
                 }
 
-                MarketSettings settings = SettlmentsSettings.GetBuildingInfo(BuildingType.Market) as MarketSettings;
+                MarketSettings settings = SettlmentsSettings.GetBuildingInfo<MarketSettings>();
                 return settings.Levels[market.level].TurnIncome;
             }
         }

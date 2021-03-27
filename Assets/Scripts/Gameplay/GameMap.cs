@@ -24,11 +24,11 @@ namespace Domination
             selector.OnTileDeselected += OnTileDeselected;
         }
 
-        public void Init(LevelData data, EventsAggregator aggregator)
+        public void Init(Level level, EventsAggregator aggregator)
         {
             this.aggregator = aggregator;
             aggregator.TriggerEvent(new ShowUiMessage(ScreenType.LevelUi));
-            map.Create(aggregator, data);
+            map.Create(level);
         }
 
         public LevelData GetData() => map.GetData();

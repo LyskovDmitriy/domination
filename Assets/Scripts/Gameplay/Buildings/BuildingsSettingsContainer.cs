@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
 using UnityEngine;
 
 
@@ -11,5 +10,9 @@ public class BuildingsSettingsContainer : ScriptableObject
     [SerializeField] private BuildingSettingsBase[] buildings = default;
 
 
-    public static BuildingSettingsBase GetBuildingSettings(BuildingType type) => Array.Find(asset.Instance.buildings, (building) => building.Type == type);
+    public static BuildingSettingsBase GetBuildingSettings(BuildingType type) => 
+        Array.Find(asset.Instance.buildings, (building) => building.Type == type);    
+    
+    public static T GetBuildingSettings<T>() where T : BuildingSettingsBase => 
+        Array.Find(asset.Instance.buildings, (building) => building is T) as T;
 }
