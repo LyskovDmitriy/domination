@@ -16,30 +16,30 @@ MonoBehaviour:
   - price: 100
     wallUnitHealth: 80
     gateUnitHealth: 40
-    gateWidth: 2
-    minWallHeight: 4
+    gateHeight: 1
+    minWallHeight: 3
     wallThickness: 1
   - price: 150
     wallUnitHealth: 140
     gateUnitHealth: 60
-    gateWidth: 3
-    minWallHeight: 5
+    gateHeight: 2
+    minWallHeight: 4
     wallThickness: 2
   - price: 200
     wallUnitHealth: 200
     gateUnitHealth: 100
-    gateWidth: 4
-    minWallHeight: 8
+    gateHeight: 3
+    minWallHeight: 7
     wallThickness: 3
   - price: 300
     wallUnitHealth: 300
     gateUnitHealth: 150
-    gateWidth: 5
-    minWallHeight: 9
+    gateHeight: 4
+    minWallHeight: 8
     wallThickness: 4
   - price: 400
     wallUnitHealth: 450
     gateUnitHealth: 200
-    gateWidth: 6
-    minWallHeight: 12
+    gateHeight: 6
+    minWallHeight: 10
     wallThickness: 4

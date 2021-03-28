@@ -47,13 +47,7 @@ namespace Domination.Warfare
 
         public void RemoveUnit(Unit unit) => GetGroup(unit.WeaponType).Remove(unit);
 
-        public List<Unit> GetUnits()
-        {
-            List<Unit> units = new List<Unit>(meleeGroup.Count + rangedGroup.Count);
-            units.AddRange(meleeGroup);
-            units.AddRange(rangedGroup);
-            return units;
-        }
+        public List<Unit> GetUnits() => meleeGroup.Concat(rangedGroup).ToList();
 
         public void Clear()
         {

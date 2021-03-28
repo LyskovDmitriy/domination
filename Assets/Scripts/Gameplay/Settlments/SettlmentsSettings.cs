@@ -46,6 +46,7 @@ namespace Domination
             Array.Find(asset.Instance.buildings, (building) => building is T) as T;
 
         public static BuildingInfo[] AvailableBuildingsInCity => asset.Instance.availableBuildingsInCastle;
+        public static BuildingInfo[] AvailableBuildingsInVillage => asset.Instance.availableBuildingsInVillage;
 
         public static UnitsGroup[] NeutralVillageArmy => asset.Instance.neutralVillageArmy;
 

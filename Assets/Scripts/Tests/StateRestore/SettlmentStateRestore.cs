@@ -1,6 +1,7 @@
 using Domination.LevelLogic;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 
 public class SettlmentStateRestore
@@ -13,6 +14,8 @@ public class SettlmentStateRestore
         [Values] BuildingType builtBuilding,
         [Random(0, 5, 2)] int builtBuildingLevel)
     {
+        LogAssert.ignoreFailingMessages = true;
+
         var oldVillage = new Village(postion);
         oldVillage.Build(builtBuilding, builtBuildingLevel);
 
