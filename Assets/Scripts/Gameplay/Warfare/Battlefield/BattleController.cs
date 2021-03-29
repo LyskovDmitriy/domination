@@ -12,6 +12,12 @@ namespace Domination.Battle.Logic
         public readonly Vector2Int BattleFieldSize;
         public readonly IMapUnit[,] MapUnits;
 
+        private ArmyCommander[] commanders = new ArmyCommander[]
+        {
+            new ArmyCommander(),
+            new ArmyCommander()
+        };
+
 
         public BattleController(Army attackingArmy, Army defendingArmy, Settlment settlment, Tile tile)
         {
@@ -39,8 +45,8 @@ namespace Domination.Battle.Logic
 
             CreateWall(wallThickness, gateHeight);
 
-            CreateUnits(attackingArmy.GetUnits(), true, wallThickness);
-            CreateUnits(defendingArmy.GetUnits(), false, wallThickness);
+            CreateUnits(commanders[0], attackingArmy.GetUnits(), true, wallThickness);
+            CreateUnits(commanders[1], defendingArmy.GetUnits(), false, wallThickness);
         }
 
         private void CreateWall(int wallThickness, int gateHeight)
@@ -58,7 +64,7 @@ namespace Domination.Battle.Logic
             }
         }
 
-        private void CreateUnits(List<Unit> units, bool isAttacker, int wallThickness)
+        private void CreateUnits(ArmyCommander commander, List<Unit> units, bool isAttacker, int wallThickness)
         {
             var queue = new Queue<Unit>(units);
             int placementDirectionSign = isAttacker ? -1 : 1;
@@ -70,11 +76,11 @@ namespace Domination.Battle.Logic
             {
                 for (int offsetY = 0; IsWithinBounds(x, centerIndexY - offsetY) || IsWithinBounds(x, centerIndexY + offsetY); offsetY++)
                 {
-                    TryAddUnit(x, centerIndexY + offsetY, queue);
+                    TryAddUnit(x, centerIndexY + offsetY, queue, commander);
 
                     if (offsetY > 0)
                     {
-                        TryAddUnit(x, centerIndexY - offsetY, queue);
+                        TryAddUnit(x, centerIndexY - offsetY, queue, commander);
                     }
                     if (units.Count == 0)
                     {
@@ -84,12 +90,13 @@ namespace Domination.Battle.Logic
             }
         }
 
-        private void TryAddUnit(int x, int y, Queue<Unit> units)
+        private void TryAddUnit(int x, int y, Queue<Unit> units, ArmyCommander commander)
         {
             if ((units.Count > 0) && IsWithinBounds(x, y))
             {
                 var warrior = new Warrior(units.Dequeue());
                 MapUnits[x, y] = warrior;
+                commander.AddWarrior(warrior);
             }
         }
 

@@ -9,13 +9,15 @@ namespace Domination.Battle.View
     public class BattlefieldView : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer background = default;
-        [SerializeField] private GameObject battleFieldTile = default;
+        [Space]
         [SerializeField] private Vector2 tileSize = default;
         [SerializeField] private Vector2 distanceBetweenTiles = default;
-        [SerializeField] private GameObject wallTile = default;
-        [SerializeField] private GameObject gateTile = default;
-        [SerializeField] private WarriorView knightView = default;
-        [SerializeField] private WarriorView archerView = default;
+        [SerializeField] private GameObject battleFieldTilePrefab = default;
+        [Space]
+        [SerializeField] private GameObject wallTilePrefab = default;
+        [SerializeField] private GameObject gateTilePrefab = default;
+        [SerializeField] private WarriorView knightViewPrefab = default;
+        [SerializeField] private WarriorView archerViewPrefab = default;
 
         private BattleController battlefieldController;
 
@@ -38,7 +40,7 @@ namespace Domination.Battle.View
                 for (int y = 0; y < fieldSizeY; y++)
                 {
                     var tilePosition = GetTilePosition(x, y);
-                    Instantiate(battleFieldTile, tilePosition, Quaternion.identity, transform);
+                    Instantiate(battleFieldTilePrefab, tilePosition, Quaternion.identity, transform);
 
                     var mapUnit = battlefieldController.MapUnits[x, y];
 
@@ -47,25 +49,18 @@ namespace Domination.Battle.View
                         switch (mapUnit)
                         {
                             case Structure structure:
-                                if (structure.isGate)
-                                {
-                                    Instantiate(gateTile, tilePosition, Quaternion.identity, transform);
-                                }
-                                else
-                                { 
-                                    Instantiate(wallTile, tilePosition, Quaternion.identity, transform);
-                                }
+
+                                CreateMapUnit(structure.isGate ? gateTilePrefab : wallTilePrefab, tilePosition);
+
                                 break;
 
                             case Warrior warrior:
-                                if (warrior.Unit.WeaponType == WeaponType.Melee)
-                                {
-                                    Instantiate(knightView, tilePosition, Quaternion.identity, transform);
-                                }
-                                else
-                                {
-                                    Instantiate(archerView, tilePosition, Quaternion.identity, transform);
-                                }
+
+                                var warriorView = CreateMapUnit(
+                                    (warrior.Unit.WeaponType == WeaponType.Melee) ? knightViewPrefab : archerViewPrefab, 
+                                    tilePosition);
+                                warriorView.Init((fieldSizeX - 1) / 2.0f < x);
+
                                 break;
                         }
                     }
@@ -88,5 +83,8 @@ namespace Domination.Battle.View
 
             return tilePosition;
         }
+
+        private T CreateMapUnit<T>(T prefab, Vector2 position) where T : Object =>
+            Instantiate(prefab, position, Quaternion.identity, transform);
     }
 }

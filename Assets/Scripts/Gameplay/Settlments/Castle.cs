@@ -11,6 +11,7 @@ namespace Domination.LevelLogic
 
         public Castle(Vector2Int position) : base(position)
         {
+            //TODO: Setup from the outside
             foreach (var buildingInfo in SettlmentsSettings.AvailableBuildingsInCity)
             {
                 Build(buildingInfo.type, buildingInfo.defaultLevel);
