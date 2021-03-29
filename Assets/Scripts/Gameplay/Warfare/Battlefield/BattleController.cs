@@ -38,7 +38,9 @@ namespace Domination.Battle.Logic
             MapUnits = new IMapUnit[BattleFieldSize.x, BattleFieldSize.y];
 
             CreateWall(wallThickness, gateHeight);
+
             CreateUnits(attackingArmy.GetUnits(), true, wallThickness);
+            CreateUnits(defendingArmy.GetUnits(), false, wallThickness);
         }
 
         private void CreateWall(int wallThickness, int gateHeight)
@@ -62,12 +64,12 @@ namespace Domination.Battle.Logic
             int placementDirectionSign = isAttacker ? -1 : 1;
             int startingColumnIndex = (BattleFieldSize.x - wallThickness) / 2 + 
                 (isAttacker ? -(1 + BattleFieldSettings.AttackersMinDistanceFromWall) :  wallThickness);
+            int centerIndexY = Mathf.FloorToInt(BattleFieldSize.y / 2.0f);
 
             for (int x = startingColumnIndex; (0 <= x) && (x < BattleFieldSize.x); x += placementDirectionSign)
             {
-                for (int offsetY = 0; IsWithinBounds(x, startingColumnIndex - offsetY) || IsWithinBounds(x, startingColumnIndex + offsetY); offsetY++)
+                for (int offsetY = 0; IsWithinBounds(x, centerIndexY - offsetY) || IsWithinBounds(x, centerIndexY + offsetY); offsetY++)
                 {
-                    int centerIndexY = Mathf.FloorToInt(BattleFieldSize.y / 2.0f);
                     TryAddUnit(x, centerIndexY + offsetY, queue);
 
                     if (offsetY > 0)

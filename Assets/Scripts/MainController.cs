@@ -13,7 +13,6 @@ namespace Domination
     public class MainController : MonoBehaviour
     {
         private const string GameMapSceneName = "GameMap";
-        private const string BattlefieldSceneName = "Battlefield";
 
         private EventsAggregator aggregator;
         private Level level;
@@ -49,15 +48,28 @@ namespace Domination
         {
             yield return SceneManager.UnloadSceneAsync(GameMapSceneName);
             
-            yield return SceneManager.LoadSceneAsync(BattlefieldSceneName, LoadSceneMode.Additive);
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(BattlefieldSceneName));
+            yield return SceneManager.LoadSceneAsync(GameConstants.BATTLEFIELD_SCENE_NAME, LoadSceneMode.Additive);
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(GameConstants.BATTLEFIELD_SCENE_NAME));
 
-            var battlefiled = FindObjectOfType<BattlefieldView>();
-            battlefiled.Init(level, attackedSettlmentId);
+            SetupBattleFieldScene(attackedSettlmentId);
 
             //yield return SceneManager.UnloadSceneAsync(BattlefieldSceneName);
             //yield return LoadGameMap(data);
             //Set camera position to attacked settlment position
+        }
+
+        private void SetupBattleFieldScene(uint attackedSettlmentId)
+        {
+            var battlefiled = FindObjectOfType<BattlefieldView>();
+
+            var attackedSettlment = level.GetSettlment(attackedSettlmentId);
+
+            var attackingArmy = level.Player.GetSettlmentArmy(attackedSettlment);
+            var defendingArmy = attackedSettlment.Lord.GetSettlmentArmy(attackedSettlment);
+
+            var settlmentTile = level.Map[attackedSettlment.Position.x, attackedSettlment.Position.y];
+
+            battlefiled.Init(attackingArmy, defendingArmy, attackedSettlment, settlmentTile);
         }
     }
 }

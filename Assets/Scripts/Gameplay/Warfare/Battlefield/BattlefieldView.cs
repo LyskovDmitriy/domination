@@ -20,15 +20,8 @@ namespace Domination.Battle.View
         private BattleController battlefieldController;
 
 
-        public void Init(Level level, uint attackedSettlmentId)
+        public void Init(Army attackingArmy, Army defendingArmy, Settlment attackedSettlment, Tile settlmentTile)
         {
-            var attackedSettlment = level.GetSettlment(attackedSettlmentId);
-            
-            var attackingArmy = level.Player.GetSettlmentArmy(attackedSettlment);
-            var defendingArmy = attackedSettlment.Lord.GetSettlmentArmy(attackedSettlment);
-
-            var settlmentTile = level.Map[attackedSettlment.Position.x, attackedSettlment.Position.y];
-
             battlefieldController = new BattleController(attackingArmy, defendingArmy, attackedSettlment, settlmentTile);
 
             background.color = TilesContainer.GetTileColor(settlmentTile.Type);

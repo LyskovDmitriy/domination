@@ -93,18 +93,23 @@ namespace Domination.LevelLogic
             buildings = buildings.Select(b => b.GetData()).ToArray()
         };
 
-        public void Build(BuildingType buildingType)
+        public void Build(BuildingType type)
         {
-            if (buildings.Exists((building) => building.type == buildingType))
+            if (buildings.Exists((building) => building.type == type))
             {
-                Debug.LogError($"Trying to build already build {buildingType}");
+                Debug.LogError($"Trying to build already build {type}");
                 return;
             }
-            buildings.Add(new Building { type = buildingType });
+            buildings.Add(new Building { type = type });
         }
 
         public void Build(BuildingType type, int level)
         {
+            if (level < 0)
+            {
+                return;
+            }
+
             Build(type);
 
             for (int i = 1; i <= level; i++)

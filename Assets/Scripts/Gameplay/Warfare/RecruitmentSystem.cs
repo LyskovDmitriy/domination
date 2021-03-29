@@ -2,6 +2,7 @@
 using Domination.Warfare;
 using System;
 
+
 namespace Domination
 {
     public class RecruitmentSystem
