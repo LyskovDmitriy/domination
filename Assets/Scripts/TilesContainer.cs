@@ -18,15 +18,15 @@ public class TilesContainer : ScriptableObject
         switch (tileType)
         {
             case TileType.Forest:
-                return asset.Instance.forestColor;
+                return asset.Value.forestColor;
             case TileType.Grass:
-                return asset.Instance.grassColor;
+                return asset.Value.grassColor;
             case TileType.Mountain:
-                return asset.Instance.mountainsColor;
+                return asset.Value.mountainsColor;
             case TileType.Sea:
-                return asset.Instance.seaColor;
+                return asset.Value.seaColor;
             case TileType.Border:
-                return asset.Instance.borderColor;
+                return asset.Value.borderColor;
         }
 
         return Color.white;

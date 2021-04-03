@@ -13,7 +13,7 @@ public class TileTexturesHolder : ScriptableObject
     [SerializeField] private List<TileTextureData> tileTextures = default;
 
 
-    public static List<TileTextureData> Textures => asset.Instance.tileTextures;
+    public static List<TileTextureData> Textures => asset.Value.tileTextures;
 
 
     public static void CreateTexture(string name, Vector2Int resolution)
@@ -21,8 +21,8 @@ public class TileTexturesHolder : ScriptableObject
         TileTextureData texture = ScriptableObject.CreateInstance<TileTextureData>();
         texture.SetResolution(resolution);
         AssetDatabase.CreateAsset(texture, TexturesFolderPath + "/" + name + ".asset");
-        asset.Instance.tileTextures.Add(texture);
-        EditorUtility.SetDirty(asset.Instance);
+        asset.Value.tileTextures.Add(texture);
+        EditorUtility.SetDirty(asset.Value);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();

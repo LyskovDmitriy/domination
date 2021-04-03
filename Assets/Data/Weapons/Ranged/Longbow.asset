@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Longbow
   m_EditorClassIdentifier: 
   damage: 50
+  range: 5

@@ -7,8 +7,10 @@ namespace Domination.Warfare
     public class Weapon : ScriptableObject
     {
         [SerializeField] private int damage = default;
+        [SerializeField] private int range = default;
 
         public string Name => name;
         public int Damage => damage;
+        public int Range => range;
     }
 }

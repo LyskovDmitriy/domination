@@ -113,7 +113,12 @@ namespace Domination
         public void ShutDown() => LocalAggregator.ShutDown();
 
         public float CalculateDistanceBetweenSettlments(Settlment startingSettlment, Settlment targetSettlment) => 
-            Pathfinding.GetDistance(startingSettlment.Position, targetSettlment.Position, levelMap.simpleMap, TilesPassingCostContainer.GetTilePassingCost);
+            AStarPathfinding.GetDistance(
+                startingSettlment.Position, 
+                targetSettlment.Position, 
+                levelMap.simpleMap, 
+                TilesPassingCostContainer.GetTilePassingCost,
+                GameConstants.GLOBAL_MAP_DISTANCE_HEURISTICS_MODIFIER);
 
         public Settlment GetSettlment(uint settlmentId) => Array.Find(GetSettlments(), s => s.Id == settlmentId);
 

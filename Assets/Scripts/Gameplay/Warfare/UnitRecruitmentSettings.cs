@@ -27,10 +27,10 @@ namespace Domination.Warfare
         [SerializeField] private int unitPrice = default;
 
 
-        public static WeaponInfo[] MeleeWeapons => asset.Instance.meleeWeapons;
-        public static WeaponInfo[] RangedWeapons => asset.Instance.rangedWeapons;
+        public static WeaponInfo[] MeleeWeapons => asset.Value.meleeWeapons;
+        public static WeaponInfo[] RangedWeapons => asset.Value.rangedWeapons;
 
-        public static int UnitPrice => asset.Instance.unitPrice;
+        public static int UnitPrice => asset.Value.unitPrice;
 
 
         public static WeaponInfo[] GetWeapons(WeaponType type)
@@ -38,9 +38,9 @@ namespace Domination.Warfare
             switch (type)
             {
                 case WeaponType.Melee:
-                    return asset.Instance.meleeWeapons;
+                    return asset.Value.meleeWeapons;
                 case WeaponType.Ranged:
-                    return asset.Instance.rangedWeapons;
+                    return asset.Value.rangedWeapons;
             }
 
             return null;
@@ -51,9 +51,9 @@ namespace Domination.Warfare
             switch (type)
             {
                 case WeaponType.Melee:
-                    return asset.Instance.meleeUnitHealth;
+                    return asset.Value.meleeUnitHealth;
                 case WeaponType.Ranged:
-                    return asset.Instance.rangedUnitHealth;
+                    return asset.Value.rangedUnitHealth;
             }
 
             return 0;

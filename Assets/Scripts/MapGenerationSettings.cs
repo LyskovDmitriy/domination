@@ -22,18 +22,18 @@ public class MapGenerationSettings : ScriptableObject
     [SerializeField] private TileType[] possibleVillageSpawnTiles = default;
 
 
-    public static Vector2Int MapResolution => asset.Instance.mapResolution;
+    public static Vector2Int MapResolution => asset.Value.mapResolution;
 
-    public static TileTextureData TileTexture => asset.Instance.tileTexture;
+    public static TileTextureData TileTexture => asset.Value.tileTexture;
 
-    public static int MinCastleDistanceFromBorder => asset.Instance.minCastleDistanceFromBorder;
-    public static int MaxCastleDistanceFromBorder => asset.Instance.maxCastleDistanceFromBorder;
-    public static int MinDistanceBetweenCastles => asset.Instance.minDistanceBetweenCastles;
-    public static float DistanceBetweenCastlesPower => asset.Instance.distanceBetweenCastlesPower;
-    public static int SpawnedVillagesCount => asset.Instance.spawnedVillagesCount;
-    public static int MinDistanceBetweenSettlments => asset.Instance.minDistanceBetweenSettlments;
-    public static int MinVillageDistanceFromBorder => asset.Instance.minVillageDistanceFromBorder;
-    public static float DistanceToVillagePower => asset.Instance.distanceToVillagePower;
-    public static TileType[] PossibleCastleSpawnTiles => asset.Instance.possibleCastleSpawnTiles;
-    public static TileType[] PossibleVillageSpawnTiles => asset.Instance.possibleVillageSpawnTiles;
+    public static int MinCastleDistanceFromBorder => asset.Value.minCastleDistanceFromBorder;
+    public static int MaxCastleDistanceFromBorder => asset.Value.maxCastleDistanceFromBorder;
+    public static int MinDistanceBetweenCastles => asset.Value.minDistanceBetweenCastles;
+    public static float DistanceBetweenCastlesPower => asset.Value.distanceBetweenCastlesPower;
+    public static int SpawnedVillagesCount => asset.Value.spawnedVillagesCount;
+    public static int MinDistanceBetweenSettlments => asset.Value.minDistanceBetweenSettlments;
+    public static int MinVillageDistanceFromBorder => asset.Value.minVillageDistanceFromBorder;
+    public static float DistanceToVillagePower => asset.Value.distanceToVillagePower;
+    public static TileType[] PossibleCastleSpawnTiles => asset.Value.possibleCastleSpawnTiles;
+    public static TileType[] PossibleVillageSpawnTiles => asset.Value.possibleVillageSpawnTiles;
 }

@@ -1,23 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+
 
 public class ResourceAsset<T> where T : Object
 {
-    private T instance;
+    private T value;
     private string path;
 
 
-    public T Instance
+    public T Value
     {
         get
         {
-            if (instance == null)
+            if (value == null)
             {
-                instance = Resources.Load<T>(path);
+                value = Resources.Load<T>(path);
             }
 
-            return instance;
+            return value;
         }
     }
 

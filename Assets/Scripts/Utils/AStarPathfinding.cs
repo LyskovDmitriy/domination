@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Utils
 {
-    public static class Pathfinding
+    public static class AStarPathfinding
     {
         private class Node
         {
@@ -32,8 +32,6 @@ namespace Utils
             }
         }
 
-        private const float DISTANCE_HEURISTICS_MODIFIER = 4;
-
         private static readonly Vector2Int[] NeighborsOffsets = new Vector2Int[]
         {   new Vector2Int(-1, 0),
             new Vector2Int(1, 0),
@@ -41,7 +39,12 @@ namespace Utils
             new Vector2Int(0, 1)
         };
 
-        public static float GetDistance(Vector2Int start, Vector2Int target, TileType[,] map, Func<TileType, float> getPassingCostAction) //TODO: Create test chamber
+        public static float GetDistance<TTileType>(
+            Vector2Int start, 
+            Vector2Int target, 
+            TTileType[,] map, 
+            Func<TTileType, float> getPassingCostAction, 
+            float distanceHeuristicsModifier) //TODO: Create test chamber
         {
             Node[,] visitedPositions = new Node[map.GetLength(0), map.GetLength(1)];
             SortedList<int, Queue<Node>> frontier = new SortedList<int, Queue<Node>>() { { 0, new Queue<Node>() } };
@@ -90,7 +93,7 @@ namespace Utils
 
                         if (newNode != null)
                         {
-                            int heuristicDistance = GetHeuristicDistance(newNodePosition, target, distance);
+                            int heuristicDistance = GetHeuristicDistance(newNodePosition, target, distance, distanceHeuristicsModifier);
 
                             if (!frontier.TryGetValue(heuristicDistance, out var queue))
                             {
@@ -107,7 +110,11 @@ namespace Utils
             return int.MaxValue;
         }
 
-        private static int GetHeuristicDistance(Vector2Int position, Vector2Int targetPosition, float distance) =>
-            Mathf.Abs(position.x - targetPosition.x) + Mathf.Abs(position.y - targetPosition.y) + Mathf.RoundToInt(distance * DISTANCE_HEURISTICS_MODIFIER);
+        private static int GetHeuristicDistance(
+            Vector2Int position, 
+            Vector2Int targetPosition, 
+            float distance, 
+            float distanceHeuristicsModifier) =>
+            Mathf.Abs(position.x - targetPosition.x) + Mathf.Abs(position.y - targetPosition.y) + Mathf.RoundToInt(distance * distanceHeuristicsModifier);
     }
 }

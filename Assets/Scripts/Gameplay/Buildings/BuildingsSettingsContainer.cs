@@ -11,8 +11,8 @@ public class BuildingsSettingsContainer : ScriptableObject
 
 
     public static BuildingSettingsBase GetBuildingSettings(BuildingType type) => 
-        Array.Find(asset.Instance.buildings, (building) => building.Type == type);    
+        Array.Find(asset.Value.buildings, (building) => building.Type == type);    
     
     public static T GetBuildingSettings<T>() where T : BuildingSettingsBase => 
-        Array.Find(asset.Instance.buildings, (building) => building is T) as T;
+        Array.Find(asset.Value.buildings, (building) => building is T) as T;
 }

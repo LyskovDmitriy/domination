@@ -153,17 +153,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackingUnits:
-  - unitsCount: 7
+  - unitsCount: 10
     weaponType: 0
     weaponLevel: 1
-  - unitsCount: 5
+  - unitsCount: 8
     weaponType: 1
     weaponLevel: 1
   defendingUnits:
-  - unitsCount: 6
+  - unitsCount: 5
     weaponType: 0
     weaponLevel: 1
-  - unitsCount: 6
+  - unitsCount: 8
     weaponType: 1
     weaponLevel: 1
   wallLevel: 2

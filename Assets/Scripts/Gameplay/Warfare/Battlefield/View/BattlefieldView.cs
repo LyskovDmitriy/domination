@@ -1,7 +1,9 @@
 using Domination.LevelLogic;
 using Domination.Warfare;
 using Domination.Battle.Logic; 
-using UnityEngine; 
+using UnityEngine;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 namespace Domination.Battle.View
@@ -14,12 +16,16 @@ namespace Domination.Battle.View
         [SerializeField] private Vector2 distanceBetweenTiles = default;
         [SerializeField] private GameObject battleFieldTilePrefab = default;
         [Space]
-        [SerializeField] private GameObject wallTilePrefab = default;
-        [SerializeField] private GameObject gateTilePrefab = default;
+        [SerializeField] private StructureView wallTilePrefab = default;
+        [SerializeField] private StructureView gateTilePrefab = default;
         [SerializeField] private WarriorView knightViewPrefab = default;
         [SerializeField] private WarriorView archerViewPrefab = default;
+        [Space]
+        [SerializeField] private float secondsToStartAttack = default;
 
         private BattleController battlefieldController;
+
+        private List<WarriorView> warriors = new List<WarriorView>();
 
 
         public void Init(Army attackingArmy, Army defendingArmy, Settlment attackedSettlment, Tile settlmentTile)
@@ -28,10 +34,23 @@ namespace Domination.Battle.View
 
             background.color = TilesContainer.GetTileColor(settlmentTile.Type);
 
-            CreateTiles();
+            CreateMapUnits();
+
+            StartAttack();
         }
 
-        private void CreateTiles()
+        private async void StartAttack()
+        {
+            await Task.Delay(Mathf.RoundToInt(secondsToStartAttack * 1000));
+            BattleCycle();
+        }
+
+        private async void BattleCycle()
+        {
+            battlefieldController.PlanTurn();
+        }
+
+        private void CreateMapUnits()
         {
             int fieldSizeX = battlefieldController.BattleFieldSize.x;
             int fieldSizeY = battlefieldController.BattleFieldSize.y;
@@ -50,7 +69,8 @@ namespace Domination.Battle.View
                         {
                             case Structure structure:
 
-                                CreateMapUnit(structure.isGate ? gateTilePrefab : wallTilePrefab, tilePosition);
+                                var structureView = CreateMapUnit(structure.isGate ? gateTilePrefab : wallTilePrefab, tilePosition);
+                                structureView.Init(structure);
 
                                 break;
 
@@ -59,7 +79,8 @@ namespace Domination.Battle.View
                                 var warriorView = CreateMapUnit(
                                     (warrior.Unit.WeaponType == WeaponType.Melee) ? knightViewPrefab : archerViewPrefab, 
                                     tilePosition);
-                                warriorView.Init((fieldSizeX - 1) / 2.0f < x);
+                                warriorView.Init(warrior, (fieldSizeX - 1) / 2.0f < x);
+                                warriors.Add(warriorView);
 
                                 break;
                         }

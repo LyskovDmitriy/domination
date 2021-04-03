@@ -254,14 +254,15 @@ MonoBehaviour:
   distanceBetweenTiles: {x: 0.1, y: 0.1}
   battleFieldTilePrefab: {fileID: 3289171088089471738, guid: 8687215fe36dbbd4fb29953ac91c0fd7,
     type: 3}
-  wallTilePrefab: {fileID: 6787633608653735187, guid: e0ae09fba69235a4bb208b99ec2096c4,
+  wallTilePrefab: {fileID: 2939526303888210093, guid: e0ae09fba69235a4bb208b99ec2096c4,
     type: 3}
-  gateTilePrefab: {fileID: 2299787919752553869, guid: 0bd07bbd5856d5d44817253b5e22bccc,
+  gateTilePrefab: {fileID: -5289479028808313985, guid: 0bd07bbd5856d5d44817253b5e22bccc,
     type: 3}
   knightViewPrefab: {fileID: 8418144646839648951, guid: 59d03e9840ccd1443bc373f696ffa633,
     type: 3}
   archerViewPrefab: {fileID: 8063485666157351858, guid: ebd394de8a31c3b4cbe288b37676c163,
     type: 3}
+  secondsToStartAttack: 3
 --- !u!1 &1344738364
 GameObject:
   m_ObjectHideFlags: 0

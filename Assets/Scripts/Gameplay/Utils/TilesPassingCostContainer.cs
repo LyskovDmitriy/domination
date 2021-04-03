@@ -20,6 +20,6 @@ namespace Utils
         [SerializeField] private TilePassingCost[] tilesPassingCosts = default;
 
 
-        public static float GetTilePassingCost(TileType tile) => Array.Find(asset.Instance.tilesPassingCosts, (info) => info.tile == tile).cost;
+        public static float GetTilePassingCost(TileType tile) => Array.Find(asset.Value.tilesPassingCosts, (info) => info.tile == tile).cost;
     }
 }

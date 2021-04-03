@@ -1,5 +1,4 @@
 using Domination.Warfare;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -8,14 +7,20 @@ namespace Domination.Battle.Logic
     public class Warrior : IMapUnit
     {
         public readonly Unit Unit;
+        public readonly bool IsAttacker;
+
+
+        public Vector2Int Position { get; private set; }
 
 
         public MapUnitType Type => MapUnitType.Warrior;
 
 
-        public Warrior(Unit unit)
+        public Warrior(Unit unit, bool isAttacker, Vector2Int position)
         {
             Unit = unit;
+            IsAttacker = isAttacker;
+            Position = position;
         }
     }
 }

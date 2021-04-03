@@ -12,14 +12,10 @@ namespace Domination.Battle.Logic
         public readonly Vector2Int BattleFieldSize;
         public readonly IMapUnit[,] MapUnits;
 
-        private ArmyCommander[] commanders = new ArmyCommander[]
-        {
-            new ArmyCommander(),
-            new ArmyCommander()
-        };
+        private readonly ArmyCommander[] commanders;
 
 
-        public BattleController(Army attackingArmy, Army defendingArmy, Settlment settlment, Tile tile)
+        public BattleController(Army attackingArmy, Army defendingArmy, Settlment settlment, Tile tile)//TODO: Improve walls  health on a mountain tile
         {
             int wallThickness = 0;
             int minWallHeight = 0;
@@ -41,6 +37,12 @@ namespace Domination.Battle.Logic
                 wallThickness,
                 minWallHeight);
 
+            commanders = new ArmyCommander[]
+            {
+                new ArmyCommander(this, isAttacker: true),
+                new ArmyCommander(this, isAttacker: false),
+            };
+
             MapUnits = new IMapUnit[BattleFieldSize.x, BattleFieldSize.y];
 
             CreateWall(wallThickness, gateHeight);
@@ -48,6 +50,19 @@ namespace Domination.Battle.Logic
             CreateUnits(commanders[0], attackingArmy.GetUnits(), true, wallThickness);
             CreateUnits(commanders[1], defendingArmy.GetUnits(), false, wallThickness);
         }
+
+        public void PlanTurn()
+        {
+            var mapForPlanning = (IMapUnit[,])MapUnits.Clone();
+
+            foreach (var commander in commanders)
+            {
+                commander.PlanTurn(mapForPlanning);
+            }
+        }
+
+        public bool IsTileEmpty(IMapUnit[,] map, Vector2Int position) => IsTileEmpty(map, position.x, position.y);
+        public bool IsTileEmpty(IMapUnit[,] map, int x, int y) => IsWithinBounds(x, y) && (map[x, y] == null);
 
         private void CreateWall(int wallThickness, int gateHeight)
         {
@@ -94,7 +109,7 @@ namespace Domination.Battle.Logic
         {
             if ((units.Count > 0) && IsWithinBounds(x, y))
             {
-                var warrior = new Warrior(units.Dequeue());
+                var warrior = new Warrior(units.Dequeue(), commander.IsAttacker, new Vector2Int(x, y));
                 MapUnits[x, y] = warrior;
                 commander.AddWarrior(warrior);
             }

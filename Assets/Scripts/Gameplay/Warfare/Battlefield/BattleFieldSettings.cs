@@ -11,7 +11,7 @@ namespace Domination.Battle.Settings
         [SerializeField] private float tagetBattleFieldSizeRatio = default;
 
 
-        public static int AttackersMinDistanceFromWall => asset.Instance.attackersMinDistanceFromWall;
-        public static float TagetBattleFieldSizeRatio => asset.Instance.tagetBattleFieldSizeRatio;
+        public static int AttackersMinDistanceFromWall => asset.Value.attackersMinDistanceFromWall;
+        public static float TagetBattleFieldSizeRatio => asset.Value.tagetBattleFieldSizeRatio;
     }
 }

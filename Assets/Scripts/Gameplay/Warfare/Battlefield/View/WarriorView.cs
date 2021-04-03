@@ -1,3 +1,5 @@
+using Domination.Battle.Logic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -7,12 +9,22 @@ namespace Domination.Battle.View
     {
         [SerializeField] private new SpriteRenderer renderer = default;
 
-        public void Init(bool isFacingLeft)
+        private Warrior warrior;
+
+
+        public void Init(Warrior warrior, bool isFacingLeft)
         {
+            this.warrior = warrior;
+
             if (isFacingLeft)
             {
                 renderer.transform.localEulerAngles = Vector3.up * 180;
             }
+        }
+
+        public async Task ExecutePlan()
+        {
+            
         }
     }
 }
