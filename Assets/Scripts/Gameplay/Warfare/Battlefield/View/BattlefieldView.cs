@@ -10,6 +10,9 @@ namespace Domination.Battle.View
 {
     public class BattlefieldView : MonoBehaviour
     {
+        [SerializeField] private Camera battleCamera = default;
+        [SerializeField] private float cameraAdditionalSizeY = default;
+        [Space]
         [SerializeField] private SpriteRenderer background = default;
         [Space]
         [SerializeField] private Vector2 tileSize = default;
@@ -31,15 +34,16 @@ namespace Domination.Battle.View
         public void Init(Army attackingArmy, Army defendingArmy, Settlment attackedSettlment, Tile settlmentTile)
         {
             battlefieldController = new BattleController(attackingArmy, defendingArmy, attackedSettlment, settlmentTile);
+            battleCamera.orthographicSize = 
+                (battlefieldController.BattleFieldSize.y * tileSize.y + (battlefieldController.BattleFieldSize.y - 1) * distanceBetweenTiles.y) / 2 + 
+                cameraAdditionalSizeY;
 
             background.color = TilesContainer.GetTileColor(settlmentTile.Type);
 
             CreateMapUnits();
-
-            StartAttack();
         }
 
-        private async void StartAttack()
+        public async void StartAttack()
         {
             await Task.Delay(Mathf.RoundToInt(secondsToStartAttack * 1000));
             BattleCycle();

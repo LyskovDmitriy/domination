@@ -70,6 +70,7 @@ namespace Domination
             var settlmentTile = level.Map[attackedSettlment.Position.x, attackedSettlment.Position.y];
 
             battlefiled.Init(attackingArmy, defendingArmy, attackedSettlment, settlmentTile);
+            battlefiled.StartAttack();
         }
     }
 }

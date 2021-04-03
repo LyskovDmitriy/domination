@@ -249,6 +249,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ae51f5364d3e24a94661aea4c20af8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  battleCamera: {fileID: 517345217}
+  cameraAdditionalSizeY: 1
   background: {fileID: 1344738365}
   tileSize: {x: 1, y: 1}
   distanceBetweenTiles: {x: 0.1, y: 0.1}
