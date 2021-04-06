@@ -44,3 +44,6 @@ TagManager:
   - name: MapUnits
     uniqueID: 1408616019
     locked: 0
+  - name: Overlayer
+    uniqueID: 19154775
+    locked: 0

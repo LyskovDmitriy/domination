@@ -48,7 +48,10 @@ namespace Utils
         {
             Node[,] visitedPositions = new Node[map.GetLength(0), map.GetLength(1)];
             SortedList<int, Queue<Node>> frontier = new SortedList<int, Queue<Node>>() { { 0, new Queue<Node>() } };
-            frontier[0].Enqueue(new Node(start, start, 0));
+            var startingNode = new Node(start, start, 0);
+            frontier[0].Enqueue(startingNode);
+            visitedPositions[start.x, start.y] = startingNode;
+            
 
             while (frontier.Count > 0)
             {
@@ -73,12 +76,21 @@ namespace Utils
                         (0 <= newNodePosition.y) && (newNodePosition.y < map.GetLength(1)))
                     {
                         float distance = currentNode.distance + getPassingCostAction.Invoke(map[newNodePosition.x, newNodePosition.y]);
-                        Node newNode = null;
 
                         if (visitedPositions[newNodePosition.x, newNodePosition.y] == null)
                         {
-                            newNode = new Node(newNodePosition, currentNode.position, distance);
+                            var newNode = new Node(newNodePosition, currentNode.position, distance);
                             visitedPositions[newNodePosition.x, newNodePosition.y] = newNode;
+
+                            int heuristicDistance = GetHeuristicDistance(newNodePosition, target, distance, distanceHeuristicsModifier);
+
+                            if (!frontier.TryGetValue(heuristicDistance, out var queue))
+                            {
+                                queue = new Queue<Node>();
+                                frontier.Add(heuristicDistance, queue);
+                            }
+
+                            queue.Enqueue(newNode);
                         }
                         else
                         {
@@ -89,19 +101,6 @@ namespace Utils
                                 existingNode.distance = distance;
                                 existingNode.previousPosition = currentNode.position;
                             }
-                        }
-
-                        if (newNode != null)
-                        {
-                            int heuristicDistance = GetHeuristicDistance(newNodePosition, target, distance, distanceHeuristicsModifier);
-
-                            if (!frontier.TryGetValue(heuristicDistance, out var queue))
-                            {
-                                queue = new Queue<Node>();
-                                frontier.Add(heuristicDistance, queue);
-                            }
-
-                            queue.Enqueue(newNode);
                         }
                     }
                 }

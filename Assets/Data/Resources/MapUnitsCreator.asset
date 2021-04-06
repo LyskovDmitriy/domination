@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d551086be1a9004c94d7b7c408dc5b7, type: 3}
+  m_Name: MapUnitsCreator
+  m_EditorClassIdentifier: 
+  wallTilePrefab: {fileID: 2939526303888210093, guid: e0ae09fba69235a4bb208b99ec2096c4,
+    type: 3}
+  gateTilePrefab: {fileID: -5289479028808313985, guid: 0bd07bbd5856d5d44817253b5e22bccc,
+    type: 3}
+  knightViewPrefab: {fileID: 8418144646839648951, guid: 59d03e9840ccd1443bc373f696ffa633,
+    type: 3}
+  archerViewPrefab: {fileID: 8063485666157351858, guid: ebd394de8a31c3b4cbe288b37676c163,
+    type: 3}

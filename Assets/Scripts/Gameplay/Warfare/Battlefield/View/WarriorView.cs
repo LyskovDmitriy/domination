@@ -16,10 +16,7 @@ namespace Domination.Battle.View
         {
             this.warrior = warrior;
 
-            if (isFacingLeft)
-            {
-                renderer.transform.localEulerAngles = Vector3.up * 180;
-            }
+            renderer.flipX = isFacingLeft;
         }
 
         public async Task ExecutePlan()

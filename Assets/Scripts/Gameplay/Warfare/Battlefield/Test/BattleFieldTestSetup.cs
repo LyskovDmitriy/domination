@@ -5,14 +5,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-namespace Domination
+namespace Domination.Battle.Test
 {
     public class BattleFieldTestSetup : MonoBehaviour
     {
+        [Header("Battle field setup")]
         [SerializeField] private UnitsGroup[] attackingUnits = default;
         [SerializeField] private UnitsGroup[] defendingUnits = default;
         [SerializeField] private int wallLevel = default;
         [SerializeField] private TileType settlmentTileType = default;
+        [Space]
+        [SerializeField] private BattleFieldDebugger debugger = default;
 
 
         private IEnumerator Start()
@@ -25,6 +28,8 @@ namespace Domination
 
             var battlefiled = FindObjectOfType<BattlefieldView>();
             battlefiled.Init(RecruitmentUtils.CreateArmy(attackingUnits), RecruitmentUtils.CreateArmy(defendingUnits), settlment, new Tile(settlmentTileType));
+            
+            debugger.Init(battlefiled);
         }
     }
 }

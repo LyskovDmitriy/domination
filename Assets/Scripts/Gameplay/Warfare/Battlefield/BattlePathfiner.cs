@@ -7,7 +7,7 @@ namespace Domination.Battle.Logic
 {
     public static class BattlePathfiner
     {
-        private class Node
+        public class Node
         {
             public Vector2Int position;
             public Vector2Int previousPosition;
@@ -49,14 +49,17 @@ namespace Domination.Battle.Logic
         };
 
 
-        public static void GetDistance(
+        public static Node[,] GetPathfindingData(
             Vector2Int start,
             IMapUnit[,] map,
             Func<IMapUnit, int> getPassingCostAction)
         {
             var visitedPositions = new Node[map.GetLength(0), map.GetLength(1)];
             var frontier = new SortedList<int, Queue<Node>>() { { 0, new Queue<Node>() } };
-            frontier[0].Enqueue(new Node(start, start, 0, false, false));
+
+            var startingNode = new Node(start, start, 0, false, false);
+            frontier[0].Enqueue(startingNode);
+            visitedPositions[start.x, start.y] = startingNode;
 
             while (frontier.Count > 0)
             {
@@ -77,20 +80,27 @@ namespace Domination.Battle.Logic
                     {
                         var unitOnTile = map[newNodePosition.x, newNodePosition.y];
                         int distance = currentNode.distance + getPassingCostAction.Invoke(unitOnTile);
-                        Node newNode = null;
 
                         bool isMapUnitStructure = (unitOnTile != null) && (unitOnTile.Type == MapUnitType.Structure);
                         bool isMapUnitWarrior = (unitOnTile != null) && (unitOnTile.Type == MapUnitType.Warrior);
 
                         if (visitedPositions[newNodePosition.x, newNodePosition.y] == null)
                         {
-                            newNode = new Node(
+                            var newNode = new Node(
                                 newNodePosition, 
                                 currentNode.position, 
                                 distance,
                                 isMapUnitStructure,
                                 isMapUnitWarrior);
                             visitedPositions[newNodePosition.x, newNodePosition.y] = newNode;
+
+                            if (!frontier.TryGetValue(distance, out var queue))
+                            {
+                                queue = new Queue<Node>();
+                                frontier.Add(distance, queue);
+                            }
+
+                            queue.Enqueue(newNode);
                         }
                         else
                         {
@@ -104,20 +114,11 @@ namespace Domination.Battle.Logic
                                 existingNode.previousPosition = currentNode.position;
                             }
                         }
-
-                        if (newNode != null)
-                        {
-                            if (!frontier.TryGetValue(distance, out var queue))
-                            {
-                                queue = new Queue<Node>();
-                                frontier.Add(distance, queue);
-                            }
-
-                            queue.Enqueue(newNode);
-                        }
                     }
                 }
             }
+
+            return visitedPositions;
         }
     }
 }
