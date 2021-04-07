@@ -90,8 +90,8 @@ namespace Domination.Battle.Logic
                                 newNodePosition, 
                                 currentNode.position, 
                                 distance,
-                                isMapUnitStructure,
-                                isMapUnitWarrior);
+                                isMapUnitStructure || currentNode.isPathObstructedByStructure,
+                                isMapUnitWarrior || currentNode.isPathObstructedByWarrior);
                             visitedPositions[newNodePosition.x, newNodePosition.y] = newNode;
 
                             if (!frontier.TryGetValue(distance, out var queue))
