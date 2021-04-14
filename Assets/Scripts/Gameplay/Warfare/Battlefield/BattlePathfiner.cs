@@ -7,10 +7,17 @@ namespace Domination.Battle.Logic
 {
     public static class BattlePathfiner
     {
+        public class PathfinidingResult
+        {
+            public Node[,] nodes;
+            public HashSet<Node> enemies;
+            public HashSet<Node> structures;
+        }
+
         public class Node
         {
             public Vector2Int position;
-            public Vector2Int previousPosition;
+            public Node previousNode;
             public bool isPathObstructedByStructure;
             public bool isPathObstructedByWarrior;
             public int distance;
@@ -18,13 +25,13 @@ namespace Domination.Battle.Logic
 
             public Node(
                 Vector2Int position, 
-                Vector2Int previousPosition, 
+                Node previousNode, 
                 int distance, 
                 bool isPathObstructedByStructure, 
                 bool isPathObstructedByWarrior)
             {
                 this.position = position;
-                this.previousPosition = previousPosition;
+                this.previousNode = previousNode;
                 this.distance = distance;
                 this.isPathObstructedByStructure = isPathObstructedByStructure;
                 this.isPathObstructedByWarrior = isPathObstructedByWarrior;
@@ -49,15 +56,19 @@ namespace Domination.Battle.Logic
         };
 
 
-        public static Node[,] GetPathfindingData(
+        public static PathfinidingResult GetPathfindingData(
             Vector2Int start,
             IMapUnit[,] map,
-            Func<IMapUnit, int> getPassingCostAction)
+            Func<IMapUnit, int> getPassingCostFunction,
+            Func<Warrior, bool> isUnitEnemyFunction)
         {
+            HashSet<Node> structures = new HashSet<Node>();
+            HashSet<Node> enemies = new HashSet<Node>();
+
             var visitedPositions = new Node[map.GetLength(0), map.GetLength(1)];
             var frontier = new SortedList<int, Queue<Node>>() { { 0, new Queue<Node>() } };
 
-            var startingNode = new Node(start, start, 0, false, false);
+            var startingNode = new Node(start, null, 0, false, false);
             frontier[0].Enqueue(startingNode);
             visitedPositions[start.x, start.y] = startingNode;
 
@@ -79,7 +90,7 @@ namespace Domination.Battle.Logic
                         (0 <= newNodePosition.y) && (newNodePosition.y < map.GetLength(1)))
                     {
                         var unitOnTile = map[newNodePosition.x, newNodePosition.y];
-                        int distance = currentNode.distance + getPassingCostAction.Invoke(unitOnTile);
+                        int distance = currentNode.distance + getPassingCostFunction.Invoke(unitOnTile);
 
                         bool isMapUnitStructure = (unitOnTile != null) && (unitOnTile.Type == MapUnitType.Structure);
                         bool isMapUnitWarrior = (unitOnTile != null) && (unitOnTile.Type == MapUnitType.Warrior);
@@ -88,11 +99,20 @@ namespace Domination.Battle.Logic
                         {
                             var newNode = new Node(
                                 newNodePosition, 
-                                currentNode.position, 
+                                currentNode, 
                                 distance,
                                 isMapUnitStructure || currentNode.isPathObstructedByStructure,
                                 isMapUnitWarrior || currentNode.isPathObstructedByWarrior);
                             visitedPositions[newNodePosition.x, newNodePosition.y] = newNode;
+
+                            if (isMapUnitStructure)
+                            {
+                                structures.Add(newNode);
+                            }
+                            else if (isMapUnitStructure && isUnitEnemyFunction(unitOnTile as Warrior))
+                            {
+                                enemies.Add(newNode);
+                            }
 
                             if (!frontier.TryGetValue(distance, out var queue))
                             {
@@ -111,14 +131,19 @@ namespace Domination.Battle.Logic
                                 existingNode.isPathObstructedByStructure = isMapUnitStructure || currentNode.isPathObstructedByStructure;
                                 existingNode.isPathObstructedByWarrior = isMapUnitWarrior || currentNode.isPathObstructedByWarrior;
                                 existingNode.distance = distance;
-                                existingNode.previousPosition = currentNode.position;
+                                existingNode.previousNode = currentNode;
                             }
                         }
                     }
                 }
             }
 
-            return visitedPositions;
+            return new PathfinidingResult
+            {
+                nodes = visitedPositions,
+                structures = structures,
+                enemies = enemies,
+            };
         }
     }
 }

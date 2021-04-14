@@ -12,8 +12,6 @@ namespace Domination.Battle.Logic
         
         private readonly BattleController battleController;
 
-        private IMapUnit[,] currentPlanningMap;
-
         private HashSet<Warrior> warriors = new HashSet<Warrior>();
 
 
@@ -28,10 +26,10 @@ namespace Domination.Battle.Logic
             warriors.Add(warrior);
         }
 
+        //Plan turn for each unit
+        //So that view could execute plan
         public void PlanTurn(IMapUnit[,] planningMap)
         {
-            currentPlanningMap = planningMap;
-
             var orderedUnits = warriors.OrderBy(GetOrder).ToList();
 
             while (orderedUnits.Count() > 0)
@@ -48,24 +46,28 @@ namespace Domination.Battle.Logic
                     warrior = orderedUnits.First();
                 }
 
+                var pathfindingData = BattlePathfiner.GetPathfindingData(
+                    warrior.Position, 
+                    planningMap, 
+                    GetPassingCost,
+                    mapUnit => mapUnit.IsAttacker == IsAttacker);
+
+                warrior.PlanTurn(planningMap, pathfindingData);
 
                 orderedUnits.Remove(warrior);
             }
-            //Plan turn for each unit
-            //So that view could execute plan
-            currentPlanningMap = null;
+
+            bool CanMove(Warrior warrior) =>
+                battleController.IsTileEmpty(planningMap, warrior.Position + Vector2Int.up) ||
+                battleController.IsTileEmpty(planningMap, warrior.Position + Vector2Int.down) ||
+                battleController.IsTileEmpty(planningMap, warrior.Position + Vector2Int.right) ||
+                battleController.IsTileEmpty(planningMap, warrior.Position + Vector2Int.left);
         }
 
         public void ExecuteTurn()
         {
             //
         }
-
-        private bool CanMove(Warrior warrior) =>
-            battleController.IsTileEmpty(currentPlanningMap, warrior.Position + Vector2Int.up) ||
-            battleController.IsTileEmpty(currentPlanningMap, warrior.Position + Vector2Int.down) ||
-            battleController.IsTileEmpty(currentPlanningMap, warrior.Position + Vector2Int.right) ||
-            battleController.IsTileEmpty(currentPlanningMap, warrior.Position + Vector2Int.left);
 
         //if is attacker, units further from 0 on x axis are prioretized
         //if is defender, units closer to 0 on x axis are prioretized

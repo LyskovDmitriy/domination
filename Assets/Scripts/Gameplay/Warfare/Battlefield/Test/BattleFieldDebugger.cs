@@ -91,13 +91,16 @@ namespace Domination.Battle.Test
             var pathfindingData = BattlePathfiner.GetPathfindingData(
                 tile.Position,
                 battlefieldView.BattlefieldController.MapUnits,
-                mapUnit => MapUnitsPassingCost.GetCost(mapUnit, warrior.IsAttacker));
+                mapUnit => MapUnitsPassingCost.GetCost(mapUnit, warrior.IsAttacker),
+                mapUnit => mapUnit.IsAttacker == warrior.IsAttacker);
 
-            for (int x = 0; x < pathfindingData.GetLength(0); x++)
+            var nodes = pathfindingData.nodes;
+
+            for (int x = 0; x < nodes.GetLength(0); x++)
             {
-                for (int y = 0; y < pathfindingData.GetLength(1); y++)
+                for (int y = 0; y < nodes.GetLength(1); y++)
                 {
-                    var node = pathfindingData[x, y];
+                    var node = nodes[x, y];
                     tiles[x, y].SetDebugInfo(node.distance, node.isPathObstructedByStructure, node.isPathObstructedByWarrior);
                 }
             }

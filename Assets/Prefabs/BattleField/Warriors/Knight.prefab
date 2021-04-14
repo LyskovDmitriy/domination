@@ -45,6 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   renderer: {fileID: 6647152352586190881}
+  animator: {fileID: 2579669544159934805}
+  moveSpeed: 1
+  attackAnimationSecondsDuration: 0.5
 --- !u!1 &3516895458803300289
 GameObject:
   m_ObjectHideFlags: 0

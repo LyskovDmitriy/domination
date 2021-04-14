@@ -63,15 +63,20 @@ namespace Domination.Battle.View
             return tilePosition;
         }
 
+        private Vector2 GetTilePosition(Vector2Int position) => GetTilePosition(position.x, position.y);
+
         private async void BattleCycle()
         {
             BattlefieldController.PlanTurn();
+            await ExecutePlanVisually();
+            BattlefieldController.ExecutePlan();
         }
 
         private void CreateMapUnits()
         {
             int fieldSizeX = BattlefieldController.BattleFieldSize.x;
             int fieldSizeY = BattlefieldController.BattleFieldSize.y;
+
             for (int x = 0; x < fieldSizeX; x++)
             {
                 for (int y = 0; y < fieldSizeY; y++)
@@ -97,6 +102,18 @@ namespace Domination.Battle.View
                     }
                 }
             }
+        }
+
+        private async Task ExecutePlanVisually()
+        {
+            var planExecutions = new HashSet<Task>();
+
+            foreach (var warrior in warriors)
+            {
+                 planExecutions.Add(warrior.ExecutePlan(GetTilePosition));
+            }
+
+            await Task.WhenAll(planExecutions);
         }
     }
 }

@@ -61,6 +61,10 @@ namespace Domination.Battle.Logic
             }
         }
 
+        public void ExecutePlan()
+        { 
+        }
+
         public bool IsTileEmpty(IMapUnit[,] map, Vector2Int position) => IsTileEmpty(map, position.x, position.y);
         public bool IsTileEmpty(IMapUnit[,] map, int x, int y) => IsWithinBounds(x, y) && (map[x, y] == null);
 
