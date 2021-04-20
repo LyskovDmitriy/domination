@@ -8,10 +8,14 @@ namespace Domination.Battle.Logic
 {
     public class Warrior : IMapUnit
     {
+        public Action<Warrior> OnDied;
+
         public readonly Unit Unit;
         public readonly bool IsAttacker;
 
         public readonly ITurnPlanner planner;
+
+        private int health;
 
 
         public Vector2Int Position { get; private set; }
@@ -25,6 +29,8 @@ namespace Domination.Battle.Logic
             IsAttacker = isAttacker;
             Position = position;
 
+            health = Unit.Health;
+
             planner = new MeleeUnitPlanner(this);
         }
 
@@ -37,8 +43,17 @@ namespace Domination.Battle.Logic
 
         public void Move(Vector2Int position)
         {
-            var previousPosition = Position;
             Position = position;
+        }
+
+        public void ReceiveDamage(int damage)
+        {
+            health -= damage;
+
+            if (health <= 0)
+            {
+                OnDied?.Invoke(this);
+            }
         }
     }
 }

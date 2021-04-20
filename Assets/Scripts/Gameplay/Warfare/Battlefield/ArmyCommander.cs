@@ -23,6 +23,8 @@ namespace Domination.Battle.Logic
         public void AddWarrior(Warrior warrior)
         {
             Warriors.Add(warrior);
+
+            warrior.OnDied += (w) => Warriors.Remove(w);
         }
 
         //Plan turn for each unit
@@ -73,7 +75,7 @@ namespace Domination.Battle.Logic
 
         //if is attacker, units further from 0 on x axis are prioretized
         //if is defender, units closer to 0 on x axis are prioretized
-        private int GetOrder(Warrior warrior) => warrior.Position.x * (IsAttacker ? 1 : -1);
+        private int GetOrder(Warrior warrior) => warrior.Position.x * (IsAttacker ? -1 : 1);
 
         private int GetPassingCost(IMapUnit mapUnit) => MapUnitsPassingCost.GetCost(mapUnit, IsAttacker);
     }

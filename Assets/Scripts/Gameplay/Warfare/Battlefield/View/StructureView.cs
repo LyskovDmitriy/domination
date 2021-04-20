@@ -6,9 +6,9 @@ namespace Domination.Battle.View
 {
     public class StructureView : MonoBehaviour
     {
-        private Structure structure;
-
-
-        public void Init(Structure structure) => this.structure = structure;
+        public void Init(Structure structure)
+        {
+            structure.OnDestroyed += _ => Destroy(gameObject);
+        }
     }
 }

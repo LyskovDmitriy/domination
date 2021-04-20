@@ -10,11 +10,14 @@ namespace Domination.Battle.View
 {
     public class WarriorView : MonoBehaviour
     {
+        public event Action<WarriorView> OnDied;
+
         [SerializeField] private new SpriteRenderer renderer = default;
         [Header("Animation")]
         [SerializeField] private Animator animator = default;
         [SerializeField] private float moveSpeed = default;
         [SerializeField] private float attackAnimationSecondsDuration = default;
+        [SerializeField] private float deathAnimationDuration = default;
 
         private Warrior warrior;
 
@@ -22,8 +25,8 @@ namespace Domination.Battle.View
         public void Init(Warrior warrior, bool isFacingLeft)
         {
             this.warrior = warrior;
-
             renderer.flipX = isFacingLeft;
+            warrior.OnDied += _ => DestroyView();
         }
 
         public async Task ExecutePlan(Func<Vector2Int, Vector2> getTilePosition)
@@ -52,6 +55,17 @@ namespace Domination.Battle.View
                 case IdleAction _:
                     break;
             }
+        }
+
+        private async void DestroyView()
+        {
+            OnDied?.Invoke(this);
+
+            animator.SetTrigger("Died");
+
+            await Task.Delay(Mathf.RoundToInt(deathAnimationDuration * 1000));
+
+            Destroy(gameObject);
         }
     }
 }

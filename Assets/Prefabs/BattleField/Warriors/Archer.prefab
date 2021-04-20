@@ -48,6 +48,7 @@ MonoBehaviour:
   animator: {fileID: 4105263339191625808}
   moveSpeed: 1
   attackAnimationSecondsDuration: 1
+  deathAnimationDuration: 1
 --- !u!1 &3168991800255784644
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,7 +121,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1408616019
   m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

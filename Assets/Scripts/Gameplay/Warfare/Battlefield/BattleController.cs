@@ -21,7 +21,10 @@ namespace Domination.Battle.Logic
         {
             int wallThickness = 0;
             int minWallHeight = 0;
+            int wallHealth = 0;
+
             int gateHeight = 0;
+            int gateHealth = 0;
 
             var wall = settlment.GetBuilding(BuildingType.Wall);
             if (wall != null)
@@ -30,7 +33,10 @@ namespace Domination.Battle.Logic
                 var wallInfo = settings.Levels[wall.level];
                 wallThickness = wallInfo.WallThickness;
                 minWallHeight = wallInfo.MinWallHeight;
+                wallHealth = wallInfo.WallUnitHealth;
+
                 gateHeight = wallInfo.GateHeight;
+                gateHealth = wallInfo.GateUnitHealth;
             }
 
             BattleFieldSize = BattlefieldMapSizeCalculator.CalculateMapSize(
@@ -47,7 +53,7 @@ namespace Domination.Battle.Logic
 
             MapUnits = new IMapUnit[BattleFieldSize.x, BattleFieldSize.y];
 
-            CreateWall(wallThickness, gateHeight);
+            CreateWall(wallThickness, gateHeight, wallHealth, gateHealth);
 
             CreateUnits(commanders[0], attackingArmy.GetUnits(), true, wallThickness);
             CreateUnits(commanders[1], defendingArmy.GetUnits(), false, wallThickness);
@@ -97,7 +103,7 @@ namespace Domination.Battle.Logic
         public bool IsTileEmpty(IMapUnit[,] map, Vector2Int position) => IsTileEmpty(map, position.x, position.y);
         public bool IsTileEmpty(IMapUnit[,] map, int x, int y) => IsWithinBounds(x, y) && (map[x, y] == null);
 
-        private void CreateWall(int wallThickness, int gateHeight)
+        private void CreateWall(int wallThickness, int gateHeight, int wallHealth, int gateHealth)
         {
             int wallStartingIndex = (BattleFieldSize.x - wallThickness) / 2;
             int gateStartingIndex = (BattleFieldSize.y - gateHeight) / 2;
@@ -107,8 +113,9 @@ namespace Domination.Battle.Logic
                 for (int y = 0; y < BattleFieldSize.y; y++)
                 {
                     bool isGate = ((gateStartingIndex <= y) && (y < gateStartingIndex + gateHeight));
-                    var structure = new Structure(isGate, new Vector2Int(x, y));
+                    var structure = new Structure(isGate, new Vector2Int(x, y), isGate ? gateHealth : wallHealth);
                     MapUnits[x, y] = structure;
+                    structure.OnDestroyed += (s) => structures.Remove(s);
 
                     structures.Add(structure);
                 }

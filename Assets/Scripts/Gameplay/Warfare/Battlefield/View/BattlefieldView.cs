@@ -70,7 +70,7 @@ namespace Domination.Battle.View
             while (true)
             {
                 BattlefieldController.PlanTurn();
-                while (!Input.GetKeyDown(KeyCode.Space))
+                //while (!Input.GetKeyDown(KeyCode.Space))
                 {
                     await Task.Yield();
                 }
@@ -105,6 +105,7 @@ namespace Domination.Battle.View
                             case Warrior warrior:
                                 var warriorView = MapUnitsCreator.CreateWarrior(warrior, tilePosition, transform);
                                 warriors.Add(warriorView);
+                                warriorView.OnDied += w => warriors.Remove(w);
                                 break;
                         }
                     }

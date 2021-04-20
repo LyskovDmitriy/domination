@@ -102,7 +102,7 @@ namespace Domination.Battle.Logic.Ai
 
             if (currentNode == targetNode)
             {
-                PlannedAction = new AttackAction(CurrentTarget);
+                PlannedAction = new AttackAction(warrior, CurrentTarget);
             }
             else if (currentPlanningMap[currentNode.position.x, currentNode.position.y] == null)
             {

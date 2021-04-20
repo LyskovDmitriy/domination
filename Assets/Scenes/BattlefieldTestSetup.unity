@@ -483,7 +483,7 @@ MonoBehaviour:
   - unitsCount: 8
     weaponType: 1
     weaponLevel: 1
-  wallLevel: 2
+  wallLevel: 1
   settlmentTileType: 3
   debugger: {fileID: 168307514}
 --- !u!4 &1319804821
