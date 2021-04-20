@@ -4,15 +4,16 @@ using System.Linq;
 
 namespace Domination.Battle.Logic.Ai
 {
-    public class MeleeUnitPlanner : IUnitPlanner
+    public class MeleeUnitPlanner : ITurnPlanner
     {
         private readonly Warrior warrior;
 
         private IMapUnit[,] currentPlanningMap;
 
-        private IMapUnit previousTarget;
 
         public IAction PlannedAction { get; private set; }
+
+        public IMapUnit CurrentTarget { get; private set; }
 
 
         public MeleeUnitPlanner(Warrior warrior)
@@ -32,17 +33,26 @@ namespace Domination.Battle.Logic.Ai
                 return;
             }
 
-            var structuresToAttack = pathfinidingResult.structures.Where(CanNodeBeReached);
-
-            //Try to attack structures that can be reached
-            if (structuresToAttack.Count() > 0)
+            if (warrior.IsAttacker)
             {
-                SelectClosestTarget(structuresToAttack);
-                return;
+                var structuresToAttack = pathfinidingResult.structures.Where(CanNodeBeReached);
+
+                //Try to attack structures that can be reached
+                if (structuresToAttack.Count() > 0)
+                {
+                    SelectClosestTarget(structuresToAttack);
+                    return;
+                }
             }
 
             //Try to attack closest warrior
             SelectClosestTarget(pathfinidingResult.enemies);
+        }
+
+        public void ExecuteTurn()
+        {
+            PlannedAction.Execute(warrior);
+            PlannedAction = null;
         }
 
         private void SelectClosestTarget(IEnumerable<BattlePathfiner.Node> possibleTargets)
@@ -58,14 +68,15 @@ namespace Domination.Battle.Logic.Ai
                 }
                 else if (target.previousNode.distance < minDistance)
                 {
+                    minDistance = target.previousNode.distance;
                     closestTargets.Clear();
                     closestTargets.Add(target);
                 }
             }
 
-            if (previousTarget != null)
+            if (CurrentTarget != null)
             {
-                var previousTargetNode = closestTargets.Find(node => currentPlanningMap[node.position.x, node.position.y] == previousTarget);
+                var previousTargetNode = closestTargets.Find(node => currentPlanningMap[node.position.x, node.position.y] == CurrentTarget);
 
                 if (previousTargetNode != null)
                 {
@@ -80,7 +91,7 @@ namespace Domination.Battle.Logic.Ai
 
         private void SelectTarget(BattlePathfiner.Node targetNode)
         {
-            previousTarget = currentPlanningMap[targetNode.position.x, targetNode.position.y];
+            CurrentTarget = currentPlanningMap[targetNode.position.x, targetNode.position.y];
 
             var currentNode = targetNode;
 
@@ -91,14 +102,18 @@ namespace Domination.Battle.Logic.Ai
 
             if (currentNode == targetNode)
             {
-                PlannedAction = new AttackAction(previousTarget);
+                PlannedAction = new AttackAction(CurrentTarget);
             }
-            else
+            else if (currentPlanningMap[currentNode.position.x, currentNode.position.y] == null)
             {
                 PlannedAction = new MoveAction(currentNode.position);
 
                 currentPlanningMap[warrior.Position.x, warrior.Position.y] = null;
                 currentPlanningMap[currentNode.position.x, currentNode.position.y] = warrior;
+            }
+            else
+            {
+                PlannedAction = new IdleAction();
             }
         }
 

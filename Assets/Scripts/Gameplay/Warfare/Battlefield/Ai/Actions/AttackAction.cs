@@ -9,5 +9,7 @@ namespace Domination.Battle.Logic.Ai
         {
             this.target = target;
         }
+
+        public void Execute(Warrior warrior) { }
     }
 }

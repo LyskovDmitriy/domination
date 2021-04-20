@@ -2,7 +2,7 @@ using UnityEngine;
 using Domination.Battle.View;
 using Domination.Battle.Logic;
 using Domination.Battle.Settings;
-
+using Domination.Battle.Logic.Ai;
 
 namespace Domination.Battle.Test
 {
@@ -92,7 +92,7 @@ namespace Domination.Battle.Test
                 tile.Position,
                 battlefieldView.BattlefieldController.MapUnits,
                 mapUnit => MapUnitsPassingCost.GetCost(mapUnit, warrior.IsAttacker),
-                mapUnit => mapUnit.IsAttacker == warrior.IsAttacker);
+                mapUnit => mapUnit.IsAttacker != warrior.IsAttacker);
 
             var nodes = pathfindingData.nodes;
 
@@ -103,6 +103,19 @@ namespace Domination.Battle.Test
                     var node = nodes[x, y];
                     tiles[x, y].SetDebugInfo(node.distance, node.isPathObstructedByStructure, node.isPathObstructedByWarrior);
                 }
+            }
+
+            switch (warrior.planner.PlannedAction)
+            {
+                case MoveAction moveAction:
+                    tiles[moveAction.TargetPosition.x, moveAction.TargetPosition.y].SetMovementTarget(true);
+                    break;
+            }
+
+            if (warrior.planner.CurrentTarget != null)
+            {
+                var targetPosition = warrior.planner.CurrentTarget.Position;
+                tiles[targetPosition.x, targetPosition.y].SetAttackMarkerActive(true);
             }
         }
     }

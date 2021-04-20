@@ -28,6 +28,7 @@ namespace Domination.Battle.Test
 
             var battlefiled = FindObjectOfType<BattlefieldView>();
             battlefiled.Init(RecruitmentUtils.CreateArmy(attackingUnits), RecruitmentUtils.CreateArmy(defendingUnits), settlment, new Tile(settlmentTileType));
+            battlefiled.StartAttack();
             
             debugger.Init(battlefiled);
         }

@@ -14,6 +14,8 @@ namespace Domination.Battle.Logic
 
         private readonly ArmyCommander[] commanders;
 
+        private List<IMapUnit> structures = new List<IMapUnit>();
+
 
         public BattleController(Army attackingArmy, Army defendingArmy, Settlment settlment, Tile tile)//TODO: Improve walls  health on a mountain tile
         {
@@ -62,7 +64,34 @@ namespace Domination.Battle.Logic
         }
 
         public void ExecutePlan()
-        { 
+        {
+            foreach (var commander in commanders)
+            {
+                commander.ExecuteTurn();
+            }
+
+            for (int x = 0; x < BattleFieldSize.x; x++)
+            {
+                for (int y = 0; y < BattleFieldSize.y; y++)
+                {
+                    MapUnits[x, y] = null;
+                }
+            }
+
+            AddMapUnits(structures);
+
+            foreach (var commander in commanders)
+            {
+                AddMapUnits(commander.Warriors);
+            }
+
+            void AddMapUnits(IEnumerable<IMapUnit> mapUnits)
+            {
+                foreach (var unit in mapUnits)
+                {
+                    MapUnits[unit.Position.x, unit.Position.y] = unit;
+                }
+            }
         }
 
         public bool IsTileEmpty(IMapUnit[,] map, Vector2Int position) => IsTileEmpty(map, position.x, position.y);
@@ -78,7 +107,10 @@ namespace Domination.Battle.Logic
                 for (int y = 0; y < BattleFieldSize.y; y++)
                 {
                     bool isGate = ((gateStartingIndex <= y) && (y < gateStartingIndex + gateHeight));
-                    MapUnits[x, y] = new Structure(isGate);
+                    var structure = new Structure(isGate, new Vector2Int(x, y));
+                    MapUnits[x, y] = structure;
+
+                    structures.Add(structure);
                 }
             }
         }
@@ -87,8 +119,8 @@ namespace Domination.Battle.Logic
         {
             var queue = new Queue<Unit>(units);
             int placementDirectionSign = isAttacker ? -1 : 1;
-            int startingColumnIndex = (BattleFieldSize.x - wallThickness) / 2 + 
-                (isAttacker ? -(1 + BattleFieldSettings.AttackersMinDistanceFromWall) :  wallThickness);
+            int startingColumnIndex = (BattleFieldSize.x - wallThickness) / 2 +
+                (isAttacker ? -(1 + BattleFieldSettings.AttackersMinDistanceFromWall) : wallThickness);
             int centerIndexY = Mathf.FloorToInt(BattleFieldSize.y / 2.0f);
 
             for (int x = startingColumnIndex; (0 <= x) && (x < BattleFieldSize.x); x += placementDirectionSign)

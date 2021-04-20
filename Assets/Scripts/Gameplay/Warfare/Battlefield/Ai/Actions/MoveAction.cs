@@ -12,5 +12,7 @@ namespace Domination.Battle.Logic.Ai
         {
             TargetPosition = targetPosition;
         }
+
+        public void Execute(Warrior warrior) => warrior.Move(TargetPosition);
     }
 }

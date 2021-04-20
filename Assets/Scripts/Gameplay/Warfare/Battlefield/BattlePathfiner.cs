@@ -109,7 +109,7 @@ namespace Domination.Battle.Logic
                             {
                                 structures.Add(newNode);
                             }
-                            else if (isMapUnitStructure && isUnitEnemyFunction(unitOnTile as Warrior))
+                            else if (isMapUnitWarrior && isUnitEnemyFunction(unitOnTile as Warrior))
                             {
                                 enemies.Add(newNode);
                             }

@@ -9,10 +9,9 @@ namespace Domination.Battle.Logic
     public class ArmyCommander
     {
         public readonly bool IsAttacker;
+        public readonly HashSet<Warrior> Warriors = new HashSet<Warrior>();
         
         private readonly BattleController battleController;
-
-        private HashSet<Warrior> warriors = new HashSet<Warrior>();
 
 
         public ArmyCommander(BattleController battleController, bool isAttacker)
@@ -23,14 +22,14 @@ namespace Domination.Battle.Logic
 
         public void AddWarrior(Warrior warrior)
         {
-            warriors.Add(warrior);
+            Warriors.Add(warrior);
         }
 
         //Plan turn for each unit
         //So that view could execute plan
         public void PlanTurn(IMapUnit[,] planningMap)
         {
-            var orderedUnits = warriors.OrderBy(GetOrder).ToList();
+            var orderedUnits = Warriors.OrderBy(GetOrder).ToList();
 
             while (orderedUnits.Count() > 0)
             {
@@ -50,7 +49,7 @@ namespace Domination.Battle.Logic
                     warrior.Position, 
                     planningMap, 
                     GetPassingCost,
-                    mapUnit => mapUnit.IsAttacker == IsAttacker);
+                    mapUnit => mapUnit.IsAttacker != IsAttacker);
 
                 warrior.PlanTurn(planningMap, pathfindingData);
 
@@ -66,7 +65,10 @@ namespace Domination.Battle.Logic
 
         public void ExecuteTurn()
         {
-            //
+            foreach (var warrior in Warriors)
+            {
+                warrior.ExecuteTurn();
+            }
         }
 
         //if is attacker, units further from 0 on x axis are prioretized

@@ -34,19 +34,22 @@ namespace Domination.Battle.View
             {
                 case MoveAction moveAction:
                     //Add randomized delay
-                    animator.SetBool("IsRunning", true);
+                    animator.SetBool("IsWalking", true);
                     //Move
                     Vector2 targetPosition = getTilePosition(moveAction.TargetPosition);
                     var movementDuration = (transform.position.ToVector2() - targetPosition).magnitude / moveSpeed;
                     await transform.DOMove(targetPosition, movementDuration).AsyncWaitForCompletion();
                     //Randomize speed
-                    animator.SetBool("IsRunning", false);
+                    animator.SetBool("IsWalking", false);
                     break;
 
                 case AttackAction _:
                     //Add randomized delay
                     animator.SetTrigger("Attack");
                     await Task.Delay(Mathf.RoundToInt(attackAnimationSecondsDuration * 1000));
+                    break;
+
+                case IdleAction _:
                     break;
             }
         }

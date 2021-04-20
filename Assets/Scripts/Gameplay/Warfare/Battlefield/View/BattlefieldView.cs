@@ -67,9 +67,17 @@ namespace Domination.Battle.View
 
         private async void BattleCycle()
         {
-            BattlefieldController.PlanTurn();
-            await ExecutePlanVisually();
-            BattlefieldController.ExecutePlan();
+            while (true)
+            {
+                BattlefieldController.PlanTurn();
+                while (!Input.GetKeyDown(KeyCode.Space))
+                {
+                    await Task.Yield();
+                }
+
+                await ExecutePlanVisually();
+                BattlefieldController.ExecutePlan();
+            }
         }
 
         private void CreateMapUnits()
