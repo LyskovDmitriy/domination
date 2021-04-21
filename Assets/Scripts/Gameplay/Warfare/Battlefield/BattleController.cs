@@ -1,6 +1,7 @@
 using Domination.Battle.Settings;
 using Domination.LevelLogic;
 using Domination.Warfare;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,7 +18,11 @@ namespace Domination.Battle.Logic
         private List<IMapUnit> structures = new List<IMapUnit>();
 
 
-        public BattleController(Army attackingArmy, Army defendingArmy, Settlment settlment, Tile tile)//TODO: Improve walls  health on a mountain tile
+        private ArmyCommander Attacker => commanders[0];
+        private ArmyCommander Defender => commanders[1];
+
+
+        public BattleController(Army attackingArmy, Army defendingArmy, Settlment settlment, Tile tile)//TODO: Improve walls health on a mountain tile
         {
             int wallThickness = 0;
             int minWallHeight = 0;
@@ -55,8 +60,8 @@ namespace Domination.Battle.Logic
 
             CreateWall(wallThickness, gateHeight, wallHealth, gateHealth);
 
-            CreateUnits(commanders[0], attackingArmy.GetUnits(), true, wallThickness);
-            CreateUnits(commanders[1], defendingArmy.GetUnits(), false, wallThickness);
+            CreateUnits(Attacker, attackingArmy.GetUnits(), true, wallThickness);
+            CreateUnits(Defender, defendingArmy.GetUnits(), false, wallThickness);
         }
 
         public void PlanTurn()
@@ -69,13 +74,31 @@ namespace Domination.Battle.Logic
             }
         }
 
-        public void ExecutePlan()
+        public BattleResult ExecutePlan()
         {
             foreach (var commander in commanders)
             {
                 commander.ExecuteTurn();
             }
 
+            if (Array.Exists(commanders, commander => !commander.HasUnits))
+            {
+                return new BattleResult
+                {
+                     wasSiegeSuccessful = Attacker.HasUnits && !Defender.HasUnits
+                };
+            }
+
+            RefreshMap();
+
+            return null;
+        }
+
+        public bool IsTileEmpty(IMapUnit[,] map, Vector2Int position) => IsTileEmpty(map, position.x, position.y);
+        public bool IsTileEmpty(IMapUnit[,] map, int x, int y) => IsWithinBounds(x, y) && (map[x, y] == null);
+
+        private void RefreshMap()
+        {
             for (int x = 0; x < BattleFieldSize.x; x++)
             {
                 for (int y = 0; y < BattleFieldSize.y; y++)
@@ -99,9 +122,6 @@ namespace Domination.Battle.Logic
                 }
             }
         }
-
-        public bool IsTileEmpty(IMapUnit[,] map, Vector2Int position) => IsTileEmpty(map, position.x, position.y);
-        public bool IsTileEmpty(IMapUnit[,] map, int x, int y) => IsWithinBounds(x, y) && (map[x, y] == null);
 
         private void CreateWall(int wallThickness, int gateHeight, int wallHealth, int gateHealth)
         {
@@ -158,10 +178,8 @@ namespace Domination.Battle.Logic
             }
         }
 
-        private bool IsWithinBounds(int x, int y)
-        {
-            return (0 <= x) && (x < BattleFieldSize.x) &&
-                (0 <= y) && (y < BattleFieldSize.y);
-        }
+        private bool IsWithinBounds(int x, int y) =>
+            (0 <= x) && (x < BattleFieldSize.x) &&
+            (0 <= y) && (y < BattleFieldSize.y);
     }
 }

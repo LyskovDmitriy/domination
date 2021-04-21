@@ -46,12 +46,12 @@ namespace Domination.Battle.View
             BattleCycle();
         }
 
-        public Vector2 GetTilePosition(int x, int y)
+        public Vector3 GetTilePosition(int x, int y)
         {
             int fieldSizeX = BattlefieldController.BattleFieldSize.x;
             int fieldSizeY = BattlefieldController.BattleFieldSize.y;
 
-            Vector2 tilePosition =
+            Vector3 tilePosition =
                 tileSize / 2 - //initial tile anchor offset
                 new Vector2(tileSize.x * fieldSizeX / 2 + distanceBetweenTiles.x * (fieldSizeX - 1) / 2,
                     tileSize.y * fieldSizeY / 2 + distanceBetweenTiles.y * (fieldSizeY - 1) / 2)
@@ -60,23 +60,32 @@ namespace Domination.Battle.View
                     x * (tileSize.x + distanceBetweenTiles.x),
                     y * (tileSize.y + distanceBetweenTiles.y)); //distance to next tile
 
+            tilePosition = tilePosition.SetZ(tilePosition.y + tilePosition.x / 1000); //To improve sorting
+
             return tilePosition;
         }
 
-        private Vector2 GetTilePosition(Vector2Int position) => GetTilePosition(position.x, position.y);
+        private Vector3 GetTilePosition(Vector2Int position) => GetTilePosition(position.x, position.y);
 
         private async void BattleCycle()
         {
             while (true)
             {
                 BattlefieldController.PlanTurn();
+
                 //while (!Input.GetKeyDown(KeyCode.Space))
                 {
                     await Task.Yield();
                 }
 
                 await ExecutePlanVisually();
-                BattlefieldController.ExecutePlan();
+                var result = BattlefieldController.ExecutePlan();
+
+                if (result != null)
+                {
+                    Debug.LogError(result.wasSiegeSuccessful ? "Attacker won" : "Defender won");
+                    return;
+                }
             }
         }
 
@@ -90,7 +99,7 @@ namespace Domination.Battle.View
                 for (int y = 0; y < fieldSizeY; y++)
                 {
                     var tilePosition = GetTilePosition(x, y);
-                    Instantiate(battleFieldTilePrefab, tilePosition, Quaternion.identity, transform);
+                    Instantiate(battleFieldTilePrefab, tilePosition.ToVector2(), Quaternion.identity, transform);
 
                     var mapUnit = BattlefieldController.MapUnits[x, y];
 

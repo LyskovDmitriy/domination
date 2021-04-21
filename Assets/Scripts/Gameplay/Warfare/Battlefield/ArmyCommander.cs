@@ -14,6 +14,9 @@ namespace Domination.Battle.Logic
         private readonly BattleController battleController;
 
 
+        public bool HasUnits => Warriors.Count > 0;
+
+
         public ArmyCommander(BattleController battleController, bool isAttacker)
         {
             this.battleController = battleController;

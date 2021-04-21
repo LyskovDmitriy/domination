@@ -14,3 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackersMinDistanceFromWall: 2
   tagetBattleFieldSizeRatio: 1.7777778
+  minSpeedMultiplier: 0.9
+  maxSpeedMultiplier: 1.2
+  maxMovementDelay: 0.4
+  maxAttackDelay: 0.4

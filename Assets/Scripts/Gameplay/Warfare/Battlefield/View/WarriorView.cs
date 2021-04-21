@@ -1,5 +1,6 @@
 using Domination.Battle.Logic;
 using Domination.Battle.Logic.Ai;
+using Domination.Battle.Settings;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -29,25 +30,28 @@ namespace Domination.Battle.View
             warrior.OnDied += _ => DestroyView();
         }
 
-        public async Task ExecutePlan(Func<Vector2Int, Vector2> getTilePosition)
+        public async Task ExecutePlan(Func<Vector2Int, Vector3> getTilePosition)
         {
             var action = warrior.planner.PlannedAction;
 
             switch (action)
             {
                 case MoveAction moveAction:
-                    //Add randomized delay
+                    await Task.Delay(Mathf.RoundToInt(BattleFieldSettings.GetRandomMovementDelay() * 1000));
+
                     animator.SetBool("IsWalking", true);
                     //Move
-                    Vector2 targetPosition = getTilePosition(moveAction.TargetPosition);
-                    var movementDuration = (transform.position.ToVector2() - targetPosition).magnitude / moveSpeed;
-                    await transform.DOMove(targetPosition, movementDuration).AsyncWaitForCompletion();
+                    var targetPosition = getTilePosition(moveAction.TargetPosition);
+                    var currentSpeed = moveSpeed * BattleFieldSettings.GetRandomSpeedMultiplier();
+                    var movementDuration = (transform.position.ToVector2() - targetPosition.ToVector2()).magnitude / currentSpeed;
+                    await transform.DOMove(targetPosition, movementDuration).SetEase(Ease.Linear).AsyncWaitForCompletion();
                     //Randomize speed
                     animator.SetBool("IsWalking", false);
                     break;
 
                 case AttackAction _:
-                    //Add randomized delay
+                    await Task.Delay(Mathf.RoundToInt(BattleFieldSettings.GetRandomAttackDelay() * 1000));
+
                     animator.SetTrigger("Attack");
                     await Task.Delay(Mathf.RoundToInt(attackAnimationSecondsDuration * 1000));
                     break;

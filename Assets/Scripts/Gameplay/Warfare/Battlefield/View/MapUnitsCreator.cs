@@ -23,7 +23,7 @@ namespace Domination.Battle.View
             return structureView;
         }
 
-        public static WarriorView CreateWarrior(Warrior warrior, Vector2 position, Transform parent)
+        public static WarriorView CreateWarrior(Warrior warrior, Vector3 position, Transform parent)
         {
             var warriorView = CreateMapUnit(
                 (warrior.Unit.WeaponType == WeaponType.Melee) ? asset.Value.knightViewPrefab : asset.Value.archerViewPrefab,
@@ -33,7 +33,7 @@ namespace Domination.Battle.View
         }
 
 
-        private static T CreateMapUnit<T>(T prefab, Vector2 position, Transform parent) where T : Object =>
+        private static T CreateMapUnit<T>(T prefab, Vector3 position, Transform parent) where T : Object =>
             Instantiate(prefab, position, Quaternion.identity, parent);
     }
 }
