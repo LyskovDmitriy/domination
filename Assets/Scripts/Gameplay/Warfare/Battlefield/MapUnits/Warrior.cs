@@ -16,6 +16,7 @@ namespace Domination.Battle.Logic
         public readonly ITurnPlanner planner;
 
         private int health;
+        private bool isDead;
 
 
         public Vector2Int Position { get; private set; }
@@ -50,8 +51,9 @@ namespace Domination.Battle.Logic
         {
             health -= damage;
 
-            if (health <= 0)
+            if ((health <= 0) && !isDead)
             {
+                isDead = true;
                 OnDied?.Invoke(this);
             }
         }

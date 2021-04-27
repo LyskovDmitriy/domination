@@ -76,6 +76,8 @@ namespace Domination.Battle.Logic
             }
         }
 
+        public void GetDeadUnits(bool isWinner) => BattleFieldSettings.GetShouldDieRandomized(isWinner);
+
         //if is attacker, units further from 0 on x axis are prioretized
         //if is defender, units closer to 0 on x axis are prioretized
         private int GetOrder(Warrior warrior) => warrior.Position.x * (IsAttacker ? -1 : 1);

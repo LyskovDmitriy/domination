@@ -15,6 +15,9 @@ namespace Domination.Battle.Logic
 
         private readonly ArmyCommander[] commanders;
 
+        private readonly Army attackingArmy;
+        private readonly Army defendingArmy;
+
         private List<IMapUnit> structures = new List<IMapUnit>();
 
 
@@ -24,6 +27,9 @@ namespace Domination.Battle.Logic
 
         public BattleController(Army attackingArmy, Army defendingArmy, Settlment settlment, Tile tile)//TODO: Improve walls health on a mountain tile
         {
+            this.attackingArmy = attackingArmy;
+            this.defendingArmy = defendingArmy;
+
             int wallThickness = 0;
             int minWallHeight = 0;
             int wallHealth = 0;
@@ -85,6 +91,7 @@ namespace Domination.Battle.Logic
             {
                 return new BattleResult
                 {
+                    //TODO: add casualties
                      wasSiegeSuccessful = Attacker.HasUnits && !Defender.HasUnits
                 };
             }

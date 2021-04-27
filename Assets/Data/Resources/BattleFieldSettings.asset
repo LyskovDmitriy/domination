@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5493d183f81cb74bb8091cd0c322ad8, type: 3}
   m_Name: BattleFieldSettings
   m_EditorClassIdentifier: 
+  winnerUnitsDyingChance: 0
+  loserUnitsDyingChance: 0
   attackersMinDistanceFromWall: 2
   tagetBattleFieldSizeRatio: 1.7777778
   minSpeedMultiplier: 0.9
